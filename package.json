@@ -1,0 +1,31 @@
+{
+  "name": "bcch_future_star",
+  "version": "1.0.0",
+  "description": "A web based application POC for the collection, storage and analysis of patient data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --watch",
+    "build": "webpack",
+    "start": "webpack && node ./server/app.js"
+  },
+  "keywords": [
+    "bcch"
+  ],
+  "author": "Nick Birtch, Lang Cheng, Jiayao Chen, Kaiti Mok Rong, Alexander Svatukhin, Jiawei Tan, Julie Zhu",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "axios": "^0.19.1",
+    "express": "^4.17.1",
+    "mysql": "^2.17.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}
