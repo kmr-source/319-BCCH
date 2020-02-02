@@ -1,4 +1,5 @@
 const path = require('path');
+const PrettierPlugin = require('prettier-webpack-plugin')
 
 module.exports = {
   mode: "development",
@@ -25,6 +26,7 @@ module.exports = {
       }
     ]
   },
+
   resolve: {
     extensions: ['*', '.js', '.jsx']
   },
@@ -35,5 +37,10 @@ module.exports = {
   },
   devServer: {
     contentBase: './public'
-  }
+  },
+  plugins: [
+    new PrettierPlugin({
+      trailingComma: "none"
+    })
+  ],
 };
