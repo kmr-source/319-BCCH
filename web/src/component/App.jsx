@@ -3,7 +3,7 @@ import React from "react";
 // import components
 
 // import css
-import "./App.scss";
+import "../css/App.scss";
 
 class App extends React.Component {
     constructor(props) {
