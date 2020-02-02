@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: "development",
-  entry: './web/src/js/index.jsx',
+  entry: './web/src/index.jsx',
   module: {
     rules: [
       {
@@ -14,6 +14,14 @@ module.exports = {
             presets: ['@babel/preset-react']
           }
         }
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ],
       }
     ]
   },
@@ -21,11 +29,11 @@ module.exports = {
     extensions: ['*', '.js', '.jsx']
   },
   output: {
-    path: path.resolve(__dirname, 'web/dist'),
+    path: path.resolve(__dirname, 'web/public'),
     publicPath: '/assets/',
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: './dist'
+    contentBase: './public'
   }
 };
