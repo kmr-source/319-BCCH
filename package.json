@@ -11,11 +11,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:ui": "webpack --watch",
     "dev:server": "tsc --watch",
-    "server": "tsc && node ./server/app.js",
+    "server": "tsc && node ./server/target/App.js",
     "compile": "tsc",
     "compile:front": "webpack",
     "build": "webpack && tsc",
-    "start": "webpack && tsc && node ./server/app.js"
+    "start": "webpack && tsc && node ./server/target/App.js"
   },
   "keywords": [
     "bcch"
