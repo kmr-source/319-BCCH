@@ -5,10 +5,11 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": false,
-    "target": "ES6"
+    "target": "ES6",
+    "outDir": "server/target"
   },
   "include": [
-    "server/*.ts"
+    "server/src/**/*"
   ],
   "exclude": [
     "node_modules"

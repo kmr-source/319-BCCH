@@ -3,6 +3,5 @@ yarn.lock
 
 /node_modules
 /web/public/*.js
-/server/*.js
-/server/*.js.map
+/server/target/*
 */.DS_Store
