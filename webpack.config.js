@@ -36,7 +36,8 @@ module.exports = {
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: './public'
+    contentBase: './public',
+    historyApiFallback: true
   },
   plugins: [
     new PrettierPlugin({
