@@ -1,16 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Menu, Popover, Position, Avatar, toaster } from "evergreen-ui";
 
 // import css
 import "../css/Header.scss";
-
-function DropDownButton(dropDownObj) {
-  return (
-    <div className="header-drop-down" onClick={dropDownObj.toggle}>
-      @Username
-    </div>
-  );
-}
 
 function DropDownMenu() {
   return (
@@ -37,7 +29,7 @@ function DropDownMenu() {
   );
 }
 
-export function Header() {
+export function Header(props) {
   return (
     <div id="header">
       <div className="real-header-group">
@@ -46,7 +38,7 @@ export function Header() {
         </div>
         <div id="user-buttons-group">
           <div className="button-group">
-            <DropDownMenu />
+            {props.isLoggedIn && <DropDownMenu />}
           </div>
         </div>
       </div>

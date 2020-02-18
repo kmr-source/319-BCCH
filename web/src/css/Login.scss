@@ -19,20 +19,21 @@
 
   .login-content {
     height: 800px;
-    padding: 50px 200px;
+    padding: 130px 200px;
+    background-color: #fef3e9;
 
     .login-form {
-      width: 600px;
-      height: 700px;
+      width: 450px;
+      height: 500px;
       margin: auto;
       border-radius: 5px;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-      background-color: rgba(0, 0, 10, 0.22);
+      background-color: white;
 
       .form-title {
         font-size: 50px;
-        padding: 20px;
-        margin-bottom: 50px;
+        padding: 30px;
+        margin-bottom: 30px;
         text-align: center;
         color: #24292e;
       }
@@ -40,7 +41,7 @@
       .field-container {
         position: relative;
         font-size: 14px;
-        padding: 0 50px;
+        padding: 0 40px;
         height: 55px;
         line-height: 55px;
         display: flex;
@@ -52,14 +53,19 @@
           font-size: 16px;
           padding: 10px 20px 0px 20px;
           color: rgb(8, 8, 10);
+          border: 1px solid grey;
+          border-radius: 5px;
           background: white;
           text-align: left;
           height: 100%;
-          border: 0;
+
+          &:focus {
+            outline: 0 !important;
+          }
         }
 
         .field-label {
-          color: darkslateblue;
+          color: grey;
           position: absolute;
           margin-left: 20px;
           margin-bottom: 0;
@@ -84,6 +90,7 @@
 
         &.active {
           .field-label {
+            color: darkslateblue;
             font-size: 12px;
             height: 20x;
             line-height: 20px;
@@ -127,6 +134,24 @@
               background: red;
             }
           }
+        }
+      }
+
+      .login-button {
+        margin: 60px auto;
+        width: 360px;
+        color: white;
+        text-align: center;
+        height: 60px;
+        line-height: 55px;
+        background-color: #f38020;
+        font-size: 20px;
+        border-radius: 5px;
+        transition-delay: 0.2;
+
+        &:hover {
+          cursor: pointer;
+          background-color: #f37000;
         }
       }
     }

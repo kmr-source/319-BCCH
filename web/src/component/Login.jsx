@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 // import css
 import "../css/Login.scss";
 
-export function Login() {
+export function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isUserActive, setIsUserActive] = useState(false);
   const [isPassActive, setIsPassActive] = useState(false);
+
+  let history = useHistory();
 
   function fieldOnFocus(e) {
     const target = e.target;
@@ -29,10 +32,10 @@ export function Login() {
 
     switch (name) {
       case "username":
-        setIsUserActive(false);
+        setIsUserActive(username !== "");
         break;
       case "password":
-        setIsPassActive(false);
+        setIsPassActive(password !== "");
         break;
     }
   }
@@ -50,6 +53,14 @@ export function Login() {
         setPassword(value);
         break;
     }
+  }
+
+  function handleClick() {
+    props.setIsLoggedIn(true);
+    if (username === "BCCH") {
+      props.setIsAdmin(true);
+    }
+    history.push("/dashboard");
   }
 
   let userFieldName = "field-container";
@@ -92,7 +103,14 @@ export function Login() {
             />
             <label className="field-label">Password</label>
           </div>
-          {/* <button className="login-button"></button> */}
+          <div
+            className="login-button"
+            onClick={() => {
+              handleClick();
+            }}
+          >
+            Login
+          </div>
         </form>
       </div>
     </div>
