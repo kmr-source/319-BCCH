@@ -19,38 +19,36 @@ let FakeSessionData = {
 
 export function App() {
   return (
-    <div>
-      <Header />
+    <div className="component-app">
       <Router>
-        <div className="component-app">
-          <nav>
-            <ul>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/dashboard">Dashboard</Link>
-              </li>
-              <li>
-                <Link to="/upload">upload</Link>
-              </li>
-            </ul>
-          </nav>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+            <li>
+              <Link to="/upload">upload</Link>
+            </li>
+          </ul>
+        </nav>
+        <Header />
 
-          {/* A <Switch> looks through its children <Route>s and
+        {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
-          <Switch>
-            <Route path="/dashboard">
-              <Dashboard />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/upload">
-              <Upload session={FakeSessionData} />
-            </Route>
-          </Switch>
-        </div>
+        <Switch>
+          <Route path="/dashboard">
+            <Dashboard />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/upload">
+            <Upload session={FakeSessionData} />
+          </Route>
+        </Switch>
       </Router>
     </div>
   );
