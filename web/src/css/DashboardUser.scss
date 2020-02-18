@@ -1,3 +1,5 @@
+@import "Constants";
+
 #dash-board-user-container {
   #header {
     width: 100%;
@@ -87,14 +89,8 @@
   }
 }
 
-$breakpoint-tablet: 768px;
-$breakpoint-longscreen: 1200px;
-$breakpoint-mobile: 400px;
-
 @media (min-width: $breakpoint-longscreen) {
-  #dash-board-user-container {
-    .real-header-group {
-      width: 1180px;
-    }
+  .real-header-group {
+    width: 1180px;
   }
 }

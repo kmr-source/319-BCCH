@@ -65,9 +65,6 @@ export function Login() {
 
   return (
     <div className="login-page">
-      <div className="login-header">
-        <div className="header-text">BCCH</div>
-      </div>
       <div className="login-content">
         <form className="login-form">
           <div className="form-title">Login</div>

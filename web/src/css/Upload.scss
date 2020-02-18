@@ -1,0 +1,140 @@
+@import "Constants";
+
+#upload-container {
+  height: 100%;
+
+  .submit-button-group {
+    margin-top: 30px;
+    padding-bottom: 20px;
+    align-self: end;
+    display: flex;
+    flex-direction: row-reverse;
+  }
+}
+
+#upload-body-section {
+  background-color: #fef3e9;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  #upload-body-main {
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+  }
+}
+
+#upload-body-main {
+  #upload-body-session {
+    padding: 5px 25px 10px 25px;
+    margin-bottom: 15px;
+  }
+
+  .section-common {
+    padding: 25px 25px 15px 25px;
+
+    .title-upload-common {
+      font-size: 28px;
+      font-weight: 500;
+      border-bottom: 1px solid grey;
+      color: #234361;
+      font-family: $site-font-family;
+    }
+
+    .files-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      .inputfile-hidden {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -10;
+      }
+
+      .upload-item {
+        width: 120px;
+        border-radius: 10px;
+        height: 98px;
+        color: grey;
+        margin: 20px;
+        background-color: #f7f7f7;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        position: relative;
+
+        .delete-icon {
+          cursor: pointer;
+          position: absolute;
+          right: -6px;
+          top: -6px;
+          font-size: 15px;
+          color: white;
+          width: 25px;
+          height: 25px;
+          text-align: center;
+          border-radius: 50%;
+          background-color: darkgrey;
+
+          &:hover {
+            background-color: red;
+            transition-property: background-color;
+            transition-duration: 0.4s;
+          }
+        }
+
+        &.upload-place-holder {
+          cursor: pointer;
+          background-color: white;
+          border: dashed 4px grey;
+        }
+
+        &.upload-place-holder:hover {
+          background-color: white;
+        }
+
+        &:hover {
+          background-color: #f0f0f0;
+        }
+
+        .upload-item-icon {
+          text-align: center;
+
+          &.place-holder-icon {
+            padding-top: 3px;
+          }
+        }
+
+        .upload-item-text {
+          cursor: default;
+          margin-top: 5px;
+          padding-left: 2px;
+          max-height: 23px;
+          padding-right: 2px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 15px;
+          text-align: center;
+
+          &.place-holder-text {
+            margin-top: 8px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: $breakpoint-longscreen) {
+  #upload-body-section {
+    #upload-body-main {
+      width: 900px;
+    }
+  }
+}
