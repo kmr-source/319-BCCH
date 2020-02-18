@@ -11,15 +11,9 @@ export function Login() {
       </div>
       <div className="login-content">
         <form className="login-form">
-          <div className="form-title">
-
-          </div>
-          <div className="form-username">
-
-          </div>
-          <div className="form-password">
-
-          </div>
+          <div className="form-title"></div>
+          <div className="form-username"></div>
+          <div className="form-password"></div>
           <button className="login-button"></button>
         </form>
       </div>
