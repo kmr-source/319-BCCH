@@ -1,23 +1,17 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { Header } from "./Header";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 
 // import components
-import { Login } from "./Login";
-import { Dashboard } from "./Dashboard";
-import { Upload } from "./upload_component/Upload";
+import { Header } from "./Header";
+import { Routes } from "./Routes";
 
 // import css
 import "../css/App.scss";
 
-let FakeSessionData = {
-  sessionTitle: "Session A: Sleep Assessment",
-  videos: ["sleep_record", "play_record", "walk_record"],
-  pictures: ["front-selfie", "side-selfie"],
-  surveys: [{ titile: "Survey A" }, { title: "Survey B" }]
-};
-
 export function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   return (
     <div className="component-app">
       <Router>
@@ -34,21 +28,15 @@ export function App() {
             </li>
           </ul>
         </nav>
-        <Header />
-
-        {/* A <Switch> looks through its children <Route>s and
-          renders the first one that matches the current URL. */}
-        <Switch>
-          <Route path="/dashboard">
-            <Dashboard />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/upload">
-            <Upload session={FakeSessionData} />
-          </Route>
-        </Switch>
+        <Header isLoggedIn={isLoggedIn} />
+        <div id="content">
+          <Routes
+            isLoggedIn={isLoggedIn}
+            isAdmin={isAdmin}
+            setIsLoggedIn={setIsLoggedIn}
+            setIsAdmin={setIsAdmin}
+          />
+        </div>
       </Router>
     </div>
   );
