@@ -9,10 +9,6 @@ let server = express();
 server.use(require("body-parser").json());
 server.use('/assets', express.static(path.resolve(__dirname, "../../web/public")));
 
-server.get('/', (req, res) => {
-    res.send('Welcome!');
-});
-
 interface User {
     username: string;
     password: string;
@@ -59,6 +55,6 @@ server.get('/upload', (req, res) => {
 
 // handle every other route with index.html, which will contain
 // a script tag to your application's JavaScript file(s).
-server.get('*', (req: any, res: any) => res.sendFile(path.resolve(__dirname, "../../web/public/index.html")));
+server.get('/', (req: any, res: any) => res.sendFile(path.resolve(__dirname, "../../web/public/index.html")));
 
 server.listen(port, () => console.log(`listening port ${port}`));
