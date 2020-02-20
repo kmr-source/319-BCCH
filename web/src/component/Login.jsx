@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import axios from "axios";
+
 // import css
 import "../css/Login.scss";
 
@@ -9,8 +11,11 @@ export function Login(props) {
   const [password, setPassword] = useState("");
   const [isUserActive, setIsUserActive] = useState(false);
   const [isPassActive, setIsPassActive] = useState(false);
+  const [isUserEmpty, setIsUserEmpty] = useState(false);
+  const [isPassEmpty, setIsPassEmpty] = useState(false);
+  const [isFailed, setIsFailed] = useState(false);
 
-  let history = useHistory();
+  const history = useHistory();
 
   function fieldOnFocus(e) {
     const target = e.target;
@@ -33,9 +38,11 @@ export function Login(props) {
     switch (name) {
       case "username":
         setIsUserActive(username !== "");
+        setIsUserEmpty(username === "");
         break;
       case "password":
         setIsPassActive(password !== "");
+        setIsPassEmpty(password === "");
         break;
     }
   }
@@ -55,23 +62,40 @@ export function Login(props) {
     }
   }
 
-  function handleClick() {
-    props.setIsLoggedIn(true);
-    if (username === "BCCH") {
-      props.setIsAdmin(true);
-    }
-    history.push("/dashboard");
-  }
-
   let userFieldName = "field-container";
   let passFieldName = "field-container";
+  let buttonFieldName = "login-button";
+  let warningFieldName = "warning-label";
 
-  if (isUserActive) {
-    userFieldName += " active";
-  }
+  userFieldName += isUserActive ? " active" : "";
+  userFieldName += !username && isUserEmpty ? " error" : "";
+  passFieldName += isPassActive ? " active" : "";
+  console.log(password);
+  console.log(isPassEmpty);
+  passFieldName += !password && isPassEmpty ? " error" : "";
+  buttonFieldName += !username || !password ? " disabled" : "";
+  warningFieldName += isFailed ? " show" : "";
+  buttonFieldName += isFailed ? " failed" : "";
 
-  if (isPassActive) {
-    passFieldName += " active";
+  async function handleLogin() {
+    const user = {
+      username: username,
+      password: password
+    };
+
+    try {
+      let res = await axios.post(`/login`, user);
+      const isAdmin = res.data.type === "admin";
+      const status = res.status;
+      const token = res.data.token;
+      props.setIsAdmin(isAdmin);
+      props.setIsLoggedIn(true);
+      props.setCookie("access_token", token);
+      setIsFailed(false);
+      history.push("/dashboard");
+    } catch (e) {
+      setIsFailed(true);
+    }
   }
 
   return (
@@ -103,10 +127,13 @@ export function Login(props) {
             />
             <label className="field-label">Password</label>
           </div>
+          <label className={warningFieldName}>
+            Username or Password is invalid
+          </label>
           <div
-            className="login-button"
+            className={buttonFieldName}
             onClick={() => {
-              handleClick();
+              handleLogin();
             }}
           >
             Login

@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 import { Menu, Popover, Position, Avatar, toaster } from "evergreen-ui";
+import { useHistory } from "react-router-dom";
 
 // import css
 import "../css/Header.scss";
 
-function DropDownMenu() {
+function DropDownMenu(props) {
+  const history = useHistory();
+
+  function handleLogOut() {
+    props.setIsLoggedIn(false);
+    props.removeCookie("access_token");
+    history.push("/login");
+  }
+
   return (
     <Popover
       position={Position.BOTTOM_LEFT}
@@ -17,9 +26,7 @@ function DropDownMenu() {
           </Menu.Group>
           <Menu.Divider />
           <Menu.Group>
-            <Menu.Item onSelect={() => toaster.notify("Log out")}>
-              Log out
-            </Menu.Item>
+            <Menu.Item onSelect={() => handleLogOut()}>Log out</Menu.Item>
           </Menu.Group>
         </Menu>
       }
@@ -38,7 +45,7 @@ export function Header(props) {
         </div>
         <div id="user-buttons-group">
           <div className="button-group">
-            {props.isLoggedIn && <DropDownMenu />}
+            {props.isLoggedIn && <DropDownMenu {...props} />}
           </div>
         </div>
       </div>

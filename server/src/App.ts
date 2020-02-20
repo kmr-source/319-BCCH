@@ -31,7 +31,7 @@ const users: User[] = [
     },
 ]
 
-server.get('/login', (req, res) => {
+server.post('/login', (req, res) => {
     console.log(req.body);
     let body: User = req.body;
     if (body.username == null || body.password == null) {
@@ -41,12 +41,12 @@ server.get('/login', (req, res) => {
 
     for (const u of users) {
         if (u.username === body.username && u.password === body.password) {
-            res.send({ username: u.username, type: u.type });
+            res.send({ username: u.username, type: u.type, token: 123 });
             return;
         }
     }
 
-    res.status(404).send({ error: "Invalid credentials" });
+    res.status(401).send({ error: "Invalid credentials" });
 });
 
 server.get('/upload', (req, res) => {
