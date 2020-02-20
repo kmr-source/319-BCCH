@@ -1,115 +1,84 @@
-import React, { useState } from "react";
-import { Heading, Dialog, Button, toaster } from "evergreen-ui";
-import { PictureSection, VideoSection, SurveySection } from "./Section";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Spinner } from "evergreen-ui";
+import { useHistory, useParams } from "react-router-dom";
+import { PortalViewControl } from "./PortalViewControl";
+import axios from "axios";
 
 import "../../css/Upload.scss";
 
-function dialogController(setConfDialState) {
-  let open = () => setConfDialState({ isShown: true, isLoading: false });
-  let close = () => setConfDialState({ isShown: false, isLoading: false });
-  let load = () => setConfDialState({ isShown: true, isLoading: true });
-
-  return {
-    open: open,
-    close: close,
-    load: load
-  };
+function Loading(props) {
+  return (
+    <div>
+      <div
+        className="loading"
+        style={{ display: props.isLoading ? "block" : "none" }}
+      >
+        <Spinner marginX="auto" size={100} />
+      </div>
+      <div
+        className="afterLoading"
+        style={{ display: props.isLoading ? "none" : "block" }}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
 }
 
-export function Upload(props) {
-  let history = useHistory();
-  let sessionData = props.session;
+async function fetchSession(type, setLoading, setData) {
+  let res = await axios.get(`/assessment/${type}`);
+  setData(res.data);
+  setLoading(false);
+}
+
+export function Upload() {
+  let { type } = useParams();
+
+  let [isLoading, setLoading] = useState(true);
+  let [sessionData, setData] = useState({
+    title: "",
+    id: "",
+    desc: "",
+    pictures: [],
+    videos: [],
+    surveys: []
+  });
+
+  useEffect(() => {
+    fetchSession(type, setLoading, setData);
+  }, []);
 
   let currentSession = {
+    id: type,
     video: [],
     picture: [],
     survey: []
   };
 
-  // debug purposes
-  window.debug = currentSession;
+  // debug
+  window.debugP = currentSession;
 
   let updateSession = (key, val) => {
     currentSession[key] = val;
   };
 
-  let [confDialState, setConfDialState] = useState({
-    isShown: false,
-    isLoading: false
-  });
-
-  let controlConfirm = dialogController(setConfDialState);
-
-  function sendSession() {
-    controlConfirm.load();
-    window.setTimeout(() => {
-      toaster.success("Successfully upload");
-      controlConfirm.close();
-      history.push("/dashboard");
-    }, 2000);
-  }
+  let getSession = key => {
+    return currentSession[key];
+  };
 
   return (
     <div id="upload-container">
       <div id="upload-body-section">
         <div id="upload-body-main">
-          <div id="upload-body-session">
-            <Heading size={900} marginTop="40px">
-              {sessionData.sessionTitle}
-            </Heading>
-          </div>
-          <VideoSection
-            videoRequired={sessionData.videos}
-            update={updateSession}
-          />
-          <PictureSection
-            pictureRequired={sessionData.pictures}
-            update={updateSession}
-          />
-          <SurveySection
-            surveyRequired={sessionData.surveys}
-            update={updateSession}
-          />
-          <div className="submit-button-group">
-            <Button
-              height={40}
-              marginRight={35}
-              appearance="primary"
-              intent="warning"
-              onClick={controlConfirm.open}
-            >
-              Upload
-            </Button>
-            <Button intent="warning" height={38} marginRight={16}>
-              Cancel
-            </Button>
-          </div>
+          <Loading isLoading={isLoading}>
+            <PortalViewControl
+              update={updateSession}
+              get={getSession}
+              data={sessionData}
+            />
+          </Loading>
         </div>
       </div>
-
-      <Dialog
-        isShown={confDialState.isShown}
-        isConfirmLoading={confDialState.isLoading}
-        onCancel={close => {
-          if (confDialState.isLoading) {
-            return;
-          } else {
-            close();
-          }
-        }}
-        onConfirm={sendSession}
-        confirmLabel={confDialState.isLoading ? "Uploading..." : "Upload"}
-        onCloseComplete={controlConfirm.close}
-        preventBodyScrolling
-        shouldCloseOnEscapePress={!confDialState.isLoading}
-        shouldCloseOnOverlayClick={!confDialState.isLoading}
-        cancelLabel="Cancel"
-        title="Upload Confirmation"
-        intent="warning"
-      >
-        Are you ready to upload ?
-      </Dialog>
     </div>
   );
 }

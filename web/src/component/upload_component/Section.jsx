@@ -1,9 +1,16 @@
-import React, { useState } from "react";
-import { Icon, Badge } from "evergreen-ui";
+import React, { useState, useEffect } from "react";
+import {
+  Icon,
+  Badge,
+  Tooltip,
+  UnorderedList,
+  ListItem,
+  Position
+} from "evergreen-ui";
 
 import "../../css/Upload.scss";
 
-function mediaSectionBuilder(updateInfoObj) {
+function buildMediaSection(updateInfoObj) {
   let blockDisplayStyle = {
     display: updateInfoObj.requiredNum === 0 ? "none" : "block"
   };
@@ -63,11 +70,75 @@ function mediaSectionBuilder(updateInfoObj) {
     );
   }
 
+  return buildCommonSection(
+    updateInfoObj,
+    titlePicker[updateInfoObj.type],
+    objIcons,
+    blockDisplayStyle
+  );
+}
+
+function buildSurveySection(updateInfoObj) {
+  let blockDisplayStyle = {
+    display: updateInfoObj.requiredNum === 0 ? "none" : "block"
+  };
+
+  let surveyIcons = updateInfoObj.surveyInfo.map((survey, idx) => {
+    let allAnswers = updateInfoObj.sessionGetter("survey");
+    let answer = allAnswers.find(a => a.sId === survey.sId);
+    if (answer) {
+      return (
+        <div
+          className="upload-item"
+          title={survey.sTitle}
+          key={`survey-${survey.sId}`}
+          onClick={updateInfoObj.viewSwitcher(survey.sId, updateInfoObj)}
+        >
+          <div className="upload-item-icon survey-done-icon">
+            <Icon icon="confirm" size={50} />
+          </div>
+          <div className="upload-item-text">{survey.sTitle}</div>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          className="upload-item upload-item-survey"
+          title={survey.sTitle}
+          key={`survey-${survey.sId}`}
+          onClick={updateInfoObj.viewSwitcher(survey.sId, updateInfoObj)}
+        >
+          <div className="upload-item-icon">
+            <Icon icon="annotation" size={50} />
+          </div>
+          <div className="upload-item-text">{survey.sTitle}</div>
+        </div>
+      );
+    }
+  });
+
+  return buildCommonSection(
+    updateInfoObj,
+    "Survey",
+    surveyIcons,
+    blockDisplayStyle
+  );
+}
+
+function buildCommonSection(updateInfoObj, title, items, blockDisplayStyle) {
   return (
     <div className="section-common" style={blockDisplayStyle}>
       <div className="title-upload-common">
-        {titlePicker[updateInfoObj.type]}({updateInfoObj.currentNum}/
-        {updateInfoObj.requiredNum})
+        {title}({updateInfoObj.currentNum}/{updateInfoObj.requiredNum})
+        <Tooltip
+          content={makeUploadSectionDescription(
+            updateInfoObj.descList,
+            updateInfoObj.type
+          )}
+          position={Position.RIGHT}
+        >
+          <Icon icon="info-sign" marginLeft="10px" />
+        </Tooltip>
         {updateInfoObj.status ? (
           <Badge
             color="green"
@@ -85,8 +156,24 @@ function mediaSectionBuilder(updateInfoObj) {
           ""
         )}
       </div>
-      <div className="files-container">{objIcons}</div>
+      <div className="files-container">{items}</div>
     </div>
+  );
+}
+
+function makeUploadSectionDescription(descList, type) {
+  let descComps = descList.map((desc, idx) => {
+    return (
+      <ListItem key={`${type}-desc-${idx}`} color="white">
+        {desc}
+      </ListItem>
+    );
+  });
+
+  return (
+    <UnorderedList key={`${type}-unordered-desc`} paddingX="10px">
+      {descComps}
+    </UnorderedList>
   );
 }
 
@@ -116,15 +203,16 @@ function uploadHandler(updateInfoObj) {
 }
 
 export function VideoSection(props) {
-  let videoInfo = props.videoRequired;
+  let videoInfo = props.sessionData.videos;
   let requiredNum = videoInfo.length;
 
   let [videoNum, setVideoNum] = useState(0);
-  let [isComplete, setIsComplete] = useState(videoNum === requiredNum);
+  let [isComplete, setIsComplete] = useState(false);
   let [videos, setVideos] = useState([]);
 
-  return mediaSectionBuilder({
+  return buildMediaSection({
     type: "video",
+    descList: videoInfo,
     requiredNum: requiredNum,
     currentNum: videoNum,
     currentList: videos,
@@ -137,15 +225,16 @@ export function VideoSection(props) {
 }
 
 export function PictureSection(props) {
-  let picInfo = props.pictureRequired;
+  let picInfo = props.sessionData.pictures;
   let requiredNum = picInfo.length;
 
   let [picNUm, setpicNUm] = useState(0);
-  let [isComplete, setIsComplete] = useState(picNUm === requiredNum);
+  let [isComplete, setIsComplete] = useState(false);
   let [pics, setPics] = useState([]);
 
-  return mediaSectionBuilder({
+  return buildMediaSection({
     type: "picture",
+    descList: picInfo,
     requiredNum: requiredNum,
     currentNum: picNUm,
     currentList: pics,
@@ -158,10 +247,23 @@ export function PictureSection(props) {
 }
 
 export function SurveySection(props) {
-  return (
-    <div className="section-common">
-      <div className="title-upload-common">Survey</div>
-      <div className="files-container">//TODO</div>
-    </div>
-  );
+  let surInfo = props.sessionData.surveys;
+  let [surveyNum, setSurveyNum] = useState(0);
+  let [isComplete, setIsComplete] = useState(false);
+  let [surveys, setSurveys] = useState([]);
+
+  return buildSurveySection({
+    viewSwitcher: props.viewSwitcher,
+    requiredNum: surInfo.length,
+    descList: surInfo.map(s => s.sTitle),
+    surveyInfo: surInfo,
+    currentNum: surveyNum,
+    currentList: surveys,
+    status: isComplete,
+    numSetter: setSurveyNum,
+    statusSetter: setIsComplete,
+    listSetter: setSurveys,
+    sessionUpdater: props.update,
+    sessionGetter: props.getter
+  });
 }

@@ -5,6 +5,9 @@ const port: number = 3000;
 
 let server = express();
 
+//mock up data
+import { Assessment, allAssessments } from "./AssessmentMaker";
+
 // parse application/json
 server.use(require("body-parser").json());
 server.use('/assets', express.static(path.resolve(__dirname, "../../web/public")));
@@ -29,7 +32,22 @@ const users: User[] = [
         password: "123",
         type: "user"
     },
-]
+];
+
+server.get('/assessment/:type', (req, res) => {
+    let type: string = req.params.type;
+    let options: Assessment[] = allAssessments;
+
+    for (let a of options) {
+        if (a.id === type) {
+            res.send(a);
+            return;
+        }
+    }
+
+    res.status(404).send({ error: `could not find assessment with id ${type}` });
+});
+
 
 server.post('/login', (req, res) => {
     console.log(req.body);

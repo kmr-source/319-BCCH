@@ -24,19 +24,6 @@ export function App() {
     <div className="component-app">
       <CookiesProvider>
         <Router>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/dashboard">Dashboard</Link>
-              </li>
-              <li>
-                <Link to="/upload">upload</Link>
-              </li>
-            </ul>
-          </nav>
           <Header
             isLoggedIn={isLoggedIn}
             setIsLoggedIn={setIsLoggedIn}
