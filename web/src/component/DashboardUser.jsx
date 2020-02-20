@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import "../css/DashboardUser.scss";
 
 function UploadIcon() {
-  return <Link to="/upload">Upload</Link>;
+  return <Link to="/upload/type_b">Upload</Link>;
 }
 
 export function DashboardUser(props) {

@@ -1,8 +1,6 @@
 @import "Constants";
 
 #upload-container {
-  height: 100%;
-
   .submit-button-group {
     margin-top: 30px;
     padding-bottom: 20px;
@@ -13,20 +11,23 @@
 }
 
 #upload-body-section {
-  background-color: #fef3e9;
   padding-top: 30px;
   padding-bottom: 30px;
 
   #upload-body-main {
     margin-left: auto;
     margin-right: auto;
-    height: 100%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     background-color: white;
   }
 }
 
 #upload-body-main {
+  .loading {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+
   #upload-body-session {
     padding: 5px 25px 10px 25px;
     margin-bottom: 15px;
@@ -102,11 +103,23 @@
           background-color: #f0f0f0;
         }
 
+        &.upload-item-survey {
+          cursor: pointer;
+
+          .upload-item-text {
+            cursor: pointer;
+          }
+        }
+
         .upload-item-icon {
           text-align: center;
 
           &.place-holder-icon {
             padding-top: 3px;
+          }
+
+          &.survey-done-icon {
+            color: green;
           }
         }
 

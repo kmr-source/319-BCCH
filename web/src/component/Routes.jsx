@@ -6,13 +6,6 @@ import { Login } from "./Login";
 import { Dashboard } from "./Dashboard";
 import { Upload } from "./upload_component/Upload";
 
-let FakeSessionData = {
-  sessionTitle: "Session A: Sleep Assessment",
-  videos: ["sleep_record", "play_record", "walk_record"],
-  pictures: ["front-selfie", "side-selfie"],
-  surveys: [{ titile: "Survey A" }, { title: "Survey B" }]
-};
-
 export function Routes(props) {
   return (
     <Switch>
@@ -42,8 +35,8 @@ function ProtectedRoutes(props) {
       <Route path="/dashboard">
         <Dashboard {...props} />
       </Route>
-      <Route path="/upload">
-        <Upload session={FakeSessionData} />
+      <Route path="/upload/:type">
+        <Upload />
       </Route>
     </Switch>
   );

@@ -1,0 +1,52 @@
+#survey-portal-container {
+  #survey-title-container {
+    padding: 20px 25px 5px 25px;
+  }
+
+  #instruction-field {
+    padding: 10px 25px;
+  }
+
+  #question-container {
+    padding: 10px 25px;
+  }
+
+  .survey-question {
+    .range-input {
+      width: 280px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      margin-top: -6px;
+      border: 0.5px solid #a7a7a7;
+      border-radius: 50%;
+      background: #f38020;
+    }
+
+    input[type="range"]:focus {
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 5px;
+      cursor: pointer;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      background: #fef3e9;
+    }
+
+    .answer-section {
+      padding: 3px 2px 10px 2px;
+    }
+
+    .question-desc-section {
+      padding: 10px 2px;
+    }
+  }
+}
