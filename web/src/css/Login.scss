@@ -18,7 +18,7 @@
   }
 
   .login-content {
-    height: 800px;
+    height: 100%;
     padding: 130px 200px;
     background-color: #fef3e9;
 
@@ -115,18 +115,10 @@
           }
         }
 
-        &.disabled {
-          .field-box {
-            cursor: not-allowed;
-            color: #444;
-          }
-
-          .field-label {
-            color: #444;
-          }
-        }
-
         &.error {
+          .field-box {
+            border: 1px solid red;
+          }
           .field-label {
             color: red;
 
@@ -134,6 +126,18 @@
               background: red;
             }
           }
+        }
+      }
+
+      .warning-label {
+        text-align: center;
+        width: 100%;
+        font-size: 14px;
+        color: red;
+        display: none;
+
+        &.show {
+          display: inline-block;
         }
       }
 
@@ -152,6 +156,16 @@
         &:hover {
           cursor: pointer;
           background-color: #f37000;
+        }
+
+        &.disabled {
+          cursor: not-allowed;
+          pointer-events: none;
+          opacity: 0.7;
+        }
+
+        &.failed {
+          margin: 0px auto;
         }
       }
     }

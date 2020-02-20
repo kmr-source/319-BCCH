@@ -17,10 +17,15 @@ export function Routes(props) {
   return (
     <Switch>
       <Route path="/login">
-        <Login
-          setIsLoggedIn={props.setIsLoggedIn}
-          setIsAdmin={props.setIsAdmin}
-        />
+        {props.isLoggedIn ? (
+          <Redirect to="/dashboard" />
+        ) : (
+          <Login
+            setIsLoggedIn={props.setIsLoggedIn}
+            setIsAdmin={props.setIsAdmin}
+            setCookie={props.setCookie}
+          />
+        )}
       </Route>
       {props.isLoggedIn ? (
         <ProtectedRoutes {...props} />
