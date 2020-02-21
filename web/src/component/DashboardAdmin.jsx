@@ -5,6 +5,7 @@ import queryfile from "../../public/query.csv";
 import "../css/DashboardAdmin.scss";
 
 export function DashboardAdmin(props) {
+
   const query = { field: "", oper: "", value: "" };
   const [rows, setRows] = useState([{ ...query }]);
 
@@ -23,7 +24,33 @@ export function DashboardAdmin(props) {
     rowX.splice(id, 1);
     setRows(rowX);
   };
-
+  const tables = [
+    {
+        table: 'User',
+        columns: ['id', 'name', 'age', 'gender', 'sex', 'date_created', 'is_admin', 'date_of_birth']
+    }, {
+        table: 'SessionType',
+        columns: ['session_type_id', 'session_type_name', 'num_videos', 'num_pics', 'num_surveys']
+    }, {
+        table: 'Session',
+        columns: ['session_id', 'user_id', 'session_type_id', 'is_complete', 'time_created']
+    }, {
+        table: 'Video',
+        columns: ['video_id', 'session_id', 'user_id', 'filename', 'size', 'time_created']
+    }, {
+        table: 'Picture',
+        columns: ['pic_id', 'session_id', 'user_id', 'filename', 'size', 'time_created']
+    }, {
+        table: 'Survey',
+        columns: ['sur_id', 'session_id', 'user_id', 'survey_type', 'num_questions', 'time_created']
+    }, {
+        table: 'SurveyQuestion',
+        columns: ['survey_type', 'question_num', 'question_type', 'statement', 'mcq']
+    }, {
+        table: 'SurveyAnswer',
+        columns: ['sur_id', 'question_num', 'survey_type', 'answer']
+    }
+  ];
   return (
     <div id="dash-board-admin-container">
       <p style={{ fontSize: 28 }}> Query Data: </p>
@@ -52,6 +79,7 @@ export function DashboardAdmin(props) {
       question_type, statement, mcq) SurveyAnswer(sur_id, question_num,
       survey_type, answer) */
       <p style={{ fontSize: 24 }}> Display Columns: </p>
+
       //Column options dependent on Table selection
       <label className="container">
         id
@@ -237,7 +265,7 @@ export function DashboardAdmin(props) {
         </a>
       </div>
       <div className="export-button">
-        <a href={"queryfile"} download>
+        <a href={queryfile} download>
           Export Query
         </a>
       </div>
