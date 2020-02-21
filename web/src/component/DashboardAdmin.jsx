@@ -1,4 +1,5 @@
 import React from "react";
+import queryfile from "../../public/query.csv";
 
 // import css
 import "../css/DashboardAdmin.scss";
@@ -104,10 +105,15 @@ export function DashboardAdmin(props) {
         <input type="text" id="filterbox" name="filterbox"></input>
       </div>
       <br></br>
-      <div className="button">
-        <a href="#" className="myButton" onClick={() => alert("Execute Query")}>
+      <div className="execute-button">
+        <a href="#" onClick={() => alert("Execute Query")}>
           Execute Query
         </a>
+      </div>
+      <div className="export-button">
+          <a href={queryfile} download>
+              Export Query
+          </a>
       </div>
     </div>
   );
