@@ -8,28 +8,79 @@ export function DashboardAdmin(props) {
     const tables = [
         {
             table: 'User',
-            columns: ['id', 'name', 'age', 'gender', 'sex', 'date_created', 'is_admin', 'date_of_birth']
+            columns: ['id', 'name', 'age', 'gender', 'sex', 'date_created', 'is_admin', 'date_of_birth'],
+            mockData: [
+                    ['1','John Smith','53','M','M','2020/02/02','F','1998/04/12'],
+                    ['2','Jane Smith','15','F','F','2020/02/02','F','1956/01/03'],
+                    ['3','John Doe','35','M','M','2020/02/02','T','2008/12/12'],
+                    ['4','Jane Doe','43','F','F','2020/02/02','T','1977/07/07']
+                ]
         }, {
             table: 'SessionType',
-            columns: ['session_type_id', 'session_type_name', 'num_videos', 'num_pics', 'num_surveys']
+            columns: ['session_type_id', 'session_type_name', 'num_videos', 'num_pics', 'num_surveys'],
+            mockData: [
+                    ['1','Type A','1','1','1'],
+                    ['2','Type B','3','1','1'],
+                    ['3','Type C','0','2','1'],
+                    ['4','Type D','2','1','1']
+                ]
         }, {
             table: 'Session',
-            columns: ['session_id', 'user_id', 'session_type_id', 'is_complete', 'time_created']
+            columns: ['session_id', 'user_id', 'session_type_id', 'is_complete', 'time_created'],
+            mockData: [
+                    ['1','1','1','T','2020/01/01 7:59pm'],
+                    ['2','2','2','T','2020/02/02 3:33am'],
+                    ['3','3','3','T','2020/02/04 4:15pm'],
+                    ['4','4','4','T','2020/02/18 2:22pm']
+                ]
         }, {
             table: 'Video',
-            columns: ['video_id', 'session_id', 'user_id', 'filename', 'size', 'time_created']
+            columns: ['video_id', 'session_id', 'user_id', 'filename', 'size', 'time_created'],
+            mockData: [
+                    ['1','1','1','1-1-1.mov','100mb','2020/01/01 7:59pm'],
+                    ['2','2','2','2-2-2.mov','275mb','2020/02/02 3:33am'],
+                    ['3','2','2','3-2-2.mov','1000mb','2020/02/02 3:33am'],
+                    ['4','2','2','4-2-2.mov','1003mb','2020/02/02 3:33am'],
+                    ['5','4','4','5-4-4.mov','1026mb','2020/02/18 2:22pm'],
+                    ['6','4','4','6-4-4.mov','1777mb','2020/02/18 2:22pm']
+                ]
         }, {
             table: 'Picture',
-            columns: ['pic_id', 'session_id', 'user_id', 'filename', 'size', 'time_created']
+            columns: ['pic_id', 'session_id', 'user_id', 'filename', 'size', 'time_created'],
+            mockData: [
+                    ['1','1','1','1-1-1.jpg','1004mb','2020/01/01 7:59pm'],
+                    ['2','2','2','2-2-2.jpg','2725mb','2020/02/02 3:33am'],
+                    ['3','3','3','3-3-3.jpg','1330mb','2020/02/04 4:15pm'],
+                    ['4','3','3','4-3-3.jpg','1043mb','2020/02/04 4:15pm'],
+                    ['5','4','4','5-4-4.jpg','1856mb','2020/02/18 2:22pm']
+                ]
         }, {
             table: 'Survey',
-            columns: ['sur_id', 'session_id', 'user_id', 'survey_type', 'num_questions', 'time_created']
+            columns: ['sur_id', 'session_id', 'user_id', 'survey_type', 'num_questions', 'time_created'],
+            mockData: [
+                    ['1','1','1','Type A','1','2020/01/01 7:59pm'],
+                    ['2','2','2','Type B','1','2020/02/02 3:33am'],
+                    ['3','3','3','Type C','1','2020/02/04 4:15pm'],
+                    ['4','4','4','Type D','1','2020/02/18 2:22pm']
+                ]
         }, {
             table: 'SurveyQuestion',
-            columns: ['survey_type', 'question_num', 'question_type', 'statement', 'mcq']
+            columns: ['survey_type', 'question_num', 'question_type', 'statement', 'mcq'],
+            mockData: [
+                    ['Type A','1','textinput','Describe your pain.','F'],
+                    ['Type B','1','textinput','Describe your sleep','F'],
+                    ['Type C','1','textinput','Describe your morning','F'],
+                    ['Type D','1','textinput','Describe your evening','F']
+                ]
         }, {
             table: 'SurveyAnswer',
-            columns: ['sur_id', 'question_num', 'survey_type', 'answer']
+            columns: ['sur_id', 'question_num', 'survey_type', 'answer'],
+            mockData: [
+                    ['1','1','textinput','no pain, feel great'],
+                    ['2','1','textinput','rough sleep, woke up several times'],
+                    ['3','1','textinput','early morning, felt energized'],
+                    ['4','1','textinput','sleepy after 6pm, took a nap']
+                ]
         }
     ];
     
