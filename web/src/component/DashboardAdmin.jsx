@@ -5,6 +5,34 @@ import queryfile from "../../public/query.csv";
 import "../css/DashboardAdmin.scss";
 
 export function DashboardAdmin(props) {
+    const tables = [
+        {
+            table: 'User',
+            columns: ['id', 'name', 'age', 'gender', 'sex', 'date_created', 'is_admin', 'date_of_birth']
+        }, {
+            table: 'SessionType',
+            columns: ['session_type_id', 'session_type_name', 'num_videos', 'num_pics', 'num_surveys']
+        }, {
+            table: 'Session',
+            columns: ['session_id', 'user_id', 'session_type_id', 'is_complete', 'time_created']
+        }, {
+            table: 'Video',
+            columns: ['video_id', 'session_id', 'user_id', 'filename', 'size', 'time_created']
+        }, {
+            table: 'Picture',
+            columns: ['pic_id', 'session_id', 'user_id', 'filename', 'size', 'time_created']
+        }, {
+            table: 'Survey',
+            columns: ['sur_id', 'session_id', 'user_id', 'survey_type', 'num_questions', 'time_created']
+        }, {
+            table: 'SurveyQuestion',
+            columns: ['survey_type', 'question_num', 'question_type', 'statement', 'mcq']
+        }, {
+            table: 'SurveyAnswer',
+            columns: ['sur_id', 'question_num', 'survey_type', 'answer']
+        }
+    ];
+    
   return (
     <div id="dash-board-admin-container">
       {/* <p style="font-size: 28px;"> Query Data: </p> */}
@@ -23,15 +51,7 @@ export function DashboardAdmin(props) {
         </select>
       </div>
       <br></br>
-      /* User(id, name, age, gender, sex, date_created, is_admin, date_of_birth)
-      SessionType(session_type_id, session_type_name, num_videos, num_pics,
-      num_surveys) Session(session_id, user_id, session_type_id, is_complete,
-      time_created) Video(video_id, session_id, user_id, filename, size,
-      time_created) Picture(pic_id, session_id, user_id, filename, size,
-      time_created) Survey(sur_id, session_id, user_id, survey_type,
-      num_questions, time_created) SurveyQuestion(survey_type, question_num,
-      question_type, statement, mcq) SurveyAnswer(sur_id, question_num,
-      survey_type, answer) */
+
       {/* <p style="font-size: 24px;"> Display Columns: </p> */}
       //Column options dependent on Table selection
       <label className="container">
