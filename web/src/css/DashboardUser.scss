@@ -1,91 +1,136 @@
 @import "Constants";
 
 #dash-board-user-container {
-  #header {
-    width: 100%;
-    border-bottom: 8px solid #f38020;
+  a {
+    text-decoration: none;
+  }
 
-    .real-header-group {
-      position: relative;
-      display: flex;
-      flex-direction: row;
+  .dashboard-button {
+    margin: 30px auto;
+    width: 240px;
+    color: white;
+    text-align: center;
+    height: 60px;
+    line-height: 55px;
+    background-color: #f38020;
+    font-size: 20px;
+    border-radius: 5px;
+
+    &:hover {
+      cursor: pointer;
+      transition-property: background-color;
+      transition-duration: 0.4s;
+      background-color: #f37000;
+    }
+  }
+
+  .negative-button {
+    margin: 30px auto;
+    width: 240px;
+    color: #f38020;
+    text-align: center;
+    border: 1px solid #f38020;
+    height: 60px;
+    line-height: 55px;
+    background-color: white;
+    font-size: 20px;
+    border-radius: 5px;
+
+    &:hover {
+      cursor: pointer;
+      color: white;
+      transition-property: background-color;
+      transition-duration: 0.4s;
+      background-color: #f37000;
+    }
+  }
+
+  #dash-board-user-main {
+    width: 100%;
+
+    .session-menu-container {
+      width: 40%;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      background-color: white;
+      margin-top: 30px;
+      color: #234361;
+      font-family: $site-font-family;
+      padding: 20px 25px 50px 25px;
       margin-left: auto;
       margin-right: auto;
 
-      #user-buttons-group {
-        width: 100%;
+      .session-menu-title {
+        font-size: 35px;
+        font-weight: 500;
+        text-align: center;
+      }
 
-        .button-group {
-          float: right;
-          margin-right: 10px;
-          margin-top: 33px;
+      .session-item-container {
+        padding: 5px 40px;
+        margin-top: 20px;
+        text-align: left;
 
-          .header-drop-down {
-            font-size: 24px;
-            background-color: #fef3e9;
-            cursor: pointer;
-            border: 2px solid #f38020;
-            &:hover {
-              background-color: #fde6d2;
+        .session-link-container {
+          padding: 5px 10px;
+          cursor: pointer;
+
+          .session-link {
+            color: #f38020;
+            font-size: 20px;
+          }
+
+          &:hover {
+            .session-link {
+              color: white;
             }
+            background-color: #f38020;
+            transition-property: background-color;
+            transition-duration: 0.4s;
           }
         }
       }
     }
-  }
-
-  #container {
-    display: table;
-    width: 100%;
 
     .left-container {
-      position: absolute;
-      left: 0px;
-      width: 65%;
-      color: #000;
-      font-size: 4rem;
-      font-family: "Trebuchet MS", Helvetica, sans-serif;
-      line-height: 150%;
-      padding: 90px 0;
-      text-align: center;
-    }
+      width: 40%;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      background-color: white;
+      font-size: 50px;
+      margin-top: 30px;
+      color: #234361;
+      font-family: $site-font-family;
+      padding: 20px 25px 50px 25px;
+      margin-left: auto;
+      margin-right: auto;
 
-    .vertical-line {
-      border-left: 1px solid #c4c6c7;
-      height: 60%;
-      position: absolute;
-      left: 61%;
-      margin-top: 25px;
-    }
-
-    .right-container {
-      position: absolute;
-      right: 30px;
-      width: 35%;
-      color: #000;
-      font-size: 2rem;
-      font-family: "Times New Roman", Times, serif;
-      line-height: 200%;
-      padding: 20px 0;
-
-      #name-container,
-      #real-name {
-        display: inline-block;
-        padding: 5px;
+      .dash-board-username {
+        text-align: center;
       }
 
-      #gender-container,
-      #real-gender {
-        display: inline-block;
-        padding: 5px;
-      }
-
-      #dob-container,
-      #real-dob {
-        display: inline-block;
-        padding: 5px;
+      .dash-board-greeting {
+        color: #f38020;
+        font-size: 60px;
+        font-family: Brush Script MT;
       }
     }
+  }
+}
+
+.right-container {
+  font-family: $site-font-family;
+  padding: 20px 25px;
+
+  .field-container {
+    color: #f38020;
+    font-size: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .content-container {
+    font-size: 15px;
+    margin-bottom: 10px;
   }
 }
 

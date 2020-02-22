@@ -70,28 +70,26 @@ export function Login(props) {
   userFieldName += isUserActive ? " active" : "";
   userFieldName += !username && isUserEmpty ? " error" : "";
   passFieldName += isPassActive ? " active" : "";
-  console.log(password);
-  console.log(isPassEmpty);
   passFieldName += !password && isPassEmpty ? " error" : "";
   buttonFieldName += !username || !password ? " disabled" : "";
   warningFieldName += isFailed ? " show" : "";
   buttonFieldName += isFailed ? " failed" : "";
 
   async function handleLogin() {
-    const user = {
+    const userQuery = {
       username: username,
       password: password
     };
 
     try {
-      let res = await axios.post(`/login`, user);
-      const isAdmin = res.data.type === "admin";
-      const status = res.status;
-      const token = res.data.token;
+      const res = await axios.post(`/login`, userQuery);
+      const user = res.data;
+      const isAdmin = user.type === "admin";
+      const token = user.username;
+      props.setUserInfo(user);
       props.setIsAdmin(isAdmin);
       props.setIsLoggedIn(true);
       props.setCookie("access_token", token);
-      setIsFailed(false);
       history.push("/dashboard");
     } catch (e) {
       setIsFailed(true);

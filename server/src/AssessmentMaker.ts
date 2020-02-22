@@ -140,5 +140,14 @@ export const allAssessments = [
         pictures: ["sefile 1", "sefile 2", "sefile 3"],
         videos: ["Video of participant performing task switch paradigm game"],
         surveys: [allSurveys[2]]
+    },
+    {
+        title: "Demo Assessment",
+        id: "type_d",
+        desc:
+            "This is a demo assessment",
+        pictures: ["sefile 1", "pictue showing your hands", "picture showing your legs"],
+        videos: ["Video of participant performing task switch paradigm game", "video of participant sleeping"],
+        surveys: [allSurveys[2], allSurveys[0], allSurveys[1]]
     }
 ];

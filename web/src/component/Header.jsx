@@ -9,6 +9,13 @@ function DropDownMenu(props) {
   const history = useHistory();
 
   function handleLogOut() {
+    props.setUserInfo({
+      username: "",
+      displayName: "",
+      gender: "",
+      birthdate: "",
+      type: ""
+    });
     props.setIsLoggedIn(false);
     props.removeCookie("access_token");
     history.push("/login");
@@ -31,7 +38,11 @@ function DropDownMenu(props) {
         </Menu>
       }
     >
-      <Avatar name="Raymond Chen" className="header-drop-down" size={50} />
+      <Avatar
+        name={props.userInfo.displayName}
+        className="header-drop-down"
+        size={50}
+      />
     </Popover>
   );
 }

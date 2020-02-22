@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as path from "path";
+import * as cookieParser from "cookie-parser";
 
 const port: number = 3000;
 
@@ -10,10 +11,14 @@ import { Assessment, allAssessments } from "./AssessmentMaker";
 
 // parse application/json
 server.use(require("body-parser").json());
+server.use(cookieParser());
 server.use('/assets', express.static(path.resolve(__dirname, "../../web/public")));
 
 interface User {
     username: string;
+    displayName: string;
+    gender: string;
+    birthdate: string;
     password: string;
     type?: string;
 }
@@ -21,20 +26,29 @@ interface User {
 const users: User[] = [
     {
         username: "admin",
+        displayName: "Admin A",
+        gender: "N/A",
+        birthdate: "1970/01/01",
         password: "admin",
         type: "admin"
     }, {
         username: "lang",
+        displayName: "Lang C",
+        gender: "Male",
+        birthdate: "9999/12/31",
         password: "123",
         type: "user"
     }, {
         username: "raymond",
+        displayName: "Raymond Chen",
+        gender: "Male",
+        birthdate: "1997/01/09",
         password: "123",
         type: "user"
     },
 ];
 
-server.get('/assessment/:type', (req, res) => {
+server.get('/assessment/:type', (req: any, res: any) => {
     let type: string = req.params.type;
     let options: Assessment[] = allAssessments;
 
@@ -49,8 +63,7 @@ server.get('/assessment/:type', (req, res) => {
 });
 
 
-server.post('/login', (req, res) => {
-    console.log(req.body);
+server.post('/login', (req: any, res: any) => {
     let body: User = req.body;
     if (body.username == null || body.password == null) {
         res.status(400).send({ error: "Missing required parameters" });
@@ -59,7 +72,13 @@ server.post('/login', (req, res) => {
 
     for (const u of users) {
         if (u.username === body.username && u.password === body.password) {
-            res.send({ username: u.username, type: u.type, token: 123 });
+            res.send({
+                username: u.username,
+                displayName: u.displayName,
+                gender: u.gender,
+                birthdate: u.birthdate,
+                type: u.type
+            });
             return;
         }
     }
@@ -67,7 +86,35 @@ server.post('/login', (req, res) => {
     res.status(401).send({ error: "Invalid credentials" });
 });
 
-server.get('/upload', (req, res) => {
+server.get('/userInfo', (req: any, res: any) => {
+    if (req.cookies.access_token) {
+        for (const u of users) {
+            if (u.username === req.cookies.access_token) {
+                res.status(200).send({
+                    username: u.username,
+                    displayName: u.displayName,
+                    gender: u.gender,
+                    birthdate: u.birthdate,
+                    type: u.type
+                });
+                return;
+            }
+        }
+        res.status(404).send({ error: "Can't find specific user" });
+    } else {
+        res.status(401).send({ error: "Invalid credentials" });
+    }
+});
+
+server.get('/available', (req: any, res: any) => {
+    if (req.cookies.access_token) {
+        res.send(allAssessments.map(a => { return { title: a.title, id: a.id } }));
+    } else {
+        res.status(401).send({ error: "Invalid credentials" });
+    }
+})
+
+server.get('/upload', (req: any, res: any) => {
     res.send();
 });
 

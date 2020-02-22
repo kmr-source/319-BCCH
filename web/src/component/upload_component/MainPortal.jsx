@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import {
   Heading,
   Button,
@@ -25,6 +27,7 @@ function dialogController(setConfDialState) {
 }
 
 export function MainPortal(props) {
+  let history = useHistory();
   let [sessionData, updateSession, getSession] = [
     props.data,
     props.update,
@@ -36,6 +39,8 @@ export function MainPortal(props) {
     isLoading: false
   });
 
+  let [showGiveUp, setshowGiveUp] = useState(false);
+
   let controlConfirm = dialogController(setConfDialState);
 
   function sendSession() {
@@ -43,7 +48,7 @@ export function MainPortal(props) {
     window.setTimeout(() => {
       toaster.success("Successfully upload");
       controlConfirm.close();
-      history.push("/#/dashboard");
+      history.push("/dashboard");
     }, 2000);
   }
 
@@ -74,18 +79,17 @@ export function MainPortal(props) {
         viewSwitcher={props.viewSwitcher}
       />
       <div className="submit-button-group">
-        <Button
-          height={40}
-          marginRight={35}
-          appearance="primary"
-          intent="warning"
-          onClick={controlConfirm.open}
-        >
+        <div className="primary-button" onClick={controlConfirm.open}>
           Upload
-        </Button>
-        <Button intent="warning" height={38} marginRight={16}>
+        </div>
+        <div
+          className="cancel-button"
+          onClick={() => {
+            setshowGiveUp(true);
+          }}
+        >
           Cancel
-        </Button>
+        </div>
       </div>
 
       <Dialog
@@ -109,6 +113,22 @@ export function MainPortal(props) {
         intent="warning"
       >
         Are you ready to upload ?
+      </Dialog>
+
+      <Dialog
+        isShown={showGiveUp}
+        onConfirm={() => {
+          setshowGiveUp(false);
+          history.push("/dashboard");
+        }}
+        confirmLabel="Quit"
+        preventBodyScrolling
+        cancelLabel="Cancel"
+        onCloseComplete={() => setshowGiveUp(false)}
+        title="Quit Confirmation"
+        intent="warning"
+      >
+        Do you want to leave the assessment? All changes will not be saved.
       </Dialog>
     </div>
   );

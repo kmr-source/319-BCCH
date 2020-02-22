@@ -17,6 +17,7 @@ export function Routes(props) {
             setIsLoggedIn={props.setIsLoggedIn}
             setIsAdmin={props.setIsAdmin}
             setCookie={props.setCookie}
+            setUserInfo={props.setUserInfo}
           />
         )}
       </Route>
@@ -33,7 +34,13 @@ function ProtectedRoutes(props) {
   return (
     <Switch>
       <Route path="/dashboard">
-        <Dashboard {...props} />
+        <Dashboard
+          isAdmin={props.isAdmin}
+          userInfo={props.userInfo}
+          setIsLoggedIn={props.setIsLoggedIn}
+          removeCookie={props.removeCookie}
+          setUserInfo={props.setUserInfo}
+        />
       </Route>
       <Route path="/upload/:type">
         <Upload />
