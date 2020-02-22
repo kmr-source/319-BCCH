@@ -21,7 +21,7 @@ export function App() {
     birthdate: "",
     type: ""
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
 
   const fetchUser = async () => {
