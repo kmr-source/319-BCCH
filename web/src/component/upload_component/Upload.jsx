@@ -1,34 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Spinner } from "evergreen-ui";
-import { useHistory, useParams } from "react-router-dom";
+import { Loading } from "../Loading.jsx";
+import { useParams } from "react-router-dom";
 import { PortalViewControl } from "./PortalViewControl";
+import { toaster } from "evergreen-ui";
 import axios from "axios";
 
 import "../../css/Upload.scss";
 
-function Loading(props) {
-  return (
-    <div>
-      <div
-        className="loading"
-        style={{ display: props.isLoading ? "block" : "none" }}
-      >
-        <Spinner marginX="auto" size={100} />
-      </div>
-      <div
-        className="afterLoading"
-        style={{ display: props.isLoading ? "none" : "block" }}
-      >
-        {props.children}
-      </div>
-    </div>
-  );
-}
-
 async function fetchSession(type, setLoading, setData) {
-  let res = await axios.get(`/assessment/${type}`);
-  setData(res.data);
-  setLoading(false);
+  try {
+    let res = await axios.get(`/assessment/${type}`);
+    setData(res.data);
+    setLoading(false);
+  } catch (e) {
+    toaster.danger(e.message);
+  }
 }
 
 export function Upload() {

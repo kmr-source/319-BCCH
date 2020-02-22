@@ -7,6 +7,47 @@
     align-self: end;
     display: flex;
     flex-direction: row-reverse;
+
+    .primary-button {
+      width: 100px;
+      margin-right: 20px;
+      color: white;
+      text-align: center;
+      height: 40px;
+      line-height: 38px;
+      background-color: #f38020;
+      font-size: 18px;
+      border-radius: 5px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: #f37000;
+        transition-property: background-color;
+        transition-duration: 0.4s;
+      }
+    }
+
+    .cancel-button {
+      width: 80px;
+      margin-right: 16px;
+      color: white;
+      text-align: center;
+      height: 40px;
+      line-height: 38px;
+      background-color: white;
+      color: #f38020;
+      border: solid 1px #f38020;
+      font-size: 18px;
+      border-radius: 5px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: #f37000;
+        color: white;
+        transition-property: background-color;
+        transition-duration: 0.4s;
+      }
+    }
   }
 }
 
@@ -23,11 +64,6 @@
 }
 
 #upload-body-main {
-  .loading {
-    padding-top: 100px;
-    padding-bottom: 100px;
-  }
-
   #upload-body-session {
     padding: 5px 25px 10px 25px;
     margin-bottom: 15px;

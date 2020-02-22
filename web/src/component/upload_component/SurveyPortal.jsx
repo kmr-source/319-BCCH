@@ -5,7 +5,6 @@ import {
   Heading,
   Paragraph,
   TextInput,
-  Button,
   Dialog
 } from "evergreen-ui";
 
@@ -142,25 +141,17 @@ export function SurveyPortal(props) {
         {theSurvey.sContent.map(q => buildQuestion(q, setAnswer))}
       </div>
       <div className="submit-button-group">
-        <Button
-          height={40}
-          marginRight={35}
-          appearance="primary"
-          intent="warning"
-          onClick={saveSurvey()}
-        >
+        <div className="primary-button" onClick={saveSurvey()}>
           Save
-        </Button>
-        <Button
-          intent="warning"
-          height={38}
-          marginRight={16}
+        </div>
+        <div
+          className="cancel-button"
           onClick={() => {
             setQuitDialogIsShown(true);
           }}
         >
           Cancel
-        </Button>
+        </div>
       </div>
 
       <Dialog

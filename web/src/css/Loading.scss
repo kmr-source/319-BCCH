@@ -1,0 +1,15 @@
+@import "Constants";
+
+.loading {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: $breakpoint-longscreen) {
+  .loading {
+    width: 900px;
+  }
+}
