@@ -11,6 +11,7 @@ export function DashboardAdmin(props) {
   const [filterFields, setFilterFields] = useState([]);
   const [outputQuery, setOutputQuery] = useState("");
   const [displayColumns, setDisplayColumns] = useState({});
+  const [selectedCols, setSelectedCols] = useState([]);
 
   const addRow = () => {
     setQueryRows([...queryRows, { ...query }]);
@@ -18,7 +19,7 @@ export function DashboardAdmin(props) {
 
   const handleChange = e => {
     const newRows = [...queryRows];
-    newRows[e.target.dataset.idx][e.target.className] = e.target.value;
+    newRows[e.target.dataset.idx][e.target.dataset.type] = e.target.value;
     setQueryRows(newRows);
   };
 
@@ -45,17 +46,36 @@ export function DashboardAdmin(props) {
       displayCols[col] = false;
     });
     setDisplayColumns(displayCols);
+    setSelectedCols([]);
   };
 
   const executeQuery = () => {
-    console.log(queryRows);
-    let query = buildQuery(queryRows, result.table);
+    let selected =
+      selectedCols.length === Object.keys(displayColumns).length - 1
+        ? "*"
+        : selectedCols.join(", ");
+    let query = buildQuery(queryRows, result.table, selected);
     setOutputQuery(query);
   };
 
   const displayColumnChecked = e => {
     const dc = { ...displayColumns };
-    dc[e.target.value] = !dc[e.target.value];
+    if (e.target.value === "selectAll") {
+      let original = dc[e.target.value];
+      Object.keys(dc).forEach(key => {
+        dc[key] = !original;
+      });
+    } else {
+      dc[e.target.value] = !dc[e.target.value];
+    }
+    if (!dc[e.target.value]) dc["selectAll"] = false;
+    const selected = [];
+    Object.keys(dc).forEach(key => {
+      if (dc[key]) selected.push(key);
+    });
+    if (selected.length === Object.keys(dc).length - 1) dc["selectAll"] = true;
+    if (selected.includes("selectAll")) selected.shift();
+    setSelectedCols(selected);
     setDisplayColumns(dc);
   };
 
@@ -77,17 +97,7 @@ export function DashboardAdmin(props) {
         </select>
       </div>
       <br></br>
-      /* User(id, name, age, gender, sex, date_created, is_admin, date_of_birth)
-      SessionType(session_type_id, session_type_name, num_videos, num_pics,
-      num_surveys) Session(session_id, user_id, session_type_id, is_complete,
-      time_created) Video(video_id, session_id, user_id, filename, size,
-      time_created) Picture(pic_id, session_id, user_id, filename, size,
-      time_created) Survey(sur_id, session_id, user_id, survey_type,
-      num_questions, time_created) SurveyQuestion(survey_type, question_num,
-      question_type, statement, mcq) SurveyAnswer(sur_id, question_num,
-      survey_type, answer) */
       <p style={{ fontSize: 24 }}> Display Columns: </p>
-      //Column options dependent on Table selection
       <br></br>
       {Object.keys(displayColumns).map((item, index) => (
         <label key={index} className="container">
@@ -101,46 +111,6 @@ export function DashboardAdmin(props) {
           <span className="checkmark" />
         </label>
       ))}
-      {/* <label className="container">
-        id
-        <input type="checkbox"></input>
-        <span className="checkmark"></span>
-      </label>
-      <label className="container">
-        name
-        <input type="checkbox"></input>
-        <span className="checkmark"></span>
-      </label>
-      <label className="container">
-        age
-        <input type="checkbox"></input>
-        <span className="checkmark"></span>
-      </label>
-      <label className="container">
-        gender
-        <input type="checkbox"></input>
-        <span className="checkmark"></span>
-      </label>
-      <label className="container">
-        sex
-        <input type="checkbox"></input>
-        <span className="checkmark"></span>
-      </label>
-      <label className="container">
-        date_created
-        <input type="checkbox"></input>
-        <span className="checkmark"></span>
-      </label>
-      <label className="container">
-        is_admin
-        <input type="checkbox"></input>
-        <span className="checkmark"></span>
-      </label>
-      <label className="container">
-        date_of_birth
-        <input type="checkbox"></input>
-        <span className="checkmark"></span>
-      </label> */}
       <p style={{ fontSize: 24 }}> Filters: </p>
       //support multiple filters with and/or
       <br></br>
@@ -172,7 +142,8 @@ export function DashboardAdmin(props) {
                           value={queryRows[idx].field}
                           data-idx={idx}
                           onChange={handleChange}
-                          className="field"
+                          data-type={"field"}
+                          className="text-center"
                         >
                           {filterFields.map((filter, i) => (
                             <option
@@ -192,7 +163,8 @@ export function DashboardAdmin(props) {
                           value={queryRows[idx].oper}
                           data-idx={idx}
                           onChange={handleChange}
-                          className="oper"
+                          data-type={"oper"}
+                          className="text-center"
                         >
                           <option value=""></option>
                           <option value="=">=</option>
@@ -212,7 +184,8 @@ export function DashboardAdmin(props) {
                           value={queryRows[idx].value}
                           data-idx={idx}
                           onChange={handleChange}
-                          className="value"
+                          data-type={"value"}
+                          className="text-center"
                           style={{ height: 28, width: 150, opacity: 1 }}
                         />
                       </td>
@@ -293,9 +266,9 @@ export function DashboardAdmin(props) {
   );
 }
 
-function buildQuery(filters, table) {
+function buildQuery(filters, table, selectedCols) {
   const conditions = [];
-  let query = `SELECT * FROM ${table} WHERE `;
+  let query = `SELECT ${selectedCols} FROM ${table} WHERE `;
   filters.forEach(filter => {
     const field = filter.field;
     const oper = filter.oper;
