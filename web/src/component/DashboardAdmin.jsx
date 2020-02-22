@@ -6,33 +6,57 @@ import "../css/DashboardAdmin.scss";
 
 export function DashboardAdmin(props) {
   const query = { field: "", oper: "", value: "" };
-  const [rows, setRows] = useState([{ ...query }]);
-  const [result, setResult] = useState({ columns: [], data: [] });
+  const [queryRows, setQueryRows] = useState([{ ...query }]);
+  const [result, setResult] = useState({ table: "", columns: [], data: [] });
   const [filterFields, setFilterFields] = useState([]);
+  const [outputQuery, setOutputQuery] = useState("");
+  const [displayColumns, setDisplayColumns] = useState({});
 
   const addRow = () => {
-    setRows([...rows, { ...query }]);
+    setQueryRows([...queryRows, { ...query }]);
   };
 
   const handleChange = e => {
-    const newRows = [...rows];
+    const newRows = [...queryRows];
     newRows[e.target.dataset.idx][e.target.className] = e.target.value;
-    setRows(newRows);
+    setQueryRows(newRows);
   };
 
   const removeRow = id => {
-    const rowX = [...rows];
+    const rowX = [...queryRows];
     rowX.splice(id, 1);
-    setRows(rowX);
+    setQueryRows(rowX);
   };
 
   const refreshResultTable = e => {
     const tableData = tables[e.target.value];
-    setResult({ columns: tableData.columns, data: tableData.mockData });
+    setResult({
+      table: tableData.table,
+      columns: tableData.columns,
+      data: tableData.mockData
+    });
     const filters = [...tableData.columns];
-    filters.unshift("unselected");
+    filters.unshift("");
     setFilterFields(filters);
-    setRows([query]);
+    setQueryRows([query]);
+    setOutputQuery("");
+    const displayCols = { selectAll: false };
+    tableData.columns.forEach(col => {
+      displayCols[col] = false;
+    });
+    setDisplayColumns(displayCols);
+  };
+
+  const executeQuery = () => {
+    console.log(queryRows);
+    let query = buildQuery(queryRows, result.table);
+    setOutputQuery(query);
+  };
+
+  const displayColumnChecked = e => {
+    const dc = { ...displayColumns };
+    dc[e.target.value] = !dc[e.target.value];
+    setDisplayColumns(dc);
   };
 
   return (
@@ -41,7 +65,7 @@ export function DashboardAdmin(props) {
       <p style={{ fontSize: 24 }}> Table: </p>
       <div className="select-style">
         <select onChange={refreshResultTable}>
-          <option value="unselected"></option>
+          <option value=""></option>
           <option value="user">User</option>
           <option value="sessiontype">SessionType</option>
           <option value="session">Session</option>
@@ -64,6 +88,19 @@ export function DashboardAdmin(props) {
       survey_type, answer) */
       <p style={{ fontSize: 24 }}> Display Columns: </p>
       //Column options dependent on Table selection
+      <br></br>
+      {Object.keys(displayColumns).map((item, index) => (
+        <label key={index} className="container">
+          {item}
+          <input
+            type="checkbox"
+            value={item}
+            checked={displayColumns[item]}
+            onChange={displayColumnChecked}
+          />
+          <span className="checkmark" />
+        </label>
+      ))}
       {/* <label className="container">
         id
         <input type="checkbox"></input>
@@ -121,7 +158,7 @@ export function DashboardAdmin(props) {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((item, idx) => {
+                {queryRows.map((item, idx) => {
                   const fieldID = "field_" + idx;
                   const operID = "oper_" + idx;
                   const valueID = "value_" + idx;
@@ -132,7 +169,7 @@ export function DashboardAdmin(props) {
                         <select
                           id={fieldID}
                           name={fieldID}
-                          value={rows[idx].field}
+                          value={queryRows[idx].field}
                           data-idx={idx}
                           onChange={handleChange}
                           className="field"
@@ -143,7 +180,7 @@ export function DashboardAdmin(props) {
                               value={filter}
                               className="text-center"
                             >
-                              {filter === "unselected" ? "" : filter}
+                              {filter}
                             </option>
                           ))}
                         </select>
@@ -152,18 +189,18 @@ export function DashboardAdmin(props) {
                         <select
                           id={operID}
                           name={operID}
-                          value={rows[idx].oper}
+                          value={queryRows[idx].oper}
                           data-idx={idx}
                           onChange={handleChange}
                           className="oper"
                         >
-                          <option value="unselected"></option>
-                          <option value="equal">=</option>
-                          <option value="notequal">!=</option>
-                          <option value="greaterthan">&gt;</option>
-                          <option value="lessthan">&lt;</option>
-                          <option value="greaterthaninc">&gt;=</option>
-                          <option value="lessthaninc">&lt;=</option>
+                          <option value=""></option>
+                          <option value="=">=</option>
+                          <option value="!=">!=</option>
+                          <option value=">">&gt;</option>
+                          <option value="<">&lt;</option>
+                          <option value=">=">&gt;=</option>
+                          <option value="<=">&lt;=</option>
                           <option value="is">IS</option>
                         </select>
                       </td>
@@ -172,7 +209,7 @@ export function DashboardAdmin(props) {
                           id={valueID}
                           type="text"
                           name={valueID}
-                          value={rows[idx].value}
+                          value={queryRows[idx].value}
                           data-idx={idx}
                           onChange={handleChange}
                           className="value"
@@ -204,7 +241,7 @@ export function DashboardAdmin(props) {
             </button>
             <button
               onClick={() => {
-                outputQuery();
+                executeQuery();
               }}
               className="btn btn-danger float-right"
             >
@@ -218,6 +255,9 @@ export function DashboardAdmin(props) {
           </div>
         </div>
       </div>
+      <br></br>
+      <div>{outputQuery}</div>
+      <br></br>
       <div className="container">
         <div className="row clearfix">
           <div className="col-md-12 column">
@@ -251,6 +291,19 @@ export function DashboardAdmin(props) {
       </div>
     </div>
   );
+}
+
+function buildQuery(filters, table) {
+  const conditions = [];
+  let query = `SELECT * FROM ${table} WHERE `;
+  filters.forEach(filter => {
+    const field = filter.field;
+    const oper = filter.oper;
+    const value = filter.value;
+    if (field === "" || oper === "") return;
+    conditions.push(`${field} ${oper} "${value}"`);
+  });
+  return conditions.length === 0 ? "" : query + conditions.join(" and ");
 }
 
 const tables = {
