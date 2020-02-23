@@ -163,7 +163,7 @@ export function AssessmentCreator(props) {
             fontWeight={500}
             marginTop="0"
           >
-            {item}
+            {n === "Survey" ? item.title : item}
           </Paragraph>
         </div>
       );
@@ -189,11 +189,7 @@ export function AssessmentCreator(props) {
   let [videoInputs, picInputs, surInputs] = [
     createInput("Video", videos, setVideos),
     createInput("Picture", pics, setPics),
-    createInput(
-      "Survey",
-      surveys.map(s => s.title),
-      setSurveys
-    )
+    createInput("Survey", surveys, setSurveys)
   ];
 
   return (
