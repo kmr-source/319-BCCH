@@ -6,6 +6,7 @@ import { Login } from "./Login";
 import { Dashboard } from "./Dashboard";
 import { Query } from "./Query";
 import { Upload } from "./upload_component/Upload";
+import { AssessmentCreator } from "./AssessmentCreator";
 
 export function Routes(props) {
   return (
@@ -52,21 +53,23 @@ function ProtectedRoutes(props) {
 }
 
 function AdminRoutes(props) {
+  if (!props.isAdmin) {
+    return <Redirect to="/dashboard" />;
+  }
   return (
     <Switch>
-      {props.isAdmin ? (
-        <Route path="/query">
-          <Query
-            isAdmin={props.isAdmin}
-            userInfo={props.userInfo}
-            setIsLoggedIn={props.setIsLoggedIn}
-            removeCookie={props.removeCookie}
-            setUserInfo={props.setUserInfo}
-          />
-        </Route>
-      ) : (
-        <Redirect to="/dashboard" />
-      )}
+      <Route path="/query">
+        <Query
+          isAdmin={props.isAdmin}
+          userInfo={props.userInfo}
+          setIsLoggedIn={props.setIsLoggedIn}
+          removeCookie={props.removeCookie}
+          setUserInfo={props.setUserInfo}
+        />
+      </Route>
+      <Route path="/createAssessment">
+        {props.isAdmin ? <AssessmentCreator /> : <Redirect to="/dashboard" />}
+      </Route>
     </Switch>
   );
 }

@@ -53,12 +53,10 @@
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
         0 6px 20px 0 rgba(0, 0, 0, 0.19);
       background-color: white;
-      margin-top: 30px;
+      margin: 30px auto;
       color: #234361;
       font-family: $site-font-family;
       padding: 20px 25px 50px 25px;
-      margin-left: auto;
-      margin-right: auto;
 
       .session-menu-title {
         font-size: 35px;
@@ -98,12 +96,10 @@
         0 6px 20px 0 rgba(0, 0, 0, 0.19);
       background-color: white;
       font-size: 50px;
-      margin-top: 30px;
+      margin: 30px auto;
       color: #234361;
       font-family: $site-font-family;
       padding: 20px 25px 50px 25px;
-      margin-left: auto;
-      margin-right: auto;
 
       .dash-board-username {
         text-align: center;
@@ -112,6 +108,7 @@
       .dash-board-greeting {
         color: #f38020;
         font-size: 60px;
+        margin: 10px 0 0 0;
         font-family: Brush Script MT;
       }
     }
