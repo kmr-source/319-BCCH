@@ -12,55 +12,76 @@ export function Routes(props) {
   return (
     <Switch>
       <Route path="/login">
-        {props.isLoggedIn ? (
-          <Redirect to="/dashboard" />
-        ) : (
-          <Login
-            setIsLoggedIn={props.setIsLoggedIn}
-            setIsAdmin={props.setIsAdmin}
-            setCookie={props.setCookie}
-            setUserInfo={props.setUserInfo}
-          />
-        )}
+        <LoginRoute {...props} />
       </Route>
-      {props.isLoggedIn ? (
-        <ProtectedRoutes {...props} />
-      ) : (
-        <Redirect to="/login" />
-      )}
+      <ProtectedRoutes {...props} />
     </Switch>
   );
 }
 
+function LoginRoute(props) {
+  if (props.isLoggedIn) {
+    return <Redirect to="/dashboard" />;
+  }
+
+  return (
+    <Login
+      setIsLoggedIn={props.setIsLoggedIn}
+      setCookie={props.setCookie}
+      setUserInfo={props.setUserInfo}
+    />
+  );
+}
+
 function ProtectedRoutes(props) {
+  if (!props.isLoggedIn) {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <Switch>
       <Route path="/dashboard">
         <Dashboard
-          isAdmin={props.isAdmin}
           userInfo={props.userInfo}
           setIsLoggedIn={props.setIsLoggedIn}
           removeCookie={props.removeCookie}
           setUserInfo={props.setUserInfo}
         />
       </Route>
+      <PermittedRoutes {...props} />
+    </Switch>
+  );
+}
+
+function PermittedRoutes(props) {
+  const userType = props.userInfo.type;
+
+  switch (userType) {
+    case "user":
+      return <UserRoutes />;
+    case "admin":
+      return <AdminRoutes {...props} />;
+    default:
+      return <Redirect to="/login" />;
+  }
+}
+
+function UserRoutes() {
+  return (
+    <Switch>
       <Route path="/upload/:type">
         <Upload />
       </Route>
-      <AdminRoutes {...props} />
+      <UndefinedRoute />
     </Switch>
   );
 }
 
 function AdminRoutes(props) {
-  if (!props.isAdmin) {
-    return <Redirect to="/dashboard" />;
-  }
   return (
     <Switch>
       <Route path="/query">
         <Query
-          isAdmin={props.isAdmin}
           userInfo={props.userInfo}
           setIsLoggedIn={props.setIsLoggedIn}
           removeCookie={props.removeCookie}
@@ -68,8 +89,17 @@ function AdminRoutes(props) {
         />
       </Route>
       <Route path="/createAssessment">
-        {props.isAdmin ? <AssessmentCreator /> : <Redirect to="/dashboard" />}
+        <AssessmentCreator />
       </Route>
+      <UndefinedRoute />
     </Switch>
+  );
+}
+
+function UndefinedRoute() {
+  return (
+    <Route path="/">
+      <Redirect to="/dashboard" />
+    </Route>
   );
 }
