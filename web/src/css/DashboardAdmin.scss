@@ -56,12 +56,10 @@
         0 6px 20px 0 rgba(0, 0, 0, 0.19);
       background-color: white;
       font-size: 50px;
-      margin-top: 30px;
+      margin: 30px auto;
       color: #234361;
       font-family: $site-font-family;
-      padding: 20px 25px 50px 25px;
-      margin-left: auto;
-      margin-right: auto;
+      padding: 20px 25px;
 
       .dash-board-username {
         text-align: center;
@@ -70,14 +68,9 @@
       .dash-board-greeting {
         color: #f38020;
         font-size: 60px;
+        margin: 10px 0 0 0;
         font-family: Brush Script MT;
       }
     }
-  }
-}
-
-@media (min-width: $breakpoint-longscreen) {
-  .real-header-group {
-    width: 1180px;
   }
 }

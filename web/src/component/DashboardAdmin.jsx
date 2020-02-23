@@ -13,7 +13,11 @@ function RunQueryIcon() {
 }
 
 function AddAssessmentIcon() {
-  return <div className="dashboard-button">Add Assessment</div>;
+  return (
+    <Link className="dashboard-button" to="/createAssessment">
+      Add Assessment
+    </Link>
+  );
 }
 
 function AddSurveyIcon() {

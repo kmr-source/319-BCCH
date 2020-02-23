@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 
 import {
   Heading,
-  Button,
   Tooltip,
   Icon,
   Position,

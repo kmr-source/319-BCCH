@@ -29,7 +29,7 @@ export interface Assessment {
     surveys: Survey[]
 }
 
-export const allSurveys: Survey[] = [
+export let allSurveys: Survey[] = [
     {
         sTitle: "Karolinska Sleepiness Scale",
         sId: "survey_a",
@@ -113,7 +113,12 @@ export const allSurveys: Survey[] = [
     }
 ];
 
-export const allAssessments = [
+export let surveyDict: Map<string, Survey> = new Map();
+surveyDict.set("survey_a", allSurveys[0]);
+surveyDict.set("survey_b", allSurveys[1]);
+surveyDict.set("survey_c", allSurveys[2]);
+
+export let allAssessments = [
     {
         title: "Selfie Rating",
         id: "type_a",

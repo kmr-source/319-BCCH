@@ -7,7 +7,7 @@ const port: number = 3000;
 let server = express();
 
 //mock up data
-import { Assessment, allAssessments } from "./AssessmentMaker";
+import { Assessment, allAssessments, allSurveys, surveyDict } from "./AssessmentMaker";
 
 // parse application/json
 server.use(require("body-parser").json());
@@ -112,10 +112,47 @@ server.get('/available', (req: any, res: any) => {
     } else {
         res.status(401).send({ error: "Invalid credentials" });
     }
-})
+});
 
-server.get('/upload', (req: any, res: any) => {
-    res.send();
+server.get('/allSurveys', (req: any, res: any) => {
+    if (req.cookies.access_token) {
+        for (const u of users) {
+            if (u.username === req.cookies.access_token && u.type === "admin") {
+                res.status(200).send(allSurveys.map(s => { return { title: s.sTitle, id: s.sId } }));
+                return;
+            }
+        }
+        res.status(404).send({ error: "Can't find specific user" });
+    } else {
+        res.status(401).send({ error: "Invalid credentials" });
+    }
+});
+
+let idCounter: number = 1;
+server.post('/addAssessment', (req: any, res: any) => {
+    if (req.cookies.access_token) {
+        for (const u of users) {
+            if (u.username === req.cookies.access_token && u.type === "admin") {
+                let assessForm: any = req.body;
+                let newAssess: Assessment = {
+                    title: assessForm.title,
+                    id: `survey_${idCounter}`,
+                    desc: assessForm.desc,
+                    pictures: assessForm.pictures,
+                    videos: assessForm.videos,
+                    surveys: assessForm.surveyIDs.map((id: string) => {return surveyDict.get(id)})
+                }
+                idCounter ++;
+                allAssessments.push(newAssess);
+
+                res.status(200).send({id: newAssess.id});
+                return;
+            }
+        }
+        res.status(404).send({ error: "Can't find specific user" });
+    } else {
+        res.status(401).send({ error: "Invalid credentials" });
+    }
 });
 
 // handle every other route with index.html, which will contain

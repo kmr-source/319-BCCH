@@ -11,15 +11,6 @@ import {
 import "../../css/Upload.scss";
 import "../../css/Survey.scss";
 
-/*
-export interface Question {
-    qOrder: number,
-    qDesc: string,
-    qOpts?: any,
-    qType: QuestionType
-}
-*/
-
 function InputGroup(props) {
   let question = props.que;
   let answer = props.ans;
