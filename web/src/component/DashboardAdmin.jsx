@@ -26,21 +26,14 @@ function AddSurveyIcon() {
 
 function LogOutButton(props) {
   let history = useHistory();
-  function logOut() {
-    props.setUserInfo({
-      username: "",
-      displayName: "",
-      gender: "",
-      birthdate: "",
-      type: ""
-    });
-    props.setIsLoggedIn(false);
+  function handleLogOut() {
+    props.logout();
     props.removeCookie("access_token");
     history.push("/login");
   }
 
   return (
-    <div className="negative-button" onClick={logOut}>
+    <div className="negative-button" onClick={handleLogOut}>
       Log out
     </div>
   );

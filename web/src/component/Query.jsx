@@ -4,7 +4,7 @@ import React, { useState } from "react";
 // import css
 import "../css/Query.scss";
 
-export function Query(props) {
+export function Query() {
   const query = { field: "", oper: "", value: "" };
   const [queryRows, setQueryRows] = useState([{ ...query }]);
   const [result, setResult] = useState({ table: "", columns: [], data: [] });

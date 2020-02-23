@@ -13,6 +13,7 @@ export function Dashboard(props) {
     case "admin":
       return <DashboardAdmin {...props} />;
     default:
+      props.logout();
       return <Redirect to="/login" />;
   }
 }
