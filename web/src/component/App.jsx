@@ -41,27 +41,42 @@ export function App() {
     fetchUser();
   }, []);
 
+  function login(userInfo) {
+    setUserInfo(userInfo);
+    setIsLoggedIn(true);
+  }
+
+  function logout() {
+    setUserInfo({
+      username: "",
+      displayName: "",
+      gender: "",
+      birthdate: "",
+      type: ""
+    });
+    setIsLoggedIn(false);
+  }
+
   return (
     <div className="component-app">
       <CookiesProvider>
         <Router>
           <Header
             isLoggedIn={isLoggedIn}
-            setIsLoggedIn={setIsLoggedIn}
             userInfo={userInfo}
-            setUserInfo={setUserInfo}
+            logout={logout}
             removeCookie={removeCookie}
           />
           <div id="content">
             <Loading isLoading={isLoading}>
               <Routes
                 isLoggedIn={isLoggedIn}
-                setIsLoggedIn={setIsLoggedIn}
                 cookies={cookies}
                 setCookie={setCookie}
                 userInfo={userInfo}
                 removeCookie={removeCookie}
-                setUserInfo={setUserInfo}
+                login={login}
+                logout={logout}
               />
             </Loading>
           </div>

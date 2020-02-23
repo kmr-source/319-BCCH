@@ -24,17 +24,12 @@ function LoginRoute(props) {
     return <Redirect to="/dashboard" />;
   }
 
-  return (
-    <Login
-      setIsLoggedIn={props.setIsLoggedIn}
-      setCookie={props.setCookie}
-      setUserInfo={props.setUserInfo}
-    />
-  );
+  return <Login setCookie={props.setCookie} login={props.login} />;
 }
 
 function ProtectedRoutes(props) {
   if (!props.isLoggedIn) {
+    props.logout();
     return <Redirect to="/login" />;
   }
 
@@ -43,9 +38,9 @@ function ProtectedRoutes(props) {
       <Route path="/dashboard">
         <Dashboard
           userInfo={props.userInfo}
-          setIsLoggedIn={props.setIsLoggedIn}
           removeCookie={props.removeCookie}
           setUserInfo={props.setUserInfo}
+          logout={props.logout}
         />
       </Route>
       <PermittedRoutes {...props} />
@@ -62,6 +57,7 @@ function PermittedRoutes(props) {
     case "admin":
       return <AdminRoutes {...props} />;
     default:
+      props.logout();
       return <Redirect to="/login" />;
   }
 }
@@ -81,12 +77,7 @@ function AdminRoutes(props) {
   return (
     <Switch>
       <Route path="/query">
-        <Query
-          userInfo={props.userInfo}
-          setIsLoggedIn={props.setIsLoggedIn}
-          removeCookie={props.removeCookie}
-          setUserInfo={props.setUserInfo}
-        />
+        <Query />
       </Route>
       <Route path="/createAssessment">
         <AssessmentCreator />

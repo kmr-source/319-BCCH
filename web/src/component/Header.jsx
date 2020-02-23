@@ -9,14 +9,7 @@ function DropDownMenu(props) {
   const history = useHistory();
 
   function handleLogOut() {
-    props.setUserInfo({
-      username: "",
-      displayName: "",
-      gender: "",
-      birthdate: "",
-      type: ""
-    });
-    props.setIsLoggedIn(false);
+    props.logout();
     props.removeCookie("access_token");
     history.push("/login");
   }
