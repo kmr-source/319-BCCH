@@ -140,12 +140,12 @@ server.post('/addAssessment', (req: any, res: any) => {
                     desc: assessForm.desc,
                     pictures: assessForm.pictures,
                     videos: assessForm.videos,
-                    surveys: assessForm.surveyIDs.map((id: string) => {return surveyDict.get(id)})
+                    surveys: assessForm.surveyIDs.map((id: string) => { return surveyDict.get(id) })
                 }
-                idCounter ++;
+                idCounter++;
                 allAssessments.push(newAssess);
 
-                res.status(200).send({id: newAssess.id});
+                res.status(200).send({ id: newAssess.id });
                 return;
             }
         }

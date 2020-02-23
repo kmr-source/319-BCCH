@@ -13,7 +13,6 @@ import "../css/App.scss";
 
 export function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [userInfo, setUserInfo] = useState({
     username: "",
     displayName: "",
@@ -29,7 +28,6 @@ export function App() {
       const res = await axios.get(`/userInfo`);
       const user = res.data;
       setUserInfo(user);
-      setIsAdmin(user.type === "admin");
       setIsLoggedIn(true);
       setIsLoading(false);
     } catch (e) {
@@ -58,9 +56,7 @@ export function App() {
             <Loading isLoading={isLoading}>
               <Routes
                 isLoggedIn={isLoggedIn}
-                isAdmin={isAdmin}
                 setIsLoggedIn={setIsLoggedIn}
-                setIsAdmin={setIsAdmin}
                 cookies={cookies}
                 setCookie={setCookie}
                 userInfo={userInfo}

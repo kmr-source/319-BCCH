@@ -84,10 +84,8 @@ export function Login(props) {
     try {
       const res = await axios.post(`/login`, userQuery);
       const user = res.data;
-      const isAdmin = user.type === "admin";
       const token = user.username;
       props.setUserInfo(user);
-      props.setIsAdmin(isAdmin);
       props.setIsLoggedIn(true);
       props.setCookie("access_token", token);
       history.push("/dashboard");
