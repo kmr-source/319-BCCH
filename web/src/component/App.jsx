@@ -27,11 +27,10 @@ export function App() {
     try {
       const res = await axios.get(`/userInfo`);
       const user = res.data;
-      setUserInfo(user);
-      setIsLoggedIn(true);
+      login(user);
       setIsLoading(false);
     } catch (e) {
-      setIsLoggedIn(false);
+      logout();
       setIsLoading(false);
     }
   };

@@ -125,14 +125,14 @@ export function Login(props) {
           <label className={warningFieldName}>
             Username or Password is invalid
           </label>
-          <div
+          <button
             className={buttonFieldName}
             onClick={() => {
               handleLogin();
             }}
           >
             Login
-          </div>
+          </button>
         </form>
       </div>
     </div>
