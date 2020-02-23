@@ -12,6 +12,7 @@ export function Query() {
   const [outputQuery, setOutputQuery] = useState("");
   const [displayColumns, setDisplayColumns] = useState({});
   const [selectedCols, setSelectedCols] = useState([]);
+  const [showResult, setShowResult] = useState(false);
 
   const addRow = () => {
     setQueryRows([...queryRows, { ...query }]);
@@ -47,6 +48,7 @@ export function Query() {
     });
     setDisplayColumns(displayCols);
     setSelectedCols([]);
+    setShowResult(false);
   };
 
   const executeQuery = () => {
@@ -56,6 +58,7 @@ export function Query() {
         : selectedCols.join(", ");
     let query = buildQuery(queryRows, result.table, selected);
     setOutputQuery(query);
+    setShowResult(true);
   };
 
   const displayColumnChecked = e => {
@@ -248,15 +251,19 @@ export function Query() {
                 </tr>
               </thead>
               <tbody>
-                {result.data.map((item, index) => (
-                  <tr key={index}>
-                    {item.map((datum, i) => (
-                      <td key={i} className="text-center">
-                        {datum}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
+                {!showResult ? (
+                  <div></div>
+                ) : (
+                  result.data.map((item, index) => (
+                    <tr key={index}>
+                      {item.map((datum, i) => (
+                        <td key={i} className="text-center">
+                          {datum}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
