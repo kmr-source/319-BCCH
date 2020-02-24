@@ -127,6 +127,7 @@ export function Login(props) {
           </label>
           <button
             className={buttonFieldName}
+            type="button"
             onClick={() => {
               handleLogin();
             }}
