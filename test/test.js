@@ -8,7 +8,8 @@ describe('DefaultTest', () => {
         await driver.get('http://localhost:3000/');
         await driver.wait(until.elementLocated(By.name('username')));
         await driver.findElement(By.name('username')).sendKeys('lang');
-        await driver.findElement(By.name('password')).sendKeys('123', Key.ENTER);
+        await driver.findElement(By.name('password')).sendKeys('123');
+        await driver.findElement(By.css('.login-button')).click();
         await driver.wait(until.elementLocated(By.css('.dash-board-greeting')));
         const username = await driver.findElement(By.css('.dash-board-username')).getAttribute('textContent');
 
@@ -35,7 +36,8 @@ describe('DefaultTest', () => {
     it('should login as admin and check first button', async () => {
         await driver.get('http://localhost:3000/');
         await driver.findElement(By.name('username')).sendKeys('admin');
-        await driver.findElement(By.name('password')).sendKeys('admin', Key.ENTER);
+        await driver.findElement(By.name('password')).sendKeys('admin');
+        await driver.findElement(By.css('.login-button')).click();
         await driver.wait(until.elementLocated(By.css('.dashboard-button')));
         const username = await driver.findElement(By.css('.dashboard-button')).getAttribute('textContent');
 
