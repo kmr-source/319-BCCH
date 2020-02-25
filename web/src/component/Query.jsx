@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-// import queryfile from "../../public/query.csv";
+import { Heading } from "evergreen-ui";
+import { useHistory } from "react-router-dom";
 
 // import css
 import "../css/Query.scss";
@@ -13,6 +14,7 @@ export function Query() {
   const [displayColumns, setDisplayColumns] = useState({});
   const [selectedCols, setSelectedCols] = useState([]);
   const [showResult, setShowResult] = useState(false);
+  let history = useHistory();
 
   const addRow = () => {
     setQueryRows([...queryRows, { ...query }]);
@@ -84,8 +86,10 @@ export function Query() {
 
   return (
     <div id="query-container">
-      <p style={{ fontSize: 28 }}> Query Data: </p>
-      <p style={{ fontSize: 24 }}> Table: </p>
+      <Heading size={700} marginTop="20px">
+        Query Data
+      </Heading>
+      <div className="create-label">Select a table:</div>
       <div className="select-style">
         <select onChange={refreshResultTable}>
           <option value=""></option>
@@ -99,142 +103,173 @@ export function Query() {
           <option value="surveyanswer">SurveyAnswer</option>
         </select>
       </div>
-      <br></br>
-      <p style={{ fontSize: 24 }}> Display Columns: </p>
-      <br></br>
-      {Object.keys(displayColumns).map((item, index) => (
-        <label key={index} className="container">
-          {item}
-          <input
-            type="checkbox"
-            value={item}
-            checked={displayColumns[item]}
-            onChange={displayColumnChecked}
-          />
-          <span className="checkmark" />
-        </label>
-      ))}
-      <p style={{ fontSize: 24 }}> Filters: </p>
-      //support multiple filters with and/or
-      <br></br>
-      <div className="container">
-        <div className="row clearfix">
-          <div className="col-md-12 column">
-            <table className="table table-bordered table-hover" id="tab_logic">
-              <thead>
-                <tr>
-                  <th className="text-center"> </th>
-                  <th className="text-center"> Field </th>
-                  <th className="text-center"> Operator </th>
-                  <th className="text-center"> Value </th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {queryRows.map((item, idx) => {
-                  const fieldID = "field_" + idx;
-                  const operID = "oper_" + idx;
-                  const valueID = "value_" + idx;
-                  return (
-                    <tr id="addr0" key={idx}>
-                      <td></td>
-                      <td>
-                        <select
-                          id={fieldID}
-                          name={fieldID}
-                          value={queryRows[idx].field}
-                          data-idx={idx}
-                          onChange={handleChange}
-                          data-type={"field"}
-                          className="text-center"
-                        >
-                          {filterFields.map((filter, i) => (
-                            <option
-                              key={i}
-                              value={filter}
-                              className="text-center"
-                            >
-                              {filter}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <select
-                          id={operID}
-                          name={operID}
-                          value={queryRows[idx].oper}
-                          data-idx={idx}
-                          onChange={handleChange}
-                          data-type={"oper"}
-                          className="text-center"
-                        >
-                          <option value=""></option>
-                          <option value="=">=</option>
-                          <option value="!=">!=</option>
-                          <option value=">">&gt;</option>
-                          <option value="<">&lt;</option>
-                          <option value=">=">&gt;=</option>
-                          <option value="<=">&lt;=</option>
-                          <option value="is">IS</option>
-                        </select>
-                      </td>
-                      <td>
-                        <input
-                          id={valueID}
-                          type="text"
-                          name={valueID}
-                          value={queryRows[idx].value}
-                          data-idx={idx}
-                          onChange={handleChange}
-                          data-type={"value"}
-                          className="text-center"
-                          style={{ height: 28, width: 150, opacity: 1 }}
-                        />
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-outline-danger btn-sm"
-                          onClick={() => {
-                            removeRow(idx);
-                          }}
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            <button
-              onClick={() => {
-                addRow();
-              }}
-              className="btn btn-primary"
-            >
-              Add Filter
-            </button>
-            <button
-              onClick={() => {
-                executeQuery();
-              }}
-              className="btn btn-danger float-right"
-            >
-              Execute Query
-            </button>
-            <div className="btn btn-danger float-right">
-              <a href={"queryfile"} download style={{ color: "#ffffff" }}>
-                Export Query
-              </a>
+      <div className="display-column-section">
+        <div
+          className="create-label"
+          style={{
+            display: Object.keys(displayColumns).length === 0 ? "none" : "block"
+          }}
+        >
+          Display Columns:
+        </div>
+        <div className="display-column">
+          {Object.keys(displayColumns).map((item, index) => (
+            <label key={index} className="container">
+              {item}
+              <input
+                type="checkbox"
+                value={item}
+                checked={displayColumns[item]}
+                onChange={displayColumnChecked}
+              />
+              <span className="checkmark" />
+            </label>
+          ))}
+        </div>
+      </div>
+      <div
+        className="filter-section"
+        style={{
+          display: Object.keys(displayColumns).length === 0 ? "none" : "block"
+        }}
+      >
+        <div className="create-label"> Filters: </div>
+        <div className="container">
+          <div className="row clearfix">
+            <div className="col-md-12 column">
+              <table
+                className="table table-bordered table-hover"
+                id="tab_logic"
+              >
+                <thead>
+                  <tr>
+                    <th className="text-center"> </th>
+                    <th className="text-center"> Field </th>
+                    <th className="text-center"> Operator </th>
+                    <th className="text-center"> Value </th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {queryRows.map((item, idx) => {
+                    const fieldID = "field_" + idx;
+                    const operID = "oper_" + idx;
+                    const valueID = "value_" + idx;
+                    return (
+                      <tr id="addr0" key={idx}>
+                        <td></td>
+                        <td>
+                          <select
+                            id={fieldID}
+                            name={fieldID}
+                            value={queryRows[idx].field}
+                            data-idx={idx}
+                            onChange={handleChange}
+                            data-type={"field"}
+                            className="text-center"
+                          >
+                            {filterFields.map((filter, i) => (
+                              <option
+                                key={i}
+                                value={filter}
+                                className="text-center"
+                              >
+                                {filter}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td>
+                          <select
+                            id={operID}
+                            name={operID}
+                            value={queryRows[idx].oper}
+                            data-idx={idx}
+                            onChange={handleChange}
+                            data-type={"oper"}
+                            className="text-center"
+                          >
+                            <option value=""></option>
+                            <option value="=">=</option>
+                            <option value="!=">!=</option>
+                            <option value=">">&gt;</option>
+                            <option value="<">&lt;</option>
+                            <option value=">=">&gt;=</option>
+                            <option value="<=">&lt;=</option>
+                            <option value="is">IS</option>
+                          </select>
+                        </td>
+                        <td>
+                          <input
+                            id={valueID}
+                            type="text"
+                            name={valueID}
+                            value={queryRows[idx].value}
+                            data-idx={idx}
+                            onChange={handleChange}
+                            data-type={"value"}
+                            className="text-center"
+                            style={{ height: 28, width: "100px", opacity: 1 }}
+                          />
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() => {
+                              removeRow(idx);
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <div
+                onClick={() => {
+                  addRow();
+                }}
+                className="secondary-button"
+              >
+                Add Filter
+              </div>
+
+              <div className="query-command-group">
+                <div
+                  className="execute-button"
+                  onClick={() => {
+                    executeQuery();
+                  }}
+                >
+                  Execute Query
+                </div>
+                <div className="secondary-button export-button">
+                  <a href={"queryfile"} download>
+                    Export Query
+                  </a>
+                </div>
+                <div
+                  className="secondary-button"
+                  onClick={() => {
+                    history.push("/dashboard");
+                  }}
+                >
+                  Back
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <br></br>
-      <div>{outputQuery}</div>
+      <div className="query-detail">{outputQuery}</div>
       <br></br>
-      <div className="container">
+      <div
+        className="container"
+        style={{ display: showResult ? "block" : "none" }}
+      >
         <div className="row clearfix">
           <div className="col-md-12 column">
             <table
