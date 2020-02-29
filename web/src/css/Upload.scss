@@ -187,3 +187,59 @@
     }
   }
 }
+
+@media (max-width: $breakpoint-mobile) {
+  #upload-body-section {
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+    #upload-body-main {
+      width: 100%;
+
+      .section-common {
+        .title-upload-common {
+          .css-nil {
+            margin: auto;
+          }
+        }
+        .files-container {
+          .upload-button-container {
+            width: 100%;
+
+            .upload-label {
+              width: 100%;
+            }
+          }
+          .upload-item {
+            width: 100%;
+            margin: 10px auto;
+          }
+        }
+      }
+
+      .portal-view-control {
+        height: 100%;
+      }
+      .submit-button-group {
+        display: block;
+        align-self: auto;
+
+        .primary-button {
+          width: 220px;
+          margin: 20px auto;
+          height: 50px;
+          line-height: 50px;
+          font-size: 18px;
+        }
+
+        .cancel-button {
+          width: 220px;
+          margin: 20px auto;
+          height: 50px;
+          line-height: 50px;
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}

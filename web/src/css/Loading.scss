@@ -8,8 +8,22 @@
   margin-right: auto;
 }
 
+.loading-container {
+  height: 100%;
+}
+
+.after-loading {
+  height: 100%;
+}
+
 @media (min-width: $breakpoint-longscreen) {
   .loading {
     width: 900px;
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .loading-container {
+    width: 100%;
   }
 }

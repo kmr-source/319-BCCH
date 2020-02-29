@@ -61,7 +61,7 @@ function DashUserMenu(props) {
   let [showInfo, setShowInfo] = useState(false);
 
   return (
-    <div>
+    <div className="user-dashboard-menu-main">
       <div className="left-container">
         <p className="dash-board-greeting">{checkTime()}</p>
         <div className="dash-board-username">{userInfo.displayName}</div>
@@ -84,6 +84,15 @@ function DashUserMenu(props) {
           <div className="content-container">{userInfo.gender}</div>
           <div className="field-container">Date of Birth:</div>
           <div className="content-container">{userInfo.birthdate}</div>
+
+          <div
+            className="mobile-button-close"
+            onClick={() => {
+              setShowInfo(false);
+            }}
+          >
+            Close
+          </div>
         </div>
       </SideSheet>
     </div>
@@ -104,20 +113,30 @@ function SessionMenu(props) {
     })();
   }, []);
 
-  let sessionLinks = allSessions.map(s => {
-    return (
-      <div
-        className="session-link-container"
-        key={`session-link-${s.id}`}
-        title={s.title}
-      >
-        <Link className="session-link" to={`/upload/${s.id}`}>
-          <Icon icon="caret-right"></Icon>
-          {s.title}
-        </Link>
-      </div>
-    );
-  });
+  let sessionLinks = allSessions
+    .sort((s1, s2) => {
+      if (s1.title < s2.title) {
+        return -1;
+      } else if (s1.title > s2.title) {
+        return 1;
+      } else {
+        return 0;
+      }
+    })
+    .map(s => {
+      return (
+        <div
+          className="session-link-container"
+          key={`session-link-${s.id}`}
+          title={s.title}
+        >
+          <Link className="session-link" to={`/upload/${s.id}`}>
+            <Icon icon="caret-right"></Icon>
+            {s.title}
+          </Link>
+        </div>
+      );
+    });
 
   return (
     <div className="session-menu-container">
@@ -141,10 +160,16 @@ export function DashboardUser(props) {
   return (
     <div id="dash-board-user-container">
       <div id="dash-board-user-main">
-        <div style={{ display: curView === "menu" ? "block" : "none" }}>
+        <div
+          className="user-dashboard-switch-container"
+          style={{ display: curView === "menu" ? "block" : "none" }}
+        >
           <DashUserMenu {...props} setCurView={setCurView} />
         </div>
-        <div style={{ display: curView === "session" ? "block" : "none" }}>
+        <div
+          className="user-dashboard-switch-container"
+          style={{ display: curView === "session" ? "block" : "none" }}
+        >
           <SessionMenu {...props} setCurView={setCurView} />
         </div>
       </div>
