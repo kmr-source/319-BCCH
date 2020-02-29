@@ -54,7 +54,10 @@ function buildMediaSection(updateInfoObj) {
 
   if (!updateInfoObj.status) {
     objIcons.push(
-      <div key={`upload-place-holder-${updateInfoObj.type}`}>
+      <div
+        className="upload-button-container"
+        key={`upload-place-holder-${updateInfoObj.type}`}
+      >
         <input
           type="file"
           name={`${updateInfoObj.type}-upload`}
@@ -63,7 +66,10 @@ function buildMediaSection(updateInfoObj) {
           multiple="multiple"
           onChange={uploadHandler(updateInfoObj)}
         />
-        <label htmlFor={`${updateInfoObj.type}-upload`}>
+        <label
+          className="upload-label"
+          htmlFor={`${updateInfoObj.type}-upload`}
+        >
           {uploadPlaceHolder}
         </label>
       </div>
@@ -147,10 +153,9 @@ function buildCommonSection(updateInfoObj, title, items, blockDisplayStyle) {
             paddingY="6px"
             paddingX="4px"
             height="28px"
-            width="70px"
             fontSize="20px"
           >
-            DONE
+            DONE √
           </Badge>
         ) : (
           ""

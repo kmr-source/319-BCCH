@@ -1,3 +1,5 @@
+@import "Constants";
+
 .login-page {
   height: 100%;
 
@@ -169,6 +171,32 @@
 
         &.failed {
           margin: 0px auto;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .login-page {
+    .login-content {
+      width: 100%;
+      padding: 0;
+
+      .login-form {
+        padding-top: 5%;
+        width: 100%;
+        margin: 0;
+        height: 100%;
+
+        .form-title {
+          margin: 0;
+          font-size: 45px;
+          padding: 15px 30px;
+        }
+
+        .login-button {
+          width: 80%;
         }
       }
     }

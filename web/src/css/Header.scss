@@ -40,3 +40,20 @@
     }
   }
 }
+
+@media (max-width: $breakpoint-mobile) {
+  #header {
+    .real-header-group {
+      width: 100%;
+      margin: 0;
+
+      #logo {
+        margin: 0 auto;
+      }
+
+      #user-buttons-group {
+        display: none;
+      }
+    }
+  }
+}

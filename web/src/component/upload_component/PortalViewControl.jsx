@@ -37,7 +37,7 @@ export function PortalViewControl(props) {
   }
 
   return (
-    <div>
+    <div className="portal-view-control">
       <div style={setView("portal")}>
         <MainPortal
           data={sessionData}
