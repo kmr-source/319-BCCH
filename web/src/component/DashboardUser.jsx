@@ -105,7 +105,7 @@ function SessionMenu(props) {
   useEffect(() => {
     (async () => {
       try {
-        let res = await axios.get("/available");
+        let res = await axios.get("/assessment/all");
         setAllSessions(res.data);
       } catch (e) {
         toaster.danger(e.message);
