@@ -1,9 +1,9 @@
 
 import {Request, Response} from "express";
 
-class Controller {
-    request: Request
-    response: Response
+export class Controller {
+    protected request: Request
+    protected response: Response
     
     constructor(req: Request, res: Response) {
         this.request = req;

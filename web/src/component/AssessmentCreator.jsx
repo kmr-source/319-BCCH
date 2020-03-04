@@ -111,7 +111,7 @@ export function AssessmentCreator(props) {
   useEffect(() => {
     (async () => {
       try {
-        let res = await axios("/allSurveys");
+        let res = await axios("/suvrey/all");
         setSurveyOptions(res.data);
         setFetching(false);
       } catch (e) {
@@ -132,7 +132,7 @@ export function AssessmentCreator(props) {
     };
 
     try {
-      let res = await axios.post("/addAssessment", sendForm);
+      let res = await axios.post("/assessment/add", sendForm);
       toaster.success(`Added assessment with id ${res.data.id}`);
       setConfDialState({ isLoading: false, isShown: false });
     } catch (e) {
