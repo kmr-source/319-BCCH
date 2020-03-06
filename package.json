@@ -6,7 +6,7 @@
     "url": "https://gitlab.com/cpsc319-2019w2/bc-childrens-hospital/futurestars/319-bcch.git"
   },
   "description": "A web based application POC for the collection, storage and analysis of patient data",
-  "main": "index.js",
+  "main": "server/src/App.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:ui": "mocha test --timeout 10000",
