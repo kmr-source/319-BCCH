@@ -1,4 +1,4 @@
-import { SurveyTemplate, SurveyQuestion } from "./ISurveyTemplate";
+import { SurveyTemplate, SurveyQuestion, SurveyTitle } from "./ISurveyTemplate";
 import * as mysql from "mysql";
 import { DBConnection } from "../DBConnection";
 
@@ -29,13 +29,19 @@ export class SurveyTemplateImpl implements SurveyTemplate {
         this._questions = questions;
     }
 
-    private static async getAllQuestions(ids: number[]): Promise<Map<number ,SurveyQuestion[]>> {
+    private static async getAllQuestions(ids?: number[]): Promise<Map<number, SurveyQuestion[]>> {
         let db = DBConnection.getInstance();
-        let query = "SELECT * FROM SurveyQuestion WHERE temp_id=" + mysql.escape(ids[0]);
-        for (let i = 1; i < ids.length; i++) {
-            query += " OR temp_id=" + mysql.escape(ids[i]);
+        let query = undefined;
+        if (ids) {
+            query = "SELECT * FROM SurveyQuestion WHERE temp_id=" + mysql.escape(ids[0]);
+            for (let i = 1; i < ids.length; i++) {
+                query += " OR temp_id=" + mysql.escape(ids[i]);
+            }
+            query += " ORDER BY temp_id, q_number";
+        } else {
+            query = "SELECT * FROM SurveyQuestion";
         }
-        query += " ORDER BY temp_id, q_number";
+
         let allQuestions = await db.send(query);
 
         let finalResult = new Map();
@@ -57,9 +63,45 @@ export class SurveyTemplateImpl implements SurveyTemplate {
         for (let i = 1; i < ids.length; i++) {
             query += " OR id=" + mysql.escape(ids[i]);
         }
-        let allSurveys = await db.send(query);
-        let allQuestions: Map<number, SurveyQuestion[]> = await SurveyTemplateImpl.getAllQuestions(ids);
 
+        let res = await Promise.all([db.send(query), SurveyTemplateImpl.getAllQuestions(ids)])
+
+        let allSurveys = res[0];
+        let allQuestions: Map<number, SurveyQuestion[]> = res[1];
+
+        let result = [];
+        for (let s of allSurveys) {
+            let allQues: SurveyQuestion[] = allQuestions.get(s.id);
+            result.push(
+                new SurveyTemplateImpl(
+                    s.id,
+                    s.name,
+                    s.instruction,
+                    s.is_archived,
+                    allQues
+                ));
+        }
+
+        return result;
+    }
+
+    static async getAllNames(): Promise<SurveyTitle[]> {
+        let db = DBConnection.getInstance();
+        let res = await db.send("SELECT * FROM SurveyTemplate");
+
+        return res.map((sur: any) => { return { name: sur.name, id: sur.id } });
+    }
+
+    static async getAll(): Promise<SurveyTemplate[]> {
+        let db = DBConnection.getInstance();
+        let query = "SELECT * FROM SurveyTemplate";
+
+        let res = await Promise.all([db.send(query), SurveyTemplateImpl.getAllQuestions()]);
+
+        let allSurveys = res[0];
+        let allQuestions: Map<number, SurveyQuestion[]> = res[1];
+        console.log(allSurveys);
+        console.log(allQuestions);
         let result = [];
         for (let s of allSurveys) {
             let allQues: SurveyQuestion[] = allQuestions.get(s.id);
