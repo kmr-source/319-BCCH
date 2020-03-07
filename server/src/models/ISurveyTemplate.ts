@@ -8,6 +8,11 @@ export interface SurveyTemplate {
     questions: SurveyQuestion[];
 }
 
+export interface SurveyTitle {
+    id: number;
+    name: string;
+}
+
 export enum QuestionType {
     FILL = 1,
     FILL_TIME = 2,
