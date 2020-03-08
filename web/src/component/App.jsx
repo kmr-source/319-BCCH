@@ -46,6 +46,9 @@ export function App() {
   }
 
   function logout() {
+    if (typeof cookies["access_token"] === "string") {
+      axios.post("/logout");
+    }
     setUserInfo({
       username: "",
       displayName: "",

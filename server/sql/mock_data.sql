@@ -1,9 +1,9 @@
 USE BCCH_FUTURE_STAR;
 
 /* USER */
-INSERT INTO `User` VALUES (1, 'raymond', "Raymond C", '123', 10, 'MALE', 'MALE', 1583111154000, '1997/01/09', 0);
-INSERT INTO `User` VALUES (2, 'lang', "Lang C", '123', 15, 'MALE', 'MALE', 1583111154000, '9999/12/31', 0);
-INSERT INTO `User` VALUES (3, 'admin', "Admin A", 'admin', 0, 'N/A', 'N/A', 1583111154000, '9999/12/31', 1);
+INSERT INTO `User` VALUES (1, 'raymond', "Raymond C", '00b677afc83232cc2fe7f706dac6dd1fbfc4495da59882703d4cd4750d3c7e72', 10, 'MALE', 'MALE', 1583111154000, '1997/01/09', 0);
+INSERT INTO `User` VALUES (2, 'lang', "Lang C", '00b677afc83232cc2fe7f706dac6dd1fbfc4495da59882703d4cd4750d3c7e72', 15, 'MALE', 'MALE', 1583111154000, '9999/12/31', 0);
+INSERT INTO `User` VALUES (3, 'admin', "Admin A", 'd78aa3e4c059b78952030990b807adc5c2473de62ca992ed55fda758abaa0cc4', 0, 'N/A', 'N/A', 1583111154000, '9999/12/31', 1);
 
 /* ASSESSMENT TEMPLATE */
 INSERT INTO `AssessmentTemplate` VALUES (1, 'Selfie Rating', 'In this session, participants will take a selfie of themselves and rate how tired they are on the Karolinska scale', 0, 1, 1, 1583111154000, 0);

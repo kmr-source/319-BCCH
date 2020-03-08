@@ -84,7 +84,7 @@ export function Login(props) {
     try {
       const res = await axios.post(`/login`, userQuery);
       const user = res.data;
-      const token = user.username;
+      const token = user.token;
       props.login(user);
       props.setCookie("access_token", token);
       history.push("/dashboard");

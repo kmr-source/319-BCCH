@@ -40,12 +40,12 @@ export class UserImpl implements User {
         let user = undefined;
         if (u) {
             user = new UserImpl(
-                u.username,
-                u.displayName,
+                u.name,
+                u.display_name,
                 u.gender,
-                u.birthdate,
-                u.password,
-                u.type,
+                u.date_of_birth,
+                u.hash_pass,
+                (u.is_admin === 1 ? "admin" : "user"),
                 u.age
             );
         }
@@ -61,7 +61,7 @@ export class UserImpl implements User {
 
     static async getByName(uName: string): Promise<User | undefined> {
         let db = DBConnection.getInstance();
-        let result: any[] = await db.send("SELECT * FROM User WHERE username=?", [uName]);
+        let result: any[] = await db.send("SELECT * FROM User WHERE name=?", [uName]);
         return UserImpl.buildUser(result[0]);
     }
 
