@@ -1,66 +1,28 @@
 import { Controller } from "./Controller";
 import { User } from "../models/IUser";
-import { Request, Response } from "express";
-
-class LoginError extends Error {
-    constructor(...args: any[]) {
-        super(...args);
-    }
-}
+import { UserService } from "../services/UserService";
 
 export class AuthController extends Controller {
     protected user: User;
     protected isAdmin: boolean;
 
-    private verify() {
-        const users: User[] = [
-            {
-                username: "admin",
-                displayName: "Admin A",
-                gender: "N/A",
-                birthdate: "1970/01/01",
-                password: "admin",
-                type: "admin",
-                age: 99
-            }, {
-                username: "lang",
-                displayName: "Lang C",
-                gender: "Male",
-                birthdate: "9999/12/31",
-                password: "123",
-                type: "user",
-                age: 99
-            }, {
-                username: "raymond",
-                displayName: "Raymond Chen",
-                gender: "Male",
-                birthdate: "1997/01/09",
-                password: "123",
-                type: "user",
-                age: 99
-            },
-        ];
-
-        const cookie: string = this.request.cookies.access_token;
-        if (cookie) {
-            for (const u of users) {
-                if (u.username === cookie) {
-                    return;
-                }
-            }
+    private async verify() {
+        let cookie = this.request.cookies.access_token;
+        try {
+            let user = await (new UserService()).getUser(cookie);
+            this.isAdmin = user.type === "admin";
+        } catch {
+            this.response.status(401).send({ error: "Invalid credentials" });
         }
-
-        throw new LoginError();
     }
 
-    constructor(req: Request, res: Response) {
-        super(req, res);
+    async setup(config?: any): Promise<boolean> {
         try {
-            this.verify();
+            await this.verify();
+            return true;
         } catch (e) {
-            res.status(401).send({ error: "Not logged in yet" });
+            this.response.status(401).send({ error: "Not logged in yet" });
+            return false;
         }
     }
 }
-// const nc = new AssessmentController;
-// new AssessmentController().getAllSurveys()

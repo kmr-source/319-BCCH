@@ -1,3 +1,4 @@
+import { User } from "./models/IUser";
 
 enum QuestionType {
     SCALE = "scale",
@@ -42,7 +43,7 @@ export let allSurveys: Survey[] = [
                     "On a scale of 1 (extremely alert) to 10 (extremely sleepy), rate your sleepiness: .",
                 qType: QuestionType.SCALE,
                 qOpts: { "max": 10, "min": 1 }
-            }, 
+            },
             {
                 qOrder: 2,
                 qDesc:
@@ -155,4 +156,32 @@ export let allAssessments = [
         videos: ["Video of participant performing task switch paradigm game", "video of participant sleeping"],
         surveys: [allSurveys[2], allSurveys[0], allSurveys[1]]
     }
+];
+
+export const allUsers: User[] = [
+    {
+        username: "admin",
+        displayName: "Admin A",
+        gender: "N/A",
+        birthdate: "1970/01/01",
+        password: "admin",
+        age: 99,
+        type: "admin"
+    }, {
+        username: "lang",
+        displayName: "Lang C",
+        gender: "Male",
+        birthdate: "9999/12/31",
+        password: "123",
+        age: 99,
+        type: "user"
+    }, {
+        username: "raymond",
+        displayName: "Raymond Chen",
+        gender: "Male",
+        birthdate: "1997/01/09",
+        password: "123",
+        age: 99,
+        type: "user"
+    },
 ];
