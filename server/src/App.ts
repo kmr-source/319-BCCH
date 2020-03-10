@@ -9,7 +9,7 @@ import { LoginController } from "./controllers/LoginController";
 import { AssessmentController } from "./controllers/AssessmentController";
 import { Controller } from "./controllers/Controller";
 
-const port = process.env.PORT || 3000;
+const port: number = 3000;
 
 let server = express();
 
@@ -191,7 +191,7 @@ server.get('/userInfo', register(LoginController, c => c.userInfo()));
 server.get('/assessment/all', register(AssessmentController, c => c.getAllAssessments()));
 server.get('/assessment/:type', register(AssessmentController, c => c.getAssessment()));
 server.get('/suvrey/all', register(AssessmentController, c => c.getAllSurveys()));
-server.post('/assessment/add', register(AssessmentController, c => c.addAssessment()));
+server.post('/assessment/add', register(AssessmentController,gotg c => c.addAssessment()));
 */
 
 // handle every other route with index.html, which will contain
