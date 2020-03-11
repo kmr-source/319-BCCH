@@ -48,6 +48,14 @@ CREATE TABLE `SurveyTemplate` (
   is_archived INTEGER
 );
 
+/* Survey Question */
+/* 
+  1: Fill in the blanks(normal text)
+  2: Fill in the blanks(time) 
+  3: Multiple Choice
+  4: Scale
+  5: Large text
+*/
 CREATE TABLE `SurveyQuestion` (
   q_number INTEGER,
   temp_id INTEGER,
