@@ -39,17 +39,17 @@ INSERT INTO `SurveyTemplate` VALUES (3, "Task-Switching Paradigm", "This is a sa
   4: Scale
   5: Large text
 */
-INSERT INTO `SurveyQuestion` VALUES (1, 1, 4, "On a scale of 1 (extremely alert) to 10 (extremely sleepy), rate your sleepiness: .", "{'max': 10, 'min': 1}");
-INSERT INTO `SurveyQuestion` VALUES (2, 1, 1, "please fill out the following _____ .", "");
-INSERT INTO `SurveyQuestion` VALUES (3, 1, 5, "ell us something about yourself.", "");
+INSERT INTO `SurveyQuestion` VALUES (1, 1, 4, "On a scale of 1 (extremely alert) to 10 (extremely sleepy), rate your sleepiness: .", '{"max": 10, "min": 1}');
+INSERT INTO `SurveyQuestion` VALUES (2, 1, 1, "please fill out the following _____ .", "{}");
+INSERT INTO `SurveyQuestion` VALUES (3, 1, 5, "ell us something about yourself.", "{}");
 
-INSERT INTO `SurveyQuestion` VALUES (1, 2, 1, "In 30 seconds, how many total throws were made?  (can be unknown,otherwise must be non-negative integer)", "");
-INSERT INTO `SurveyQuestion` VALUES (2, 2, 1, "In 30 seconds, how many successful throws were made?  (must be non-negative integer)", "");
+INSERT INTO `SurveyQuestion` VALUES (1, 2, 1, "In 30 seconds, how many total throws were made?  (can be unknown, or non-negative integer)", "{}");
+INSERT INTO `SurveyQuestion` VALUES (2, 2, 1, "In 30 seconds, how many successful throws were made?  (non-negative integer)", "{}");
 
-INSERT INTO `SurveyQuestion` VALUES (1, 3, 2, "Time taken to complete single task exercise: (must be provided either in seconds orin MM:SS format)", "");
-INSERT INTO `SurveyQuestion` VALUES (2, 3, 1, "Number of incorrect answers in single task exercise: (must be non-negative integer)", "");
-INSERT INTO `SurveyQuestion` VALUES (3, 3, 2, "Time taken to complete task switching exercise: ________ (must be provide either in seconds or in MM:SS format)", "");
-INSERT INTO `SurveyQuestion` VALUES (4, 3, 1, "Number of incorrect answers in task switching exercise: _______ (must be nonnegative integer)", "");
+INSERT INTO `SurveyQuestion` VALUES (1, 3, 2, "Time taken to complete single task exercise: (in MM:SS format)", "{}");
+INSERT INTO `SurveyQuestion` VALUES (2, 3, 1, "Number of incorrect answers in single task exercise: (non-negative integer)", "{}");
+INSERT INTO `SurveyQuestion` VALUES (3, 3, 2, "Time taken to complete task switching exercise: ________ (in MM:SS format)", "{}");
+INSERT INTO `SurveyQuestion` VALUES (4, 3, 1, "Number of incorrect answers in task switching exercise: _______ (non-negative integer)", "{}");
 
 /* HasSurvey */
 INSERT INTO `HasSurvey` VALUES (1, 1);

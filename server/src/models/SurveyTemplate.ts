@@ -1,4 +1,4 @@
-import { SurveyTemplate, SurveyQuestion, SurveyTitle } from "./ISurveyTemplate";
+import { SurveyTemplate, SurveyQuestion, SurveyTitle, QuestionType } from "./ISurveyTemplate";
 import * as mysql from "mysql";
 import { DBConnection } from "../DBConnection";
 
@@ -29,6 +29,18 @@ export class SurveyTemplateImpl implements SurveyTemplate {
         this._questions = questions;
     }
 
+    private static toQuestionType(id: number) {
+        const dict = [
+            QuestionType.FILL, 
+            QuestionType.FILL_TIME, 
+            QuestionType.MULTIPLE_CHOICE, 
+            QuestionType.SCALE,
+            QuestionType.LARGE_TEXT
+        ]
+
+        return dict[id - 1];
+    }
+
     private static async getAllQuestions(ids?: number[]): Promise<Map<number, SurveyQuestion[]>> {
         let db = DBConnection.getInstance();
         let query = undefined;
@@ -50,7 +62,12 @@ export class SurveyTemplateImpl implements SurveyTemplate {
             if (!ques) {
                 ques = [];
             }
-            ques.push(rec);
+            ques.push({
+                number: rec.q_number,
+                type: SurveyTemplateImpl.toQuestionType(rec.q_type),
+                statement: rec.statement,
+                meta: JSON.parse(rec.meta)
+            });
             finalResult.set(rec.temp_id, ques);
         }
 
@@ -100,8 +117,7 @@ export class SurveyTemplateImpl implements SurveyTemplate {
 
         let allSurveys = res[0];
         let allQuestions: Map<number, SurveyQuestion[]> = res[1];
-        console.log(allSurveys);
-        console.log(allQuestions);
+
         let result = [];
         for (let s of allSurveys) {
             let allQues: SurveyQuestion[] = allQuestions.get(s.id);
