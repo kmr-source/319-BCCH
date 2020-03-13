@@ -95,7 +95,7 @@ function ScaleSlider(props) {
       <Text className="scale-text" size={500} marginLeft="5px">
         {question.qOpts.max}
       </Text>
-      <input className="scale-label" readonly="readonly" value={range} />
+      <input className="scale-label" readOnly={true} value={range} />
     </div>
   );
 }
