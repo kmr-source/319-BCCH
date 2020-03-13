@@ -53,6 +53,16 @@ function buildMediaSection(updateInfoObj) {
   });
 
   if (!updateInfoObj.status) {
+    let accept = "";
+    switch (updateInfoObj.type) {
+      case "video":
+        accept = "video/*";
+        break;
+      case "picture":
+        accept = "image/*";
+        break;
+    }
+
     objIcons.push(
       <div
         className="upload-button-container"
@@ -60,6 +70,7 @@ function buildMediaSection(updateInfoObj) {
       >
         <input
           type="file"
+          accept={accept}
           name={`${updateInfoObj.type}-upload`}
           id={`${updateInfoObj.type}-upload`}
           className="inputfile-hidden"
@@ -90,8 +101,8 @@ function buildSurveySection(updateInfoObj) {
   };
 
   let surveyIcons = updateInfoObj.surveyInfo.map((survey, idx) => {
-    let allAnswers = updateInfoObj.sessionGetter("survey");
-    let answer = allAnswers.find(a => a.sId === survey.sId);
+    const allAnswers = updateInfoObj.currentList;
+    const answer = allAnswers.find(a => a.sId === survey.sId);
     if (answer) {
       return (
         <div
@@ -185,10 +196,7 @@ function makeUploadSectionDescription(descList, type) {
 function deleteItem(updateObj, idx) {
   return () => {
     let newList = updateObj.currentList.filter((v, i) => i !== idx);
-    updateObj.sessionUpdater(updateObj.type, newList);
-    updateObj.numSetter(newList.length);
-    updateObj.listSetter(newList);
-    updateObj.statusSetter(false);
+    updateObj.sessionUpdater(newList);
   };
 }
 
@@ -200,75 +208,60 @@ function uploadHandler(updateInfoObj) {
     }
 
     files = files.slice(0, updateInfoObj.requiredNum);
-    updateInfoObj.sessionUpdater(updateInfoObj.type, files);
-    updateInfoObj.numSetter(files.length);
-    updateInfoObj.statusSetter(files.length === updateInfoObj.requiredNum);
-    updateInfoObj.listSetter(files);
+    updateInfoObj.sessionUpdater(files);
   };
 }
 
 export function VideoSection(props) {
-  let videoInfo = props.sessionData.videos;
-  let requiredNum = videoInfo.length;
+  const videoInfo = props.sessionData.videos;
+  const requiredNum = videoInfo.length;
 
-  let [videoNum, setVideoNum] = useState(0);
-  let [isComplete, setIsComplete] = useState(false);
-  let [videos, setVideos] = useState([]);
+  const videoNum = props.video.length;
+  const isComplete = videoNum === requiredNum;
 
   return buildMediaSection({
     type: "video",
     descList: videoInfo,
     requiredNum: requiredNum,
     currentNum: videoNum,
-    currentList: videos,
+    currentList: props.video,
     status: isComplete,
-    numSetter: setVideoNum,
-    statusSetter: setIsComplete,
-    listSetter: setVideos,
-    sessionUpdater: props.update
+    sessionUpdater: props.setVideo
   });
 }
 
 export function PictureSection(props) {
-  let picInfo = props.sessionData.pictures;
-  let requiredNum = picInfo.length;
+  const picInfo = props.sessionData.pictures;
+  const requiredNum = picInfo.length;
 
-  let [picNUm, setpicNUm] = useState(0);
-  let [isComplete, setIsComplete] = useState(false);
-  let [pics, setPics] = useState([]);
+  const picNum = props.picture.length;
+  const isComplete = picNum === requiredNum;
 
   return buildMediaSection({
     type: "picture",
     descList: picInfo,
     requiredNum: requiredNum,
-    currentNum: picNUm,
-    currentList: pics,
+    currentNum: picNum,
+    currentList: props.picture,
     status: isComplete,
-    numSetter: setpicNUm,
-    statusSetter: setIsComplete,
-    listSetter: setPics,
-    sessionUpdater: props.update
+    sessionUpdater: props.setPicture
   });
 }
 
 export function SurveySection(props) {
-  let surInfo = props.sessionData.surveys;
-  let [surveyNum, setSurveyNum] = useState(0);
-  let [isComplete, setIsComplete] = useState(false);
-  let [surveys, setSurveys] = useState([]);
+  const surInfo = props.sessionData.surveys;
+  const requiredNum = surInfo.length;
+
+  const surveyNum = props.survey.length;
+  const isComplete = surveyNum === requiredNum;
 
   return buildSurveySection({
     viewSwitcher: props.viewSwitcher,
-    requiredNum: surInfo.length,
+    requiredNum: requiredNum,
     descList: surInfo.map(s => s.sTitle),
     surveyInfo: surInfo,
     currentNum: surveyNum,
-    currentList: surveys,
-    status: isComplete,
-    numSetter: setSurveyNum,
-    statusSetter: setIsComplete,
-    listSetter: setSurveys,
-    sessionUpdater: props.update,
-    sessionGetter: props.getter
+    currentList: props.survey,
+    status: isComplete
   });
 }

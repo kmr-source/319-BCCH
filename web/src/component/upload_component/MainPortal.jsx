@@ -27,18 +27,15 @@ function dialogController(setConfDialState) {
 
 export function MainPortal(props) {
   let history = useHistory();
-  let [sessionData, updateSession, getSession] = [
-    props.data,
-    props.update,
-    props.get
-  ];
+  const sessionData = props.data;
+  const currSession = props.currSession;
 
-  let [confDialState, setConfDialState] = useState({
+  const [confDialState, setConfDialState] = useState({
     isShown: false,
     isLoading: false
   });
 
-  let [showGiveUp, setshowGiveUp] = useState(false);
+  const [showGiveUp, setshowGiveUp] = useState(false);
 
   let controlConfirm = dialogController(setConfDialState);
 
@@ -49,6 +46,16 @@ export function MainPortal(props) {
       controlConfirm.close();
       history.push("/dashboard");
     }, 2000);
+  }
+
+  let uploadClassName = "primary-button disabled";
+
+  if (
+    currSession.picture.length === sessionData.pictures.length &&
+    currSession.video.length === sessionData.videos.length &&
+    currSession.survey.length === sessionData.surveys.length
+  ) {
+    uploadClassName = "primary-button";
   }
 
   return (
@@ -63,22 +70,21 @@ export function MainPortal(props) {
       </div>
       <VideoSection
         sessionData={sessionData}
-        update={updateSession}
-        getter={getSession}
+        video={currSession.video}
+        setVideo={props.setVideo}
       />
       <PictureSection
         sessionData={sessionData}
-        update={updateSession}
-        getter={getSession}
+        picture={currSession.picture}
+        setPicture={props.setPicture}
       />
       <SurveySection
         sessionData={sessionData}
-        update={updateSession}
-        getter={getSession}
+        survey={currSession.survey}
         viewSwitcher={props.viewSwitcher}
       />
       <div className="submit-button-group">
-        <div className="primary-button" onClick={controlConfirm.open}>
+        <div className={uploadClassName} onClick={controlConfirm.open}>
           Upload
         </div>
         <div
