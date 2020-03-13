@@ -3,6 +3,7 @@ import { User } from "./models/IUser";
 enum QuestionType {
     SCALE = "scale",
     FILL = "fill",
+    FILL_TIME = "fill_time",
     MULTIPLE = "multiple",
     FILL_PARA = "fillPara"
 }
@@ -76,7 +77,7 @@ export let allSurveys: Survey[] = [
                 qOrder: 2,
                 qDesc:
                     "In 30 seconds, how many successful throws were made?  (must be non-negative integer)",
-                qType: QuestionType.FILL
+                qType: QuestionType.FILL_TIME
             }
         ]
     },
@@ -90,7 +91,8 @@ export let allSurveys: Survey[] = [
                 qOrder: 1,
                 qDesc:
                     "Time taken to complete single task exercise: (must be provided either in seconds orin MM:SS format)",
-                qType: QuestionType.FILL
+                qType: QuestionType.MULTIPLE,
+                qOpts: { "1": "ABC", "2": "BCD", "3": "CDF", "4": "dlsafl" }
             },
             {
                 qOrder: 2,
