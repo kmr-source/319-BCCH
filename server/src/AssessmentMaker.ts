@@ -34,7 +34,7 @@ export interface Assessment {
 export let allSurveys: Survey[] = [
     {
         sTitle: "Karolinska Sleepiness Scale",
-        sId: "survey_a",
+        sId: "1",
         sInst:
             "This is a sample instruction for researchers to ask patients to follow when performing this survey.",
         sContent: [
@@ -63,7 +63,7 @@ export let allSurveys: Survey[] = [
     },
     {
         sTitle: "Vigilance Pong Scoresheet",
-        sId: "survey_b",
+        sId: "2",
         sInst:
             "This is a sample instruction for researchers to ask patients to follow when performing this survey.",
         sContent: [
@@ -83,7 +83,7 @@ export let allSurveys: Survey[] = [
     },
     {
         sTitle: "Task-Switching Paradigm",
-        sId: "survey_c",
+        sId: "3",
         sInst:
             "This is a sample instruction for researchers to ask patients to follow when performing this survey.",
         sContent: [
@@ -117,14 +117,14 @@ export let allSurveys: Survey[] = [
 ];
 
 export let surveyDict: Map<string, Survey> = new Map();
-surveyDict.set("survey_a", allSurveys[0]);
-surveyDict.set("survey_b", allSurveys[1]);
-surveyDict.set("survey_c", allSurveys[2]);
+surveyDict.set("1", allSurveys[0]);
+surveyDict.set("2", allSurveys[1]);
+surveyDict.set("3", allSurveys[2]);
 
 export let allAssessments = [
     {
         title: "Selfie Rating",
-        id: "type_a",
+        id: "1",
         desc:
             "In this session, participants will take a selfie of themselves and rate how tired they are on the Karolinska scale",
         pictures: ["Selfie Photo"],
@@ -133,7 +133,7 @@ export let allAssessments = [
     },
     {
         title: "Vigilance Pong",
-        id: "type_b",
+        id: "2",
         desc:
             "Pong is a motor control task that can be quantitatively scored to assess performance.",
         pictures: [],
@@ -142,7 +142,7 @@ export let allAssessments = [
     },
     {
         title: "Task-Switching Paradigm",
-        id: "type_c",
+        id: "3",
         desc:
             "Task-switching is a cognitive task that requires shifting focus depending on the task at hand. Thus, comparing the speed and accuracy at a single task vs. shifting between multiple tasks assesses higher cognitive functions",
         pictures: ["sefile 1", "sefile 2", "sefile 3"],
@@ -151,7 +151,7 @@ export let allAssessments = [
     },
     {
         title: "Demo Assessment",
-        id: "type_d",
+        id: "4",
         desc:
             "This is a demo assessment",
         pictures: ["sefile 1", "pictue showing your hands", "picture showing your legs"],
@@ -162,6 +162,7 @@ export let allAssessments = [
 
 export const allUsers: User[] = [
     {
+        id: 1,
         username: "admin",
         displayName: "Admin A",
         gender: "N/A",
@@ -170,6 +171,7 @@ export const allUsers: User[] = [
         age: 99,
         type: "admin"
     }, {
+        id: 2,
         username: "lang",
         displayName: "Lang C",
         gender: "Male",
@@ -178,6 +180,7 @@ export const allUsers: User[] = [
         age: 99,
         type: "user"
     }, {
+        id: 3,
         username: "raymond",
         displayName: "Raymond Chen",
         gender: "Male",

@@ -8,6 +8,7 @@ import { AssessmentController } from "./controllers/AssessmentController";
 import { Controller } from "./controllers/Controller";
 import { AppGlobals } from "./AppGlobals";
 import { InMemorySessionManager } from "./services/InMemorySessionManager";
+import { UploadController } from "./controllers/UploadController";
 
 // DEPRECATE these dependencies are for legacy code only
 import { Assessment, allAssessments, allSurveys, surveyDict, allUsers } from "./AssessmentMaker";
@@ -116,7 +117,17 @@ function register<T extends Controller>(
  */
 server.post('/login', register(LoginController, c => c.login()));
 server.get('/userInfo', register(LoginController, c => c.userInfo()));
-server.post('/logout', register(LoginController, c => c.logout()))
+server.post('/logout', register(LoginController, c => c.logout()));
+
+
+/**
+ * Upload End points
+ */
+server.post('/upload/start/:id', register(UploadController, c => c.startUpload()));
+server.post('/upload/video/:id', register(UploadController, c => c.uploadVideo()));
+server.post('/upload/picture/:id', register(UploadController, c => c.uploadPicture()));
+server.post('/upload/survey/:id', register(UploadController, c => c.uploadSurvey()));
+server.post('/upload/end/:id', register(UploadController, c => c.endUpload()));
 
 /*
 server.get('/assessment/all', register(AssessmentController, c => c.getAllAssessments()));

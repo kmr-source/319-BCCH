@@ -45,7 +45,19 @@ export class DBConnection {
         return DBConnection.db;
     }
 
-    async send(query: string, values: any[] = []): Promise<any> {
+    async getConnection(): Promise<mysql.PoolConnection> {
+        return new Promise((resolve, reject) => {
+            this.connectionPool.getConnection((err, conn) => {
+                if (err) {
+                    reject(new Error(err.code));
+                } else {
+                    resolve(conn);
+                }
+            })
+        });
+    }
+
+    async send(query: string, values: any[] = []): Promise<any[]> {
         return new Promise((resolve, reject) => {
             this.connectionPool.query(
                 query,
@@ -60,34 +72,93 @@ export class DBConnection {
         });
     }
 
-    async withTransaction(commands: (c :mysql.PoolConnection) => Promise<mysql.PoolConnection>): Promise<any> {
-        return new Promise((res, rej) => {
-            this.connectionPool.getConnection((err, conn: mysql.PoolConnection) => {
+    async startTransaction(): Promise<Transaction> {
+        let conn: mysql.PoolConnection = await new Promise((res, rej) => {
+            this.connectionPool.getConnection((err, con) => {
                 if (err) {
-                    rej(err.code);
+                    rej(new Error(err.code));
+                } else {
+                    res(con);
                 }
-
-                res(conn);
             });
-        })
-        .then((con: mysql.PoolConnection) => {
-            return commands(con);
-        })
-        .then((connection) => {
-            return new Promise((resolve, reject) => {
-                connection.commit((err) => {
-                    if (err) {
-                        reject(err.code);
-                    }
-                    
-                    resolve();
-                });
-            });
-        })
+        });
 
+        let trans = new Transaction(conn);
+        await trans.begin();
+        return trans;
     }
 
     destroy() {
         this.connectionPool.end((err) => { });
+    }
+}
+
+export class Transaction {
+
+    private connection: mysql.PoolConnection;
+
+    constructor(conn: mysql.PoolConnection) {
+        this.connection = conn;
+    }
+
+    async begin(): Promise<boolean> {
+        return new Promise((res, rej) => {
+            this.connection.beginTransaction((err) => {
+                if (err) {
+                    this.connection.release();
+                    rej(new Error(err.code));
+                } else {
+                    res(true);
+                }
+            })
+
+        });
+    }
+
+    async send(query: string, values: any[] = []): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                query,
+                values,
+                (err: mysql.MysqlError, result: any, fields: mysql.FieldInfo[]) => {
+                    if (err) {
+                        console.log(err);
+                        this.connection.rollback(() => {
+                            console.log("rollback done");
+                            this.connection.release();
+                            reject(new Error(err.code));
+                        });
+                    } else {
+                        resolve(result);
+                    }
+                })
+        });
+    }
+
+    async commit(): Promise<boolean> {
+        return new Promise((res, rej) => {
+            this.connection.commit((err) => {
+                if (err) {
+                    console.log(err);
+                    this.connection.rollback(() => {
+                        console.log("rollback done");
+                        this.connection.release();
+                        rej(new Error(err.code));
+                    });
+                } else {
+                    this.connection.release();
+                    res(true);
+                }
+            })
+        })
+    }
+
+    async rollback(): Promise<boolean> {
+        return new Promise((res, rej) => {
+            this.connection.rollback(() => {
+                this.connection.release();
+                res(true);
+            })
+        });
     }
 }

@@ -5,3 +5,4 @@ yarn.lock
 /web/public/*.js
 /server/target/*
 */.DS_Store
+/upload_test

@@ -39,7 +39,12 @@ export function PortalViewControl(props) {
       <div style={setView("portal")}>
         <MainPortal
           data={sessionData}
-          currSession={{ video: video, picture: picture, survey: survey }}
+          currSession={{
+            id: props.sessionType,
+            video: video,
+            picture: picture,
+            survey: survey
+          }}
           setVideo={setVideo}
           setPicture={setPicture}
           viewSwitcher={switchToSurvey}

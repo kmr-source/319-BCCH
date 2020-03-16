@@ -2,6 +2,7 @@ import { User } from "./IUser";
 import { DBConnection } from "../DBConnection";
 
 export class UserImpl implements User {
+    private _id: number;
     private _username: string;
     private _displayName: string;
     private _gender: string;
@@ -11,6 +12,7 @@ export class UserImpl implements User {
     private _age: number;
 
     constructor(
+        id: number,
         username: string,
         displayName: string,
         gender: string,
@@ -19,6 +21,7 @@ export class UserImpl implements User {
         type: string,
         age: number,
     ) {
+        this._id = id;
         this._username = username;
         this._displayName = displayName;
         this._gender = gender;
@@ -28,6 +31,7 @@ export class UserImpl implements User {
         this._age = age;
     }
 
+    get id(): number { return this._id; }
     get username(): string { return this._username; }
     get displayName(): string { return this._displayName; }
     get gender(): string { return this._gender; }
@@ -40,6 +44,7 @@ export class UserImpl implements User {
         let user = undefined;
         if (u) {
             user = new UserImpl(
+                u.id,
                 u.name,
                 u.display_name,
                 u.gender,
