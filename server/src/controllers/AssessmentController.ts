@@ -1,8 +1,7 @@
 import { AuthController } from "./AuthController";
-import { AssessmentTemplate, AssessmentTitle } from "../models/IAssessmentTemplate";
-import { AssessmentTemplateImpl } from "../models/AssessmentTemplate";
 import { DBConnection } from "../DBConnection";
-
+import { SurveyTemplate } from "../models/ISurveyTemplate";
+import { AssessmentTemplate } from "../models/IAssessmentTemplate";
 
 export class AssessmentController extends AuthController {
 
@@ -31,7 +30,7 @@ export class AssessmentController extends AuthController {
     }
 
     // just send all AssesmentTemplates name and ID
-     async getAllAssessments() { 
+    async getAllAssessments() { 
         let db = DBConnection.getInstance();
 
         let req =  await db.send("SELECT From AssessmentTemplate id =?");
@@ -50,6 +49,33 @@ export class AssessmentController extends AuthController {
 
     }
 
+    async addSurvey() {
+        let db = DBConnection.getInstance();
+        let idList = await db.send("Select id From SurveyTemplate");
+        let currID = idList[0].id;
+        for (let i of idList) {
+            if (i.id > currID) {
+                currID = i.id;
+            }
+        }
+        currID ++; 
+        if (this.isAdmin) {
+            let forum = this.request.body;
+            let newSurvey: SurveyTemplate = {
+                id: currID,
+                name: forum.name,
+                inst: forum.inst,
+                isArchived: forum.isArchived,
+                questions: forum.questions,
+
+            };
+            this.response.status(200).send({id: newSurvey.id})
+        } else {
+            this.response.status(400).send({error: "Invalid credentials"})
+        }
+    
+    }
+
 
     getAllSurveys() {
 
@@ -57,7 +83,8 @@ export class AssessmentController extends AuthController {
 
     // parse body from request, 
     // create new assessment + add to database
-    addAssessment() {
+   async addAssessment() {
+
 
     }
 
