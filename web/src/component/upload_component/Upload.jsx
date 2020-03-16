@@ -39,7 +39,7 @@ export function Upload() {
       <div id="upload-body-section">
         <div id="upload-body-main">
           <Loading isLoading={isLoading}>
-            <PortalViewControl data={sessionData} />
+            <PortalViewControl data={sessionData} sessionType={type} />
           </Loading>
         </div>
       </div>
