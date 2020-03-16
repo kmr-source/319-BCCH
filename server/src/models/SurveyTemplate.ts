@@ -1,39 +1,35 @@
 import { SurveyTemplate, SurveyQuestion, SurveyTitle, QuestionType } from "./ISurveyTemplate";
 import * as mysql from "mysql";
-import { DBConnection } from "../DBConnection";
+import { AppGlobals } from "../AppGlobals";
 
 export class SurveyTemplateImpl implements SurveyTemplate {
     private _id: number;
     private _name: string;
     private _inst: string;
-    private _isArchived: boolean;
     private _questions: SurveyQuestion[];
 
     get id(): number { return this._id; }
     get name(): string { return this._name; }
     get inst(): string { return this._inst; }
-    get isArchived(): boolean { return this._isArchived; }
     get questions(): SurveyQuestion[] { return this._questions; }
 
     constructor(
         id: number,
         name: string,
         inst: string,
-        isArchived: boolean,
         questions: SurveyQuestion[]
     ) {
         this._id = id;
         this._name = name;
         this._inst = inst;
-        this._isArchived = isArchived;
         this._questions = questions;
     }
 
     private static toQuestionType(id: number) {
         const dict = [
-            QuestionType.FILL, 
-            QuestionType.FILL_TIME, 
-            QuestionType.MULTIPLE_CHOICE, 
+            QuestionType.FILL,
+            QuestionType.FILL_TIME,
+            QuestionType.MULTIPLE_CHOICE,
             QuestionType.SCALE,
             QuestionType.LARGE_TEXT
         ]
@@ -42,7 +38,7 @@ export class SurveyTemplateImpl implements SurveyTemplate {
     }
 
     private static async getAllQuestions(ids?: number[]): Promise<Map<number, SurveyQuestion[]>> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let query = undefined;
         if (ids) {
             query = "SELECT * FROM SurveyQuestion WHERE temp_id=" + mysql.escape(ids[0]);
@@ -75,7 +71,7 @@ export class SurveyTemplateImpl implements SurveyTemplate {
     }
 
     static async getByIds(ids: number[]): Promise<SurveyTemplate[]> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let query = "SELECT * FROM SurveyTemplate WHERE id=" + mysql.escape(ids[0]);
         for (let i = 1; i < ids.length; i++) {
             query += " OR id=" + mysql.escape(ids[i]);
@@ -94,7 +90,6 @@ export class SurveyTemplateImpl implements SurveyTemplate {
                     s.id,
                     s.name,
                     s.instruction,
-                    s.is_archived,
                     allQues
                 ));
         }
@@ -103,14 +98,14 @@ export class SurveyTemplateImpl implements SurveyTemplate {
     }
 
     static async getAllNames(): Promise<SurveyTitle[]> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let res = await db.send("SELECT * FROM SurveyTemplate");
 
         return res.map((sur: any) => { return { name: sur.name, id: sur.id } });
     }
 
     static async getAll(): Promise<SurveyTemplate[]> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let query = "SELECT * FROM SurveyTemplate";
 
         let res = await Promise.all([db.send(query), SurveyTemplateImpl.getAllQuestions()]);
@@ -126,11 +121,43 @@ export class SurveyTemplateImpl implements SurveyTemplate {
                     s.id,
                     s.name,
                     s.instruction,
-                    s.is_archived,
                     allQues
                 ));
         }
 
         return result;
+    }
+
+    async store(): Promise<number> {
+        let db = AppGlobals.db;
+        let query = "INSERT INTO SurveyTemplate(name, instruction, time_created) VALUES (?, ?, ?)";
+        let trans = await db.startTransaction();
+
+        await trans.send(query,
+            [
+                this._name,
+                this._inst,
+                new Date().getTime(),
+            ]);
+        let maxIDRes = await trans.send("SELECT LAST_INSERT_ID()");
+        let maxID = maxIDRes[0]["LAST_INSERT_ID()"];
+        this._id = maxID;
+
+        let queQuery = "INSERT INTO SurveyQuestion(q_number, temp_id, q_type, statement, meta) VALUES (?, ?, ?, ?, ?)";
+        let initialQue = this._questions[0];
+        let params = [initialQue.number, maxID, initialQue.type, initialQue.statement, JSON.stringify(initialQue.meta)];
+        for (let i = 1; i < this._questions.length; i++) {
+            queQuery += " ,(?, ?, ?, ?, ?)";
+            let theQ = this._questions[i];
+            params.push(theQ.number);
+            params.push(maxID);
+            params.push(theQ.type);
+            params.push(theQ.statement);
+            params.push(JSON.stringify(theQ.meta))
+        }
+
+        await trans.send(queQuery, params);
+        await trans.commit();
+        return maxID;
     }
 }

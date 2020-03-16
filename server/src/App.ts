@@ -96,6 +96,7 @@ server.post('/logout', register(LoginController, c => c.logout()));
  * Assessments and surveys
  */
 server.get('/survey/all', register(AssessmentController, c => c.getAllSurveys()));
+server.post('/survey/add', register(AssessmentController, c => c.addSurvey()));
 server.post('/assessment/add', register(AssessmentController, c => c.addAssessment()));
 server.delete('/assessment/:type', register(AssessmentController, c => c.archiveAssessment()));
 

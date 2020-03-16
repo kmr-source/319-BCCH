@@ -1,6 +1,7 @@
 import { AuthController } from "./AuthController";
 import { AssessmentTemplateImpl } from "../models/AssessmentTemplate"
 import { SurveyTemplateImpl } from "../models/SurveyTemplate"
+import { QuestionType, SurveyQuestion } from "../models/ISurveyTemplate";
 
 export class AssessmentController extends AuthController {
 
@@ -77,4 +78,67 @@ export class AssessmentController extends AuthController {
             this.response.status(401).send({ error: "Invalid credentials" });
         }
     }
+
+    private toType(t: QuestionTypeTransfer) {
+        switch (t) {
+            case QuestionTypeTransfer.SCALE:
+                return QuestionType.SCALE;
+            case QuestionTypeTransfer.FILL:
+                return QuestionType.FILL;
+            case QuestionTypeTransfer.FILL_PARA:
+                return QuestionType.LARGE_TEXT;
+            case QuestionTypeTransfer.FILL_TIME:
+                return QuestionType.FILL_TIME;
+            case QuestionTypeTransfer.MULTIPLE:
+                return QuestionType.MULTIPLE_CHOICE;
+        }
+    }
+
+    async addSurvey() {
+        if (this.isAdmin) {
+            let survey: SurveyTransfer = this.request.body;
+            let questions: SurveyQuestion[] = [];
+
+            for (let q of survey.sContent) {
+                questions.push({
+                    number: q.qOrder,
+                    type: this.toType(q.qType),
+                    statement: q.qDesc,
+                    meta: q.qOpts
+                });
+            }
+
+            let id = await new SurveyTemplateImpl(
+                undefined,
+                survey.sTitle,
+                survey.sInst,
+                questions
+            ).store();
+
+            this.response.status(200).send({ id: id });
+        } else {
+            this.response.status(401).send({ error: "Invalid credentials" });
+        }
+    }
+}
+
+enum QuestionTypeTransfer {
+    SCALE = "scale",
+    FILL = "fill",
+    FILL_TIME = "fill_time",
+    MULTIPLE = "multiple",
+    FILL_PARA = "fillPara"
+}
+
+interface QuestionTransfer {
+    qOrder: number,
+    qDesc: string,
+    qOpts: any,
+    qType: QuestionTypeTransfer
+}
+
+interface SurveyTransfer {
+    sTitle: string,
+    sInst: string,
+    sContent: QuestionTransfer[]
 }

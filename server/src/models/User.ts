@@ -1,5 +1,5 @@
 import { User } from "./IUser";
-import { DBConnection } from "../DBConnection";
+import { AppGlobals } from "../AppGlobals";
 
 export class UserImpl implements User {
     private _id: number;
@@ -59,19 +59,19 @@ export class UserImpl implements User {
     }
 
     static async getById(id: number): Promise<User | undefined> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let result: any[] = await db.send("SELECT * FROM User WHERE id=?", [id]);
         return UserImpl.buildUser(result[0]);
     }
 
     static async getByName(uName: string): Promise<User | undefined> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let result: any[] = await db.send("SELECT * FROM User WHERE name=?", [uName]);
         return UserImpl.buildUser(result[0]);
     }
 
     static async getAll(): Promise<User[]> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let result: any[] = await db.send("SELECT * FROM User", []);
         let user: User[] = [];
         for (let u of result) {

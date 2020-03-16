@@ -1,5 +1,5 @@
 import { AssessmentTemplate, AssessmentTitle } from "./IAssessmentTemplate";
-import { DBConnection } from "../DBConnection";
+import { AppGlobals } from "../AppGlobals";
 import { SurveyTemplate } from "./ISurveyTemplate"
 import { SurveyTemplateImpl } from "./SurveyTemplate";
 
@@ -41,7 +41,7 @@ export class AssessmentTemplateImpl implements AssessmentTemplate {
     }
 
     static async getById(assessmentID: number): Promise<AssessmentTemplate | undefined> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let result = await db.send("SELECT * FROM AssessmentTemplate WHERE id=? AND is_archived=0", [assessmentID]);
         let assess = undefined;
         if (result.length !== 0) {
@@ -74,7 +74,7 @@ export class AssessmentTemplateImpl implements AssessmentTemplate {
     }
 
     static async getAllTitles(): Promise<AssessmentTitle[]> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let result = await db.send("SELECT id,name FROM AssessmentTemplate");
         return result.map((r: any) => { return { name: r.name, id: r.id } });
     }
@@ -85,7 +85,7 @@ export class AssessmentTemplateImpl implements AssessmentTemplate {
     }
 
     async store(): Promise<number> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let query = "INSERT INTO AssessmentTemplate(name, description, num_videos, num_pics, num_surveys, time_created, is_archived) VALUES (?, ?, ?, ?, ?, ?, ?)";
         let trans = await db.startTransaction();
         await trans.send(query,
@@ -146,7 +146,7 @@ export class AssessmentTemplateImpl implements AssessmentTemplate {
     }
 
     static async update(id: number, isArchived: boolean): Promise<boolean> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let arChievedVal = isArchived ? 1 : 0;
 
         await db.send(

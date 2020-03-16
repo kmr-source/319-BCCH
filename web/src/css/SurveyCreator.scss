@@ -178,7 +178,7 @@
           top: 0;
         }
         .choice-statement {
-          width: 315px;
+          width: calc(100% - 25px);
           min-height: 50px;
           margin-left: 25px;
         }
