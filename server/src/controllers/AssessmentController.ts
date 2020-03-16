@@ -2,18 +2,32 @@ import { AuthController } from "./AuthController";
 import { AssessmentTemplate, AssessmentTitle } from "../models/IAssessmentTemplate";
 import { AssessmentTemplateImpl } from "../models/AssessmentTemplate";
 import { DBConnection } from "../DBConnection";
-import { rejects } from "assert";
+
 
 export class AssessmentController extends AuthController {
 
-    async getAssessment(t: any): Promise<AssessmentTemplate>{
-        // read type parameter from Request and send te corresponding assemsent to client
-        // getting it from db by ID or smt, the sent it to client, 
-        let result = AssessmentTemplateImpl.getById(t).then((read) => {
-          return read;
-        });
+    async getAssessment (t: number|string) {
+    
+        let db = DBConnection.getInstance(); 
+        let res = null;
+        if (t === "string") {
+            res = await db.send("Select From AssessmentTemplace WHERE id=? AND is_archived=1",[t]);
+        } else {
+            res = await db.send("Select From AssesmentTemplate WHERE title=? ANd is_isarchived=1",[t]);
+        }
+        let info = res.body;
+        // set up wanted for assesment.
+        let assessmentForm = {
+            title: info.name,
+            id: info.id,
+            desc: info.desc,
+            vidoes:info.vidoes,
+            pictures: info.pictures,
+            surveys: info.surveys,
         
-        return result; 
+        };
+        this.response.status(200).send(assessmentForm);
+        return; 
     }
 
     // just send all AssesmentTemplates name and ID
