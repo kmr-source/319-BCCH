@@ -8,12 +8,8 @@ export class AuthController extends Controller {
 
     private async verify() {
         let cookie = this.request.cookies.access_token;
-        try {
-            this.user = await (new UserService()).getUser(cookie);
-            this.isAdmin = this.user.type === "admin";
-        } catch {
-            this.response.status(401).send({ error: "Invalid credentials" });
-        }
+        this.user = await (new UserService()).getUser(cookie);
+        this.isAdmin = this.user.type === "admin";       
     }
 
     async setup(config?: any): Promise<boolean> {
