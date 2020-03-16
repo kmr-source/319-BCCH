@@ -32,11 +32,7 @@ export class AssessmentController extends AuthController {
 
     // just send all AssesmentTemplates name and ID
     async getAllAssessments(): Promise<AssessmentTitle[]> {
-     
-        let r = await AssessmentTemplateImpl.getAllTitles().then((result) => {
-            return result;
-        });
-        return r; 
+     let db = DBConnection.getInstance(); 
     }
 
     getAllSurveys() {
