@@ -40,7 +40,7 @@ export class AssessmentController extends AuthController {
             x = {
                name: i.name, 
                id: i.id, 
-            }
+            };
             arr.push(x);
         }
         
@@ -52,7 +52,7 @@ export class AssessmentController extends AuthController {
     async addSurvey() {
         let db = DBConnection.getInstance();
         let idList = await db.send("Select id From SurveyTemplate");
-        let currID = idList[0].id;
+        let currID: number = idList[0].id;
         for (let i of idList) {
             if (i.id > currID) {
                 currID = i.id;
