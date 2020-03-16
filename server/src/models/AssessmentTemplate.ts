@@ -84,13 +84,74 @@ export class AssessmentTemplateImpl implements AssessmentTemplate {
         return finalResult;
     }
 
-    async update(): Promise<boolean> {
+    async store(): Promise<number> {
         let db = DBConnection.getInstance();
-        let arChievedVal = this.isArchived ? 1 : 0;
+        let query = "INSERT INTO AssessmentTemplate(name, description, num_videos, num_pics, num_surveys, time_created, is_archived) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        let trans = await db.startTransaction();
+        await trans.send(query,
+            [
+                this._name,
+                this._description,
+                this._videos.length,
+                this._pictures.length,
+                this._surveyIDs.length,
+                new Date().getTime(),
+                this.isArchived
+            ]);
+        let maxIDRes = await trans.send("SELECT LAST_INSERT_ID()");
+        let maxID = maxIDRes[0]["LAST_INSERT_ID()"];
+        this._id = maxID;
+
+        if (this._videos.length !== 0) {
+            let initial = this._videos[0];
+            let vDesc = `INSERT INTO VideoDescription(temp_id, description) VALUES (?, ?)`;
+            let params = [maxID, initial];
+            for (let i = 1; i < this._videos.length; i++) {
+                vDesc += ", (?, ?)";
+                params.push(maxID);
+                params.push(this._videos[i]);
+            }
+
+            await trans.send(vDesc, params);
+        }
+
+        if (this._pictures.length !== 0) {
+            let initial = this._pictures[0];
+            let pDesc = `INSERT INTO PictureDescription(temp_id, description) VALUES (?, ?)`;
+            let params = [maxID, initial];
+            for (let i = 1; i < this._pictures.length; i++) {
+                pDesc += ", (?, ?)";
+                params.push(maxID);
+                params.push(this._pictures[i]);
+            }
+
+            await trans.send(pDesc, params);
+        }
+
+        if (this._surveyIDs.length != 0) {
+            let initial = this._surveyIDs[0];
+            let sDesc = `INSERT INTO HasSurvey(assess_temp_id, sur_temp_id) VALUES (?, ?)`;
+            let params = [maxID, initial];
+            for (let i = 1; i < this._surveyIDs.length; i++) {
+                sDesc += ", (?, ?)";
+                params.push(maxID);
+                params.push(this._surveyIDs[i]);
+            }
+
+            await trans.send(sDesc, params);
+        }
+
+        await trans.commit();
+        return maxID;
+    }
+
+    static async update(id: number, isArchived: boolean): Promise<boolean> {
+        let db = DBConnection.getInstance();
+        let arChievedVal = isArchived ? 1 : 0;
 
         await db.send(
             "UPDATE AssessmentTemplate SET is_archived=? WHERE id=?",
-            [arChievedVal, this._id]);
+            [arChievedVal, id]);
 
         return true;
     }

@@ -1,8 +1,6 @@
 import { AuthController } from "./AuthController";
 import { AssessmentTemplateImpl } from "../models/AssessmentTemplate"
-import { SurveyTemplateImpl} from "../models/SurveyTemplate"
-import { DBConnection } from "../DBConnection";
-import { AssessmentTemplate } from "../models/IAssessmentTemplate";
+import { SurveyTemplateImpl } from "../models/SurveyTemplate"
 
 export class AssessmentController extends AuthController {
 
@@ -15,74 +13,68 @@ export class AssessmentController extends AuthController {
     }
 
     async getAllSurveys() {
-        let db = DBConnection.getInstance();
-        let ids = await db.send("SELECT id FROM SurveyTemplate");
-        let allIds : number[] = [];
-        for (let i of ids) {
-            allIds.push(i.id);
-        }
-        let allSurveys = await SurveyTemplateImpl.getByIds(allIds);
-        let result : any[] = [];
-        for (let s of allSurveys) {
-            let template : any = {};
-            template.sTitle = s.name;
-            template.sId = s.id;
-            template.sInst = s.inst;
-            let allQuestion : any[] = [];
-            for (let q of s.questions) {
-                let sq = {
-                qOrder : q.number,
-                qDesc : q.statement,
-                qType : q.type,
-                qOpts : q.meta,
-                };
-                allQuestion.push(sq);
+        try {
+            let allSurveys = await SurveyTemplateImpl.getAll();
+            let result: any[] = [];
+            for (let s of allSurveys) {
+                let template: any = {};
+                template.sTitle = s.name;
+                template.sId = s.id;
+                template.sInst = s.inst;
+                let allQuestion: any[] = [];
+                for (let q of s.questions) {
+                    let sq = {
+                        qOrder: q.number,
+                        qDesc: q.statement,
+                        qType: q.type,
+                        qOpts: q.meta,
+                    };
+                    allQuestion.push(sq);
+                }
+                template.sContent = allQuestion;
+                result.push(template);
             }
-            template.sContent = allQuestion;
-            result.push(template);
+
+            this.response.send(result);
+        } catch (e) {
+            this.response.status(500).send("something goes wrong");
         }
-        return result;
     }
 
     async addAssessment() {
-        let db = DBConnection.getInstance();
-        let ids = await db.send("SELECT id FROM AssessmentTemplate");
-        let newId = ids[0].id;
-        for (let i of ids) {
-            if (i.id > newId) {
-                newId = i.id;
-            }
-        }
-        newId++;
         if (this.isAdmin) {
             let assessForm: any = this.request.body;
-            let newAssess: AssessmentTemplate = {
-                id: newId,
-                name: assessForm.title,
-                description: assessForm.desc,
-                videos: assessForm.videos,
-                pictures: assessForm.pictures,
-                surveyIDs: assessForm.surveyIDs,
-                isArchived: false
-            };
-            // database transaction here?
-            this.response.status(200).send({ id: newAssess.id });
-            return;
-        }
-        else {
+            let newAssess = new AssessmentTemplateImpl(
+                undefined,
+                assessForm.title,
+                assessForm.desc,
+                assessForm.videos,
+                assessForm.pictures,
+                assessForm.surveyIDs,
+                false
+            );
+            try {
+                let newID = await newAssess.store();
+                this.response.status(200).send({ id: newID });
+            } catch (e) {
+                this.response.status(500).send("something goes wrong");
+            }
+        } else {
             this.response.status(401).send({ error: "Invalid credentials" });
         }
     }
 
-    async archiveAssessment(id: number) {
-        let assess = await AssessmentTemplateImpl.getById(id);
-        if (assess !== undefined) {
-            assess.isArchived = true;
+    async archiveAssessment() {
+        if (this.isAdmin) {
+            try {
+                let id = parseInt(this.request.params.type);
+                let res = await AssessmentTemplateImpl.update(id, true);
+                this.response.status(200).send({ status: res });
+            } catch (e) {
+                this.response.status(500).send("something goes wrong");
+            }
+        } else {
+            this.response.status(401).send({ error: "Invalid credentials" });
         }
-    }
-
-
-    archiveSurvey() {
-
     }
 }
