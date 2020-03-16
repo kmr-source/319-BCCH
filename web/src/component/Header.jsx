@@ -20,12 +20,6 @@ function DropDownMenu(props) {
       content={
         <Menu>
           <Menu.Group>
-            <Menu.Item onSelect={() => toaster.notify("Move")}>
-              Settings
-            </Menu.Item>
-          </Menu.Group>
-          <Menu.Divider />
-          <Menu.Group>
             <Menu.Item onSelect={() => handleLogOut()}>Log out</Menu.Item>
           </Menu.Group>
         </Menu>

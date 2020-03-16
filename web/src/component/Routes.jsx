@@ -7,6 +7,7 @@ import { Dashboard } from "./Dashboard";
 import { Query } from "./Query";
 import { Upload } from "./upload_component/Upload";
 import { AssessmentCreator } from "./AssessmentCreator";
+import { SurveyCreator } from "./SurveyCreator";
 
 export function Routes(props) {
   return (
@@ -81,6 +82,9 @@ function AdminRoutes(props) {
       </Route>
       <Route path="/createAssessment">
         <AssessmentCreator />
+      </Route>
+      <Route path="/createSurvey">
+        <SurveyCreator />
       </Route>
       <UndefinedRoute />
     </Switch>

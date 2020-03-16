@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 import {
   Heading,
@@ -7,6 +8,8 @@ import {
   Icon,
   Position,
   Dialog,
+  Spinner,
+  Text,
   toaster
 } from "evergreen-ui";
 import { PictureSection, VideoSection, SurveySection } from "./Section";
@@ -14,42 +17,144 @@ import { PictureSection, VideoSection, SurveySection } from "./Section";
 import "../../css/Upload.scss";
 
 function dialogController(setConfDialState) {
-  let open = () => setConfDialState({ isShown: true, isLoading: false });
-  let close = () => setConfDialState({ isShown: false, isLoading: false });
-  let load = () => setConfDialState({ isShown: true, isLoading: true });
+  let open = () => setConfDialState({ isShown: true, state: "waiting" });
+  let close = () => setConfDialState({ isShown: false, state: "waiting" });
+  let prepare = () => setConfDialState({ isShown: true, state: "preparing" });
+  let load = () => setConfDialState({ isShown: true, state: "loading" });
+  let finalize = () => setConfDialState({ isShown: true, state: "finalizing" });
 
-  return {
-    open: open,
-    close: close,
-    load: load
-  };
+  return { open, close, load, prepare, finalize };
 }
 
 export function MainPortal(props) {
   let history = useHistory();
-  let [sessionData, updateSession, getSession] = [
-    props.data,
-    props.update,
-    props.get
-  ];
+  const sessionData = props.data;
+  const currSession = props.currSession;
 
-  let [confDialState, setConfDialState] = useState({
+  const [confDialState, setConfDialState] = useState({
     isShown: false,
-    isLoading: false
+    state: "waiting"
   });
+  const [uploaed, setUploaded] = useState(0);
+  const [allToUpload, setToUpload] = useState(0);
 
-  let [showGiveUp, setshowGiveUp] = useState(false);
+  const [showGiveUp, setshowGiveUp] = useState(false);
 
   let controlConfirm = dialogController(setConfDialState);
 
-  function sendSession() {
-    controlConfirm.load();
-    window.setTimeout(() => {
-      toaster.success("Successfully upload");
+  async function sendSession() {
+    controlConfirm.prepare();
+
+    let tempID = currSession["id"];
+    let allVideos = currSession["video"];
+    let allPictures = currSession["picture"];
+    let allSurveys = currSession["survey"];
+    let pendingUploads = [];
+    let done = 0;
+
+    let mediaUploadHelper = (value, type, id) => {
+      let form = new FormData();
+      form.append("file", value);
+      pendingUploads.push(
+        axios
+          .post(`/upload/${type}/${id}`, form, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(() => {
+            done++;
+            setUploaded(done);
+          })
+      );
+    };
+
+    try {
+      let createdRes = await axios.post(`/upload/start/${tempID}`);
+      let createdID = createdRes.data.id;
+      setUploaded(0);
+      setToUpload(allVideos.length + allPictures.length + allSurveys.length);
+      controlConfirm.load();
+
+      allVideos.forEach(v => {
+        mediaUploadHelper(v, "video", createdID);
+      });
+
+      allPictures.forEach(p => {
+        mediaUploadHelper(p, "picture", createdID);
+      });
+
+      allSurveys.forEach(s => {
+        pendingUploads.push(
+          axios.post(`/upload/survey/${createdID}`, s).then(() => {
+            done++;
+            setUploaded(done);
+          })
+        );
+      });
+
+      await Promise.all(pendingUploads);
+      controlConfirm.finalize();
+      await axios.post(`/upload/end/${createdID}`);
+      toaster.success("Upload completed successfully! ");
       controlConfirm.close();
       history.push("/dashboard");
-    }, 2000);
+    } catch (e) {
+      toaster.danger(`An error occured: ${e.message}`);
+      controlConfirm.close();
+    }
   }
+
+  let uploadClassName = "primary-button disabled";
+
+  if (
+    currSession.picture.length === sessionData.pictures.length &&
+    currSession.video.length === sessionData.videos.length &&
+    currSession.survey.length === sessionData.surveys.length
+  ) {
+    uploadClassName = "primary-button";
+  }
+
+  let dialogScript = confDialState => {
+    switch (confDialState.state) {
+      case "waiting":
+        return "Are you ready to upload ?";
+      case "loading":
+        return (
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div>
+              <Spinner marginX="10px" />
+            </div>
+            <div>
+              <Text size={500}>{`${uploaed} uploaded. ${allToUpload -
+                uploaed} remaining`}</Text>
+            </div>
+          </div>
+        );
+      case "preparing":
+        return (
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div>
+              <Spinner marginX="10px" />
+            </div>
+            <div>
+              <Text size={500}>Initializing the upload</Text>
+            </div>
+          </div>
+        );
+      case "finalizing":
+        return (
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div>
+              <Spinner marginX="10px" />
+            </div>
+            <div>
+              <Text size={500}>Finalizing the upload</Text>
+            </div>
+          </div>
+        );
+    }
+  };
 
   return (
     <div>
@@ -63,22 +168,21 @@ export function MainPortal(props) {
       </div>
       <VideoSection
         sessionData={sessionData}
-        update={updateSession}
-        getter={getSession}
+        video={currSession.video}
+        setVideo={props.setVideo}
       />
       <PictureSection
         sessionData={sessionData}
-        update={updateSession}
-        getter={getSession}
+        picture={currSession.picture}
+        setPicture={props.setPicture}
       />
       <SurveySection
         sessionData={sessionData}
-        update={updateSession}
-        getter={getSession}
+        survey={currSession.survey}
         viewSwitcher={props.viewSwitcher}
       />
       <div className="submit-button-group">
-        <div className="primary-button" onClick={controlConfirm.open}>
+        <div className={uploadClassName} onClick={controlConfirm.open}>
           Upload
         </div>
         <div
@@ -93,25 +197,29 @@ export function MainPortal(props) {
 
       <Dialog
         isShown={confDialState.isShown}
-        isConfirmLoading={confDialState.isLoading}
+        isConfirmLoading={confDialState.state !== "waiting"}
         onCancel={close => {
-          if (confDialState.isLoading) {
+          if (confDialState.state !== "waiting") {
             return;
           } else {
             close();
           }
         }}
-        onConfirm={sendSession}
-        confirmLabel={confDialState.isLoading ? "Uploading..." : "Upload"}
+        onConfirm={() => {
+          sendSession();
+        }}
+        confirmLabel={
+          confDialState.state === "waiting" ? "Upload" : "Uploading..."
+        }
         onCloseComplete={controlConfirm.close}
         preventBodyScrolling
-        shouldCloseOnEscapePress={!confDialState.isLoading}
-        shouldCloseOnOverlayClick={!confDialState.isLoading}
+        shouldCloseOnEscapePress={confDialState.state === "waiting"}
+        shouldCloseOnOverlayClick={confDialState.state === "waiting"}
         cancelLabel="Cancel"
         title="Upload Confirmation"
         intent="warning"
       >
-        Are you ready to upload ?
+        {dialogScript(confDialState)}
       </Dialog>
 
       <Dialog

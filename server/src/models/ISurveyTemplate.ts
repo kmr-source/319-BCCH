@@ -4,7 +4,6 @@ export interface SurveyTemplate {
     id: number;
     name: string;
     inst: string;
-    isArchived: boolean;
     questions: SurveyQuestion[];
 }
 

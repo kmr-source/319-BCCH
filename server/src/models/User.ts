@@ -1,7 +1,8 @@
 import { User } from "./IUser";
-import { DBConnection } from "../DBConnection";
+import { AppGlobals } from "../AppGlobals";
 
 export class UserImpl implements User {
+    private _id: number;
     private _username: string;
     private _displayName: string;
     private _gender: string;
@@ -11,6 +12,7 @@ export class UserImpl implements User {
     private _age: number;
 
     constructor(
+        id: number,
         username: string,
         displayName: string,
         gender: string,
@@ -19,6 +21,7 @@ export class UserImpl implements User {
         type: string,
         age: number,
     ) {
+        this._id = id;
         this._username = username;
         this._displayName = displayName;
         this._gender = gender;
@@ -28,6 +31,7 @@ export class UserImpl implements User {
         this._age = age;
     }
 
+    get id(): number { return this._id; }
     get username(): string { return this._username; }
     get displayName(): string { return this._displayName; }
     get gender(): string { return this._gender; }
@@ -40,12 +44,13 @@ export class UserImpl implements User {
         let user = undefined;
         if (u) {
             user = new UserImpl(
-                u.username,
-                u.displayName,
+                u.id,
+                u.name,
+                u.display_name,
                 u.gender,
-                u.birthdate,
-                u.password,
-                u.type,
+                u.date_of_birth,
+                u.hash_pass,
+                (u.is_admin === 1 ? "admin" : "user"),
                 u.age
             );
         }
@@ -54,19 +59,19 @@ export class UserImpl implements User {
     }
 
     static async getById(id: number): Promise<User | undefined> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let result: any[] = await db.send("SELECT * FROM User WHERE id=?", [id]);
         return UserImpl.buildUser(result[0]);
     }
 
     static async getByName(uName: string): Promise<User | undefined> {
-        let db = DBConnection.getInstance();
-        let result: any[] = await db.send("SELECT * FROM User WHERE username=?", [uName]);
+        let db = AppGlobals.db;
+        let result: any[] = await db.send("SELECT * FROM User WHERE name=?", [uName]);
         return UserImpl.buildUser(result[0]);
     }
 
     static async getAll(): Promise<User[]> {
-        let db = DBConnection.getInstance();
+        let db = AppGlobals.db;
         let result: any[] = await db.send("SELECT * FROM User", []);
         let user: User[] = [];
         for (let u of result) {

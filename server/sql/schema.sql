@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS `SurveyTemplate`;
 
 
 CREATE TABLE `User` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) UNIQUE,
   display_name VARCHAR(255),
   hash_pass VARCHAR(255),
@@ -30,7 +30,7 @@ CREATE TABLE `User` (
 );
 
 CREATE TABLE `AssessmentTemplate` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255),
   description VARCHAR(255),
   num_videos INTEGER,
@@ -41,13 +41,20 @@ CREATE TABLE `AssessmentTemplate` (
 );
 
 CREATE TABLE `SurveyTemplate` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255),
   instruction VARCHAR(255),
-  time_created BIGINT,
-  is_archived INTEGER
+  time_created BIGINT
 );
 
+/* Survey Question */
+/* 
+  1: Fill in the blanks(normal text)
+  2: Fill in the blanks(time) 
+  3: Multiple Choice
+  4: Scale
+  5: Large text
+*/
 CREATE TABLE `SurveyQuestion` (
   q_number INTEGER,
   temp_id INTEGER,
@@ -69,7 +76,7 @@ CREATE TABLE `HasSurvey` (
 );
 
 CREATE TABLE `PictureDescription` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   temp_id INTEGER,
   description VARCHAR(255),
   FOREIGN kEY (temp_id) REFERENCES AssessmentTemplate(id) 
@@ -77,7 +84,7 @@ CREATE TABLE `PictureDescription` (
 );
 
 CREATE TABLE `VideoDescription` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   temp_id INTEGER,
   description VARCHAR(255),
   FOREIGN kEY (temp_id) REFERENCES AssessmentTemplate(id) 
@@ -86,7 +93,7 @@ CREATE TABLE `VideoDescription` (
 
 
 CREATE TABLE `Assessment` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   temp_id INTEGER NOT NULL,
   user_id INTEGER NOT NULL,
   time_created BIGINT,
@@ -99,41 +106,45 @@ CREATE TABLE `Assessment` (
 );
 
 CREATE TABLE `Video` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   assess_id INTEGER NOT NULL,
   user_id INTEGER NOT NULL,
   path VARCHAR(255),
   time_created BIGINT,
   is_archived INTEGER,
   FOREIGN kEY (assess_id) REFERENCES Assessment(id) 
-    ON UPDATE CASCADE,
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
   FOREIGN kEY (user_id) REFERENCES User(id) 
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
 CREATE TABLE `Picture` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   assess_id INTEGER NOT NULL,
   user_id INTEGER NOT NULL,
   path VARCHAR(255),
   time_created BIGINT,
   is_archived INTEGER,
   FOREIGN kEY (assess_id) REFERENCES Assessment(id) 
-    ON UPDATE CASCADE,
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
   FOREIGN kEY (user_id) REFERENCES User(id) 
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
 
 CREATE TABLE `Survey` (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
   assess_id INTEGER,
   temp_id INTEGER,
   user_id INTEGER,
   time_created BIGINT,
+  is_archived INTEGER,
   FOREIGN kEY (assess_id) REFERENCES Assessment(id) 
-    ON UPDATE CASCADE,
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
   FOREIGN KEY (temp_id) REFERENCES SurveyTemplate(id)
     ON UPDATE CASCADE,
   FOREIGN kEY (user_id) REFERENCES User(id) 
@@ -148,7 +159,8 @@ CREATE TABLE `SurveyAnswer` (
   user_id INTEGER,
   answer VARCHAR(255),
   FOREIGN kEY (survey_id) REFERENCES Survey(id)
-    ON UPDATE CASCADE,
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES User(id)
     ON UPDATE CASCADE
     ON DELETE CASCADE

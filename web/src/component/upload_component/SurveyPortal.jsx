@@ -1,23 +1,83 @@
 import React, { useState } from "react";
+import Cleave from "cleave.js/react";
 import {
   Text,
   Textarea,
   Heading,
   Paragraph,
   TextInput,
-  Dialog
+  Dialog,
+  Select
 } from "evergreen-ui";
 
 import "../../css/Upload.scss";
 import "../../css/Survey.scss";
 
-function InputGroup(props) {
-  let question = props.que;
-  let answer = props.ans;
-  let [range, setRange] = useState(question.qOpts.min);
+function MCQ(props) {
+  const question = props.question;
+  const options = question.qOpts;
+  const answer = props.answer;
+  const value = props.value;
+  const length = Object.keys(options).length;
+
+  function generateChoices() {
+    let choices = "";
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWX";
+    let char = "";
+    let choice = "";
+
+    Object.keys(options).forEach(function(qNum) {
+      char = characters.charAt(qNum - 1);
+      choice = char + ". " + options[qNum];
+      choices += choice + "\n";
+    });
+
+    return choices;
+  }
+
+  function generateItems() {
+    let items = [];
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWX";
+    let empty = "---";
+
+    items.push(
+      <option key={""} value={""}>
+        {empty}
+      </option>
+    );
+
+    for (let i = 0; i < length; i++) {
+      const char = characters.charAt(i);
+      items.push(
+        <option key={char} value={char}>
+          {char}
+        </option>
+      );
+    }
+
+    return items;
+  }
+
   return (
     <div>
-      <Text size={500} marginRight="5px">
+      <Paragraph className="mcq-choices" size={500} marginTop="10px">
+        {generateChoices()}
+      </Paragraph>
+      <Select defaultValue={value} onChange={answer}>
+        {generateItems()}
+      </Select>
+    </div>
+  );
+}
+
+function ScaleSlider(props) {
+  const question = props.que;
+  const answer = props.ans;
+  const [range, setRange] = useState(props.value);
+
+  return (
+    <div>
+      <Text className="scale-text" size={500} marginRight="5px">
         {question.qOpts.min}
       </Text>
       <input
@@ -32,45 +92,10 @@ function InputGroup(props) {
         }}
         max={question.qOpts.max}
       />
-      <Text size={500} marginLeft="5px">
+      <Text className="scale-text" size={500} marginLeft="5px">
         {question.qOpts.max}
       </Text>
-    </div>
-  );
-}
-
-function buildQuestion(question, setAnswer) {
-  let tpe = question.qType;
-
-  let answer = e => {
-    setAnswer(question.qOrder, e.target.value);
-  };
-
-  let descriptionField = (
-    <div>
-      <Paragraph size={500} marginTop="10px">
-        {question.qOrder}. {question.qDesc}
-      </Paragraph>
-    </div>
-  );
-
-  let answerField = "";
-  if (tpe === "fill") {
-    answerField = <TextInput onChange={answer} />;
-  } else if (tpe === "multiple") {
-    answerField = "";
-  } else if (tpe === "fillPara") {
-    answerField = (
-      <Textarea onChange={answer} grammarly={true} spellCheck={true} />
-    );
-  } else if (tpe === "scale") {
-    answerField = <InputGroup que={question} ans={answer} />;
-  }
-
-  return (
-    <div className="survey-question">
-      <div className="question-desc-section">{descriptionField}</div>
-      <div className="answer-section">{answerField}</div>
+      <input className="scale-label" readOnly={true} value={range} />
     </div>
   );
 }
@@ -80,40 +105,113 @@ export function SurveyPortal(props) {
     return <div></div>;
   }
 
-  let [quitDialogIsShown, setQuitDialogIsShown] = useState();
-  let surveyParams = props.surveyParams;
-  let surveyList = props.data.surveys;
-  let [theSurvey, exitFunc] = [
+  const [quitDialogIsShown, setQuitDialogIsShown] = useState();
+  const surveyList = props.data.surveys;
+  const [theSurvey, exitFunc] = [
     surveyList.find(s => s.sId === props.currentSurvey),
     props.viewSwitcher
   ];
-  let answer = {};
-
-  //debug
-  window.debugS = answer;
-
-  let setAnswer = (key, ans) => {
-    answer[key] = ans;
-  };
+  const surveyAns = props.survey;
+  let originalAns = surveyAns.find(s => s.sId === props.currentSurvey);
+  const template = {};
+  for (let q of theSurvey.sContent) {
+    if (!template[q.qOrder]) {
+      template[q.qOrder] = "";
+    }
+  }
+  originalAns = originalAns ? originalAns.answers : template;
+  const [answer, setAnswer] = useState(originalAns);
 
   function saveSurvey() {
     return () => {
-      for (let q of theSurvey.sContent) {
-        if (!answer[q.qOrder]) {
-          answer[q.qOrder] = "";
-        }
-      }
-
-      let originalAns = props.get("survey");
-      originalAns.push({ sId: theSurvey.sId, answers: answer });
-      surveyParams.listSetter(originalAns);
-      surveyParams.numSetter(originalAns.length);
-      surveyParams.statusSetter(
-        originalAns.length === surveyParams.requiredNum
-      );
-      props.update("survey", originalAns);
+      let filteredAns = surveyAns.filter(s => s.sId !== props.currentSurvey);
+      filteredAns.push({ sId: theSurvey.sId, answers: answer });
+      props.setSurvey(filteredAns);
       exitFunc()();
     };
+  }
+
+  function buildQuestion(question) {
+    const tpe = question.qType;
+    const qNum = question.qOrder;
+
+    const handleOnChange = e => {
+      const value = e.target.value;
+      setAnswer(prev => ({
+        ...prev,
+        [qNum]: value
+      }));
+    };
+
+    const descriptionField = (
+      <div>
+        <Paragraph size={500} marginTop="10px">
+          {question.qOrder}. {question.qDesc}
+        </Paragraph>
+      </div>
+    );
+
+    let answerField = "";
+
+    if (tpe === "fill") {
+      answerField = (
+        <TextInput value={answer[qNum]} onChange={handleOnChange} />
+      );
+    }
+    if (tpe === "fill_time") {
+      answerField = (
+        <Cleave
+          className="time-fill"
+          value={answer[qNum]}
+          options={{
+            time: true,
+            timePattern: ["m", "s"]
+          }}
+          onChange={handleOnChange}
+        />
+      );
+    } else if (tpe === "multiple") {
+      const value = answer[qNum] ? answer[qNum] : "";
+
+      answerField = (
+        <MCQ question={question} value={value} answer={handleOnChange} />
+      );
+    } else if (tpe === "fillPara") {
+      answerField = (
+        <Textarea
+          value={answer[qNum]}
+          onChange={handleOnChange}
+          grammarly={true}
+          spellCheck={true}
+        />
+      );
+    } else if (tpe === "scale") {
+      const value = answer[qNum] ? answer[qNum] : question.qOpts.min;
+      answerField = (
+        <ScaleSlider value={value} que={question} ans={handleOnChange} />
+      );
+    }
+
+    return (
+      <div key={question.qOrder} className="survey-question">
+        <div className="question-desc-section">{descriptionField}</div>
+        <div className="answer-section">{answerField}</div>
+      </div>
+    );
+  }
+
+  let isComplete = true;
+  for (const a in answer) {
+    if (!answer[a]) {
+      isComplete = false;
+      break;
+    }
+  }
+
+  let saveClassName = "primary-button";
+
+  if (!isComplete) {
+    saveClassName += " disabled";
   }
 
   return (
@@ -129,10 +227,10 @@ export function SurveyPortal(props) {
         </Paragraph>
       </div>
       <div id="question-container">
-        {theSurvey.sContent.map(q => buildQuestion(q, setAnswer))}
+        {theSurvey.sContent.map(q => buildQuestion(q))}
       </div>
       <div className="submit-button-group">
-        <div className="primary-button" onClick={saveSurvey()}>
+        <div className={saveClassName} onClick={saveSurvey()}>
           Save
         </div>
         <div

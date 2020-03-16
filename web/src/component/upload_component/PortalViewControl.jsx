@@ -5,20 +5,18 @@ import { MainPortal } from "./MainPortal";
 import "../../css/Upload.scss";
 
 export function PortalViewControl(props) {
-  let [sessionData, updateSession, getSession] = [
-    props.data,
-    props.update,
-    props.get
-  ];
+  const [video, setVideo] = useState([]);
+  const [picture, setPicture] = useState([]);
+  const [survey, setSurvey] = useState([]);
 
-  let [currentView, setCurrentView] = useState("portal");
-  let [currentSurvey, setCurrentSurvey] = useState(false);
-  let [surveyParams, setParams] = useState({});
+  const sessionData = props.data;
 
-  function switchToSurvey(surveyID, updateInfoObj) {
+  const [currentView, setCurrentView] = useState("portal");
+  const [currentSurvey, setCurrentSurvey] = useState("");
+
+  function switchToSurvey(surveyID) {
     return () => {
       setCurrentSurvey(surveyID);
-      setParams(updateInfoObj);
       setCurrentView("survey");
     };
   }
@@ -41,18 +39,23 @@ export function PortalViewControl(props) {
       <div style={setView("portal")}>
         <MainPortal
           data={sessionData}
-          update={updateSession}
-          get={getSession}
+          currSession={{
+            id: props.sessionType,
+            video: video,
+            picture: picture,
+            survey: survey
+          }}
+          setVideo={setVideo}
+          setPicture={setPicture}
           viewSwitcher={switchToSurvey}
         />
       </div>
       <div style={setView("survey")}>
         <SurveyPortal
           data={sessionData}
-          update={updateSession}
-          get={getSession}
+          survey={survey}
+          setSurvey={setSurvey}
           currentSurvey={currentSurvey}
-          surveyParams={surveyParams}
           viewSwitcher={switchToPortal}
         />
       </div>

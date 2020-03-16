@@ -9,4 +9,6 @@ export class Controller {
         this.request = req;
         this.response = res;
     }
+
+    async setup(config?: any): Promise<boolean> { return true; }
 }

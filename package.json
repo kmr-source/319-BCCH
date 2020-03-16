@@ -24,8 +24,12 @@
   "author": "Nick Birtch, Lang Cheng, Jiayao Chen, Kaiti Mok Rong, Alexander Svatukhin, Jiawei Tan, Julie Zhu",
   "license": "BSD-2-Clause",
   "dependencies": {
+    "@types/busboy": "^0.2.3",
     "@types/cookie-parser": "^1.4.2",
+    "@types/uuid": "^7.0.0",
     "axios": "^0.19.1",
+    "cleave.js": "^1.5.7",
+    "busboy": "^0.3.1",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "mysql": "^2.17.1",
@@ -34,7 +38,8 @@
     "react-dom": "^16.12.0",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
