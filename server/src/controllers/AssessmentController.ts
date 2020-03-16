@@ -60,23 +60,26 @@ export class AssessmentController extends AuthController {
         return this.response.status(400).send( {error: "Invalid input"});
     }
     // just send all AssesmentTemplates name and ID
+    // just send all AssesmentTemplates name and ID
     async getAllAssessments() { 
         let db = DBConnection.getInstance();
 
         let req =  await db.send("SELECT From AssessmentTemplate id =?");
-        let arr = [];
-        let x = {};
-        for (let i of req) {
-            x = {
-               name: i.name, 
-               id: i.id, 
-            };
-            arr.push(x);
-        }
-        
-        this.response.status(200).send(arr);
-        return;
+        if (req.length !== 0) {
+            let arr: any  = [];
+            let info = req[0];
 
+            for (let i of info) {
+                
+                let resultObj = {
+                   name: i.name,
+                   title: i.title,
+                }
+                arr.push(resultObj);
+            }
+           return this.response.status(200).send(JSON.stringify(arr));
+        }
+        return this.response.status(400).send( {error: "Something has gone wrong, please try again"} )
     }
 
     async addSurvey() {
@@ -99,11 +102,11 @@ export class AssessmentController extends AuthController {
                 questions: forum.questions,
 
             };
-            this.response.status(200).send({id: newSurvey.id})
-        } else {
-            this.response.status(400).send({error: "Invalid credentials"})
-        }
-    
+            return this.response.status(200).send({id: newSurvey.id})
+        } 
+            
+        return this.response.status(400).send({error: "Invalid credentials"})
+        
     }
 
 
