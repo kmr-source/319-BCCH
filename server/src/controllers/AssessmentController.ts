@@ -31,9 +31,25 @@ export class AssessmentController extends AuthController {
     }
 
     // just send all AssesmentTemplates name and ID
-    async getAllAssessments(): Promise<AssessmentTitle[]> {
-     let db = DBConnection.getInstance(); 
+     async getAllAssessments() { 
+        let db = DBConnection.getInstance();
+
+        let req =  await db.send("SELECT From AssessmentTemplate id =?");
+        let arr = [];
+        let x = {};
+        for (let i of req) {
+            x = {
+               name: i.name, 
+               id: i.id, 
+            }
+            arr.push(x);
+        }
+        
+        this.response.status(200).send(arr);
+        return;
+
     }
+
 
     getAllSurveys() {
 
