@@ -69,7 +69,7 @@ function AddMenu(props) {
             <div className="display-label">Select a survey:</div>
             <Combobox
               items={props.surOptions}
-              itemToString={item => item.title}
+              itemToString={item => item.sTitle}
               onChange={selected => setSurvey(selected)}
               initialSelectedItem={props.surOptions[0]}
             />
@@ -111,7 +111,7 @@ export function AssessmentCreator(props) {
   useEffect(() => {
     (async () => {
       try {
-        let res = await axios("/suvrey/all");
+        let res = await axios("/survey/all");
         setSurveyOptions(res.data);
         setFetching(false);
       } catch (e) {
@@ -128,7 +128,7 @@ export function AssessmentCreator(props) {
       desc: desc,
       videos: videos,
       pictures: pics,
-      surveyIDs: surveys.map(s => s.id)
+      surveyIDs: surveys.map(s => s.sId)
     };
 
     try {
@@ -163,7 +163,7 @@ export function AssessmentCreator(props) {
             fontWeight={500}
             marginTop="0"
           >
-            {n === "Survey" ? item.title : item}
+            {n === "Survey" ? item.sTitle : item}
           </Paragraph>
         </div>
       );

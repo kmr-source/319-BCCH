@@ -11,7 +11,7 @@ import { InMemorySessionManager } from "./services/InMemorySessionManager";
 import { UploadController } from "./controllers/UploadController";
 
 // DEPRECATE these dependencies are for legacy code only
-import { Assessment, allAssessments, allSurveys, surveyDict, allUsers } from "./AssessmentMaker";
+import { Assessment, allAssessments } from "./AssessmentMaker";
 import { User } from "./models/IUser";
 import { UserService } from "./services/UserService";
 
@@ -67,37 +67,6 @@ server.get('/assessment/:type', (req: any, res: any) => {
     res.status(404).send({ error: `could not find assessment with id ${type}` });
 });
 
-server.get('/suvrey/all', withAuth((req, res, u) => {
-    res.status(200).send(allSurveys.map(s => { return { title: s.sTitle, id: s.sId } }));
-}));
-
-let idCounter: number = 1;
-server.post('/assessment/add', (req: any, res: any) => {
-    if (req.cookies.access_token) {
-        for (const u of allUsers) {
-            if (u.username === req.cookies.access_token && u.type === "admin") {
-                let assessForm: any = req.body;
-                let newAssess: Assessment = {
-                    title: assessForm.title,
-                    id: `survey_${idCounter}`,
-                    desc: assessForm.desc,
-                    pictures: assessForm.pictures,
-                    videos: assessForm.videos,
-                    surveys: assessForm.surveyIDs.map((id: string) => { return surveyDict.get(id) })
-                }
-                idCounter++;
-                allAssessments.push(newAssess);
-
-                res.status(200).send({ id: newAssess.id });
-                return;
-            }
-        }
-        res.status(404).send({ error: "Can't find specific user" });
-    } else {
-        res.status(401).send({ error: "Invalid credentials" });
-    }
-});
-
 
 function register<T extends Controller>(
     c: new (requ: express.Request, resp: express.Response) => T,
@@ -115,9 +84,20 @@ function register<T extends Controller>(
 /**
  * Routes that will be used in the final project. Remove the old endpoint when done
  */
+
+ /**
+  * Authentication and Personal information
+  */
 server.post('/login', register(LoginController, c => c.login()));
 server.get('/userInfo', register(LoginController, c => c.userInfo()));
 server.post('/logout', register(LoginController, c => c.logout()));
+
+/**
+ * Assessments and surveys
+ */
+server.get('/survey/all', register(AssessmentController, c => c.getAllSurveys()));
+server.post('/assessment/add', register(AssessmentController, c => c.addAssessment()));
+server.delete('/assessment/:type', register(AssessmentController, c => c.archiveAssessment()));
 
 
 /**
@@ -132,10 +112,6 @@ server.post('/upload/end/:id', register(UploadController, c => c.endUpload()));
 /*
 server.get('/assessment/all', register(AssessmentController, c => c.getAllAssessments()));
 server.get('/assessment/:type', register(AssessmentController, c => c.getAssessment()));
-server.get('/suvrey/all', register(AssessmentController, c => c.getAllSurveys()));
-server.post('/assessment/add', register(AssessmentController, c => c.addAssessment()));
-server.delete('/assessment/:type', register(AssessmentController, c => c.archiveAssessment()));
-server.delete('/survey/:id', register(AssessmentController, c => c.archiveSurvey()));
 */
 
 // handle every other route with index.html, which will contain
