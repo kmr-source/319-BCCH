@@ -21,7 +21,11 @@ function AddAssessmentIcon() {
 }
 
 function AddSurveyIcon() {
-  return <div className="dashboard-button">Add Survey</div>;
+  return (
+    <Link className="dashboard-button" to="/createSurvey">
+      Add Survey
+    </Link>
+  );
 }
 
 function LogOutButton(props) {
