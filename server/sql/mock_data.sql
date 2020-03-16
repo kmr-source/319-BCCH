@@ -27,9 +27,9 @@ INSERT INTO `PictureDescription` VALUES (6, 4, "pictue showing your hands");
 INSERT INTO `PictureDescription` VALUES (7, 4, "picture showing your legs");
 
 /* Survey Template */
-INSERT INTO `SurveyTemplate` VALUES (1, "Karolinska Sleepiness Scale", "This is a sample instruction for researchers to ask patients to follow when performing this survey.", 1583111154000, 0);
-INSERT INTO `SurveyTemplate` VALUES (2, "Vigilance Pong Scoresheet", "This is a sample instruction for researchers to ask patients to follow when performing this survey.", 1583111154000, 0);
-INSERT INTO `SurveyTemplate` VALUES (3, "Task-Switching Paradigm", "This is a sample instruction for researchers to ask patients to follow when performing this survey.", 1583111154000, 0);
+INSERT INTO `SurveyTemplate` VALUES (1, "Karolinska Sleepiness Scale", "This is a sample instruction for researchers to ask patients to follow when performing this survey.", 1583111154000);
+INSERT INTO `SurveyTemplate` VALUES (2, "Vigilance Pong Scoresheet", "This is a sample instruction for researchers to ask patients to follow when performing this survey.", 1583111154000);
+INSERT INTO `SurveyTemplate` VALUES (3, "Task-Switching Paradigm", "This is a sample instruction for researchers to ask patients to follow when performing this survey.", 1583111154000);
 
 /* Survey Question */
 /* 
@@ -41,7 +41,7 @@ INSERT INTO `SurveyTemplate` VALUES (3, "Task-Switching Paradigm", "This is a sa
 */
 INSERT INTO `SurveyQuestion` VALUES (1, 1, 4, "On a scale of 1 (extremely alert) to 10 (extremely sleepy), rate your sleepiness: .", '{"max": 10, "min": 1}');
 INSERT INTO `SurveyQuestion` VALUES (2, 1, 1, "please fill out the following _____ .", "{}");
-INSERT INTO `SurveyQuestion` VALUES (3, 1, 5, "ell us something about yourself.", "{}");
+INSERT INTO `SurveyQuestion` VALUES (3, 1, 5, "tell us something about yourself.", "{}");
 
 INSERT INTO `SurveyQuestion` VALUES (1, 2, 1, "In 30 seconds, how many total throws were made?  (can be unknown, or non-negative integer)", "{}");
 INSERT INTO `SurveyQuestion` VALUES (2, 2, 1, "In 30 seconds, how many successful throws were made?  (non-negative integer)", "{}");

@@ -44,8 +44,7 @@ CREATE TABLE `SurveyTemplate` (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255),
   instruction VARCHAR(255),
-  time_created BIGINT,
-  is_archived INTEGER
+  time_created BIGINT
 );
 
 /* Survey Question */

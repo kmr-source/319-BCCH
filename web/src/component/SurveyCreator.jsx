@@ -115,7 +115,6 @@ export function SurveyCreator() {
     try {
       let res = await axios.post("/survey/add", sendForm);
       toaster.success(`Added survey with id ${res.data.id}`);
-      setConfDialState({ isLoading: false, isShown: false });
       setIsLoading(false);
       setIsShown(false);
     } catch (e) {
