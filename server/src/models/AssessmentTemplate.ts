@@ -51,11 +51,11 @@ export class AssessmentTemplateImpl implements AssessmentTemplate {
             let aDelete = assessInfo.is_archived;
             let videosDescProm = db.send("SELECT description FROM VideoDescription WHERE temp_id=?", [assessmentID]);
             let picDescProm = db.send("SELECT description FROM PictureDescription WHERE temp_id=?", [assessmentID]);
-            let surIdsProm = db.send("SELECT sur_temp_id FROM HasSurvey WHERE assess_temp_id=>", [assessmentID]);
+            let surIdsProm = db.send("SELECT sur_temp_id FROM HasSurvey WHERE assess_temp_id=?", [assessmentID]);
             let promiseRes = await Promise.all([videosDescProm, picDescProm, surIdsProm])
-            let videosDesc = promiseRes[0];
-            let picDesc = promiseRes[1];
-            let surIds = promiseRes[2];
+            let videosDesc = promiseRes[0].map(r => r.description);
+            let picDesc = promiseRes[1].map(r => r.description);
+            let surIds = promiseRes[2].map(r => r.sur_temp_id);
 
             assess = new AssessmentTemplateImpl(
                 assessmentID,
@@ -75,7 +75,7 @@ export class AssessmentTemplateImpl implements AssessmentTemplate {
 
     static async getAllTitles(): Promise<AssessmentTitle[]> {
         let db = AppGlobals.db;
-        let result = await db.send("SELECT id,name FROM AssessmentTemplate");
+        let result = await db.send("SELECT id,name FROM AssessmentTemplate WHERE is_archived=0");
         return result.map((r: any) => { return { name: r.name, id: r.id } });
     }
 
