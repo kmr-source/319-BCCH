@@ -71,4 +71,9 @@ server.post('/upload/end/:id', register(UploadController, c => c.endUpload()));
 // a script tag to your application's JavaScript file(s).
 server.get('/', (req: any, res: any) => res.sendFile(path.resolve(__dirname, "../../web/public/index.html")));
 
-server.listen(port, () => console.log(`listening port ${port}`));
+AppGlobals.db.ping().then(() => {
+    server.listen(port, () => console.log(`listening port ${port}`));
+}).catch((e) => {
+    console.error('error connecting: ' + e.stack);
+    process.exit();
+})
