@@ -81,7 +81,6 @@ export class UploadService {
         let tempID = parseInt(ans.sId);
         let allAnswers = Object.keys(ans.answers).map(k => {
             let resp: string = ans.answers[k];
-            console.log(`(${k} -> ${resp})`);
             return {
                 number: parseInt(k),
                 answer: resp

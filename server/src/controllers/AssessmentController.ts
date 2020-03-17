@@ -1,27 +1,31 @@
 import { AuthController } from "./AuthController";
-import { AssessmentTemplateImpl } from "../models/AssessmentTemplate"
+import { AssessmentTemplateImpl } from "../models/AssessmentTemplate";
+import { AssessmentTitle } from "../models/IAssessmentTemplate";
 import { SurveyTemplateImpl } from "../models/SurveyTemplate"
 import { QuestionType, SurveyQuestion } from "../models/ISurveyTemplate";
-import { DBConnection } from "../DBConnection";
 
 export class AssessmentController extends AuthController {
 
-    async getAssessment(t: number | string) {
+    private withType(handler: (i: number) => Promise<void>) {
+        // parseInt is too flexible, restrict the format a little bit;
+        let rawID = this.request.params.type;
+        let testRes = /^\d+$/.test(rawID) && !rawID.startsWith('0');
 
-        let db = DBConnection.getInstance();
-        let res = null;
-        if (t !== "string") {
-            res = await db.send("Select From AssessmentTemplace WHERE id=? AND is_archived=1", [t]);
+        if (testRes) {
+            handler(parseInt(this.request.params.type))
+                .catch(err => {
+                    console.log(err);
+                    this.response.status(500).send("something goes wrong");
+                });
         } else {
-            res = await db.send("Select From AssesmentTemplate WHERE title=? ANd is_isarchived=1", [t]);
+            this.response.status(400).send({ message: `non-number id ${this.request.params.id}` });
         }
-        if (res.length !== 0) {
-            let info = res[0];
+    }
 
-            let atitle = info.name;
-            let idName = info.id;
+    async getAssessment() {
+        this.withType(async (idName) => {
             let tempAssessWithOnlySurveyIDs = await AssessmentTemplateImpl.getById(idName);
-
+            let atitle = tempAssessWithOnlySurveyIDs.name;
             let descp = tempAssessWithOnlySurveyIDs.description;
             let videoDesc = tempAssessWithOnlySurveyIDs.videos;
             let picturesDesc = tempAssessWithOnlySurveyIDs.pictures;
@@ -31,7 +35,7 @@ export class AssessmentController extends AuthController {
             let surveyResults: any[] = [];
             for (let i of surveyInfos) {
                 let template: any = {};
-                template.Title = i.name;
+                template.sTitle = i.name;
                 template.sId = i.id;
                 template.sInst = i.inst;
                 let allQuestion: any[] = [];
@@ -39,7 +43,7 @@ export class AssessmentController extends AuthController {
                     let surveyQues = {
                         qOrder: q.number,
                         qDesc: q.statement,
-                        qType: q.type,
+                        qType: this.toTransferType(q.type),
                         qOpts: q.meta,
                     };
                     allQuestion.push(surveyQues);
@@ -51,35 +55,21 @@ export class AssessmentController extends AuthController {
                 title: atitle,
                 id: idName,
                 desc: descp,
-                vidoes: videoDesc,
+                videos: videoDesc,
                 pictures: picturesDesc,
                 surveys: surveyResults,
-
             };
-            return this.response.status(200).send(assessmentForm);
-        }
-        return this.response.status(400).send({ error: "Invalid input" });
+            this.response.status(200).send(assessmentForm);
+        })
     }
 
     async getAllAssessments() {
-        let db = DBConnection.getInstance();
-
-        let req = await db.send("SELECT From AssessmentTemplate id =?");
-        if (req.length !== 0) {
-            let arr: any = [];
-            let info = req[0];
-
-            for (let i of info) {
-
-                let resultObj = {
-                    name: i.name,
-                    title: i.title,
-                }
-                arr.push(resultObj);
-            }
-            return this.response.status(200).send(JSON.stringify(arr));
+        try {
+            let res: AssessmentTitle[] = await AssessmentTemplateImpl.getAllTitles();
+            this.response.status(200).send(res.map(a => { return { title: a.name, id: a.id } }));
+        } catch {
+            this.response.status(500).send("something goes wrong");
         }
-        return this.response.status(400).send({ error: "Something has gone wrong, please try again" })
     }
 
     async getAllSurveys() {
@@ -96,7 +86,7 @@ export class AssessmentController extends AuthController {
                     let sq = {
                         qOrder: q.number,
                         qDesc: q.statement,
-                        qType: q.type,
+                        qType: this.toTransferType(q.type),
                         qOpts: q.meta,
                     };
                     allQuestion.push(sq);
@@ -148,7 +138,22 @@ export class AssessmentController extends AuthController {
         }
     }
 
-    private toType(t: QuestionTypeTransfer) {
+    private toTransferType(t: QuestionType): string {
+        switch (t) {
+            case QuestionType.SCALE:
+                return QuestionTypeTransfer.SCALE;
+            case QuestionType.FILL:
+                return QuestionTypeTransfer.FILL;
+            case QuestionType.LARGE_TEXT:
+                return QuestionTypeTransfer.FILL_PARA;
+            case QuestionType.FILL_TIME:
+                return QuestionTypeTransfer.FILL_TIME;
+            case QuestionType.MULTIPLE_CHOICE:
+                return QuestionTypeTransfer.MULTIPLE;
+        }
+    }
+
+    private fromTransferType(t: QuestionTypeTransfer) {
         switch (t) {
             case QuestionTypeTransfer.SCALE:
                 return QuestionType.SCALE;
@@ -171,7 +176,7 @@ export class AssessmentController extends AuthController {
             for (let q of survey.sContent) {
                 questions.push({
                     number: q.qOrder,
-                    type: this.toType(q.qType),
+                    type: this.fromTransferType(q.qType),
                     statement: q.qDesc,
                     meta: q.qOpts
                 });
