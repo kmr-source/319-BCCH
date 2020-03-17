@@ -32,6 +32,7 @@ export class DBConnection {
             this.connectionPool.getConnection((err, conn) => {
                 if (err) {
                     rej(err);
+                    return;
                 }
 
                 conn.release();
