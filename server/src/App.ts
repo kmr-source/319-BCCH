@@ -10,7 +10,6 @@ import { AppGlobals } from "./AppGlobals";
 import { InMemorySessionManager } from "./services/InMemorySessionManager";
 import { UploadController } from "./controllers/UploadController";
 
-
 // DEPRECATE these dependencies are for legacy code only
 import { Assessment, allAssessments } from "./AssessmentMaker";
 import { User } from "./models/IUser";
