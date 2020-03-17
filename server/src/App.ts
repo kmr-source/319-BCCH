@@ -2,19 +2,43 @@ import * as express from "express";
 import * as path from "path";
 import * as cookieParser from "cookie-parser";
 import * as fs from "fs";
+import * as bodyParser from "body-parser";
 import { DBConnection, DBConfig } from "./DBConnection";
 import { LoginController } from "./controllers/LoginController";
 import { AssessmentController } from "./controllers/AssessmentController";
 import { Controller } from "./controllers/Controller";
-import { AppGlobals } from "./AppGlobals";
+import { AppGlobals, AppMode } from "./AppGlobals";
 import { InMemorySessionManager } from "./services/InMemorySessionManager";
 import { UploadController } from "./controllers/UploadController";
 
 const port = process.env.PORT || 3000;
-let server = express();
+let modeParam = process.argv[2]; // the first one is address of node interpretor, the second is the path to App.js
+
+switch (modeParam) {
+    case "--prod":
+        AppGlobals.mode = AppMode.PROD;
+        break;
+    case "--dev":
+        AppGlobals.mode = AppMode.DEV;
+        break;
+    default:
+        throw new Error("unrecognized mode argument " + modeParam);
+}
+
+console.log(`App running at ${AppGlobals.mode === AppMode.PROD ? "PRODUCTION" : "DEVELOPMENT"}`);
 
 // setup database
-let dbConfigJson = fs.readFileSync(path.resolve(__dirname, "../../db-conf.json"));
+let dbConfigPath;
+switch (AppGlobals.mode) {
+    case AppMode.PROD:
+        dbConfigPath = path.resolve(__dirname, "../../db-conf-prod.json");
+        break;
+    case AppMode.DEV:
+        dbConfigPath = path.resolve(__dirname, "../../db-conf-dev.json");
+        break;
+}
+
+let dbConfigJson = fs.readFileSync(dbConfigPath);
 let dbConfig: DBConfig = JSON.parse(dbConfigJson.toString());
 DBConnection.updateConfig(dbConfig);
 
@@ -22,8 +46,10 @@ AppGlobals.port = port;
 AppGlobals.db = DBConnection.getInstance();
 AppGlobals.sessionManager = InMemorySessionManager.getInstance();
 
+let server = express();
+
 // middleware setup
-server.use(require("body-parser").json());
+server.use(bodyParser.json());
 server.use(cookieParser());
 server.use('/assets', express.static(path.resolve(__dirname, "../../web/public")));
 

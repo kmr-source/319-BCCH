@@ -11,12 +11,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:ui": "mocha test --timeout 10000",
     "dev:ui": "webpack --watch",
-    "dev:server": "tsc --watch",
-    "server": "tsc && node ./server/target/App.js",
+    "server": "tsc && node ./server/target/App.js --dev",
+    "server:prod": "tsc && node ./server/target/App.js --prod",
     "compile": "tsc",
     "compile:front": "webpack",
     "build": "webpack && tsc",
-    "start": "webpack && tsc && node ./server/target/App.js"
+    "start": "webpack && tsc && node ./server/target/App.js --prod",
+    "dev": "webpack && tsc && node ./server/target/App.js --dev"
   },
   "keywords": [
     "bcch"
