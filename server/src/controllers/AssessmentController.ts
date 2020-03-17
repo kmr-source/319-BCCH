@@ -2,84 +2,15 @@ import { AuthController } from "./AuthController";
 import { AssessmentTemplateImpl } from "../models/AssessmentTemplate"
 import { SurveyTemplateImpl } from "../models/SurveyTemplate"
 import { QuestionType, SurveyQuestion } from "../models/ISurveyTemplate";
-import {DBConnection} from "../DBConnection";
 
 export class AssessmentController extends AuthController {
 
-    async getAssessment (t: number|string) {
-    
-        let db = DBConnection.getInstance(); 
-        let res = null;
-        if (t !== "string") {
-            res = await db.send("Select From AssessmentTemplace WHERE id=? AND is_archived=1",[t]);
-        } else {
-            res = await db.send("Select From AssesmentTemplate WHERE title=? ANd is_isarchived=1",[t]);
-        }
-        if (res.length !== 0) {
-            let info = res[0];
+    getAssessment() {
 
-            let atitle = info.name;
-            let idName = info.id;
-            let tempAssessWithOnlySurveyIDs = await AssessmentTemplateImpl.getById(idName);
-            
-            let descp = tempAssessWithOnlySurveyIDs.description;
-            let videoDesc = tempAssessWithOnlySurveyIDs.videos;
-            let picturesDesc = tempAssessWithOnlySurveyIDs.pictures;
-           
-            let surveyIDs = tempAssessWithOnlySurveyIDs.surveyIDs;
-            let surveyInfos = await SurveyTemplateImpl.getByIds(surveyIDs);
-            let surveyResults: any[] = [];
-            for (let i of surveyInfos) {
-                let template: any = {};
-                template.Title = i.name;
-                template.sId = i.id;
-                template.sInst = i.inst;
-                let allQuestion : any[] = [];
-                for (let q of i.questions) {
-                    let surveyQues = {
-                    qOrder : q.number,
-                    qDesc : q.statement,
-                    qType : q.type,
-                    qOpts : q.meta,
-                    };
-                    allQuestion.push(surveyQues);
-                }
-                template.sContent = allQuestion;
-                surveyResults.push(template);
-            }
-            let assessmentForm = {
-                title: atitle,
-                id: idName,
-                desc: descp,
-                vidoes: videoDesc,
-                pictures: picturesDesc,
-                surveys: surveyResults,
-            
-            };
-            return this.response.status(200).send(assessmentForm);
-        }
-        return this.response.status(400).send( {error: "Invalid input"});
     }
 
-    async getAllAssessments() { 
-        let db = DBConnection.getInstance();
+    getAllAssessments() {
 
-        let req =  await db.send("SELECT From AssessmentTemplate id =?");
-        if (req.length !== 0) {
-            let arr: any  = [];
-            let info = req[0];
-
-            for (let i of info) {
-                
-                let resultObj = {
-                   name: i.name,
-                   title: i.title,
-                }
-                arr.push(resultObj);
-            }
-           return this.response.status(200).send(JSON.stringify(arr));
-        }
-        return this.response.status(400).send( {error: "Something has gone wrong, please try again"} )
     }
 
     async getAllSurveys() {
