@@ -13,14 +13,7 @@ export class DBConnection {
 
     private connectionPool: mysql.Pool;
     private static db: DBConnection = null;
-    private static config: DBConfig = {
-        poolSize: 20,
-        host: 'localhost',
-        port: 3306,
-        user: 'root',
-        password: 'admin',
-        database: 'BCCH_FUTURE_STAR'
-    }
+    private static config: DBConfig;
 
     private constructor() {
         this.connectionPool = mysql.createPool({
@@ -31,6 +24,20 @@ export class DBConnection {
             password: DBConnection.config.password,
             database: DBConnection.config.database
         });
+    }
+
+    async ping() {
+
+        return new Promise((res, rej) => {
+            this.connectionPool.getConnection((err, conn) => {
+                if (err) {
+                    rej(err);
+                }
+
+                conn.release();
+                res();
+            });
+        })
     }
 
     static updateConfig(c: DBConfig) {

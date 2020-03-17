@@ -97,6 +97,7 @@ export class AssessmentController extends AuthController {
 
             this.response.send(result);
         } catch (e) {
+            console.log(e);
             this.response.status(500).send("something goes wrong");
         }
     }
@@ -117,6 +118,7 @@ export class AssessmentController extends AuthController {
                 let newID = await newAssess.store();
                 this.response.status(200).send({ id: newID });
             } catch (e) {
+                console.log(e);
                 this.response.status(500).send("something goes wrong");
             }
         } else {
@@ -131,6 +133,7 @@ export class AssessmentController extends AuthController {
                 let res = await AssessmentTemplateImpl.update(id, true);
                 this.response.status(200).send({ status: res });
             } catch (e) {
+                console.log(e);
                 this.response.status(500).send("something goes wrong");
             }
         } else {
@@ -182,14 +185,18 @@ export class AssessmentController extends AuthController {
                 });
             }
 
-            let id = await new SurveyTemplateImpl(
-                undefined,
-                survey.sTitle,
-                survey.sInst,
-                questions
-            ).store();
-
-            this.response.status(200).send({ id: id });
+            try {
+                let id = await new SurveyTemplateImpl(
+                    undefined,
+                    survey.sTitle,
+                    survey.sInst,
+                    questions
+                ).store();
+                this.response.status(200).send({ id: id });
+            } catch (e) {
+                console.log(e);
+                this.response.status(500).send("something goes wrong");
+            }
         } else {
             this.response.status(401).send({ error: "Invalid credentials" });
         }
