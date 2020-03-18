@@ -10,6 +10,7 @@ import { Controller } from "./controllers/Controller";
 import { AppGlobals, AppMode } from "./AppGlobals";
 import { InMemorySessionManager } from "./services/InMemorySessionManager";
 import { UploadController } from "./controllers/UploadController";
+import { QueryController } from "./controllers/QueryController";
 
 const port = process.env.PORT || 3000;
 let modeParam = process.argv[2]; // the first one is address of node interpretor, the second is the path to App.js
@@ -92,6 +93,12 @@ server.post('/upload/video/:id', register(UploadController, c => c.uploadVideo()
 server.post('/upload/picture/:id', register(UploadController, c => c.uploadPicture()));
 server.post('/upload/survey/:id', register(UploadController, c => c.uploadSurvey()));
 server.post('/upload/end/:id', register(UploadController, c => c.endUpload()));
+
+/**
+ * Query End points
+ */
+server.get('/query/media', register(QueryController, c => c.queryMedia()));
+server.get('/query/survey', register(QueryController, c => c.querySurvey()));
 
 // handle every other route with index.html, which will contain
 // a script tag to your application's JavaScript file(s).
