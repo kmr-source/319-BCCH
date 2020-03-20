@@ -30,7 +30,6 @@ export function App() {
       login(user);
       setIsLoading(false);
     } catch (e) {
-      logout();
       setIsLoading(false);
     }
   };
