@@ -2,35 +2,41 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 // import css
-import "../css/DashboardAdmin.scss";
+import "../css/AssessmentManager.scss";
 
-function RunQueryIcon() {
+function AddAssessmentIcon() {
   return (
-    <Link className="dashboard-button" to="/query">
-      Run Query
+    <Link className="dashboard-button" to="/createAssessment">
+      Add Assessment
     </Link>
   );
 }
 
-function ManageAssessmentIcon() {
+function ArchiveAssessmentIcon() {
   return (
-    <Link className="dashboard-button" to="/manageAssessment">
-      Manage Assessment
+    <Link className="dashboard-button" to="/archiveAssessment">
+      Archive Assessment
     </Link>
   );
 }
 
-function LogOutButton(props) {
+function AddSurveyIcon() {
+  return (
+    <Link className="dashboard-button" to="/createSurvey">
+      Add Survey
+    </Link>
+  );
+}
+
+function BackButton() {
   let history = useHistory();
-  function handleLogOut() {
-    props.logout();
-    props.removeCookie("access_token");
-    history.push("/login");
+  function handleBack() {
+    history.push("/dashboard");
   }
 
   return (
-    <div className="negative-button" onClick={handleLogOut}>
-      Log out
+    <div className="negative-button" onClick={handleBack}>
+      Back
     </div>
   );
 }
@@ -49,7 +55,7 @@ function checkTime() {
   }
 }
 
-function DashAdminMenu(props) {
+function AssessmentMenu(props) {
   const userInfo = props.userInfo;
 
   return (
@@ -57,22 +63,23 @@ function DashAdminMenu(props) {
       <div className="container">
         <p className="dash-board-greeting">{checkTime()}</p>
         <div className="dash-board-username">{userInfo.displayName}</div>
-        <RunQueryIcon />
-        <ManageAssessmentIcon />
-        <LogOutButton {...props} />
+        <AddAssessmentIcon />
+        <ArchiveAssessmentIcon />
+        <AddSurveyIcon />
+        <BackButton {...props} />
       </div>
     </div>
   );
 }
 
-export function DashboardAdmin(props) {
+export function AssessmentManager(props) {
   let [curView, setCurView] = useState("menu");
 
   return (
     <div id="dash-board-admin-container">
       <div id="dash-board-admin-main">
         <div style={{ display: curView === "menu" ? "block" : "none" }}>
-          <DashAdminMenu {...props} setCurView={setCurView} />
+          <AssessmentMenu {...props} setCurView={setCurView} />
         </div>
       </div>
     </div>

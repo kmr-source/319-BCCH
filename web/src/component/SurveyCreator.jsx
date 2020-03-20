@@ -115,8 +115,7 @@ export function SurveyCreator() {
     try {
       let res = await axios.post("/survey/add", sendForm);
       toaster.success(`Added survey with id ${res.data.id}`);
-      setIsLoading(false);
-      setIsShown(false);
+      history.push("/manageAssessment");
     } catch (e) {
       toaster.danger(e.message);
     }
@@ -156,7 +155,7 @@ export function SurveyCreator() {
             <div
               className="cancel-button"
               onClick={() => {
-                history.push("/dashboard");
+                history.push("/manageAssessment");
               }}
             >
               Cancel
