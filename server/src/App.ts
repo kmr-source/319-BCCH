@@ -97,8 +97,8 @@ server.post('/upload/end/:id', register(UploadController, c => c.endUpload()));
 /**
  * Query End points
  */
-server.get('/query/media', register(QueryController, c => c.queryMedia()));
-server.get('/query/survey', register(QueryController, c => c.querySurvey()));
+server.post('/query/media', register(QueryController, c => c.queryMedia()));
+server.post('/query/survey', register(QueryController, c => c.querySurvey()));
 
 // handle every other route with index.html, which will contain
 // a script tag to your application's JavaScript file(s).

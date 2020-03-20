@@ -4,10 +4,10 @@ import { Switch, Route, Redirect } from "react-router-dom";
 // import components
 import { Login } from "./Login";
 import { Dashboard } from "./Dashboard";
-import { Query } from "./Query";
 import { Upload } from "./upload_component/Upload";
 import { AssessmentCreator } from "./AssessmentCreator";
 import { SurveyCreator } from "./SurveyCreator";
+import { QueryData } from "./query/QueryData";
 
 export function Routes(props) {
   return (
@@ -78,7 +78,7 @@ function AdminRoutes(props) {
   return (
     <Switch>
       <Route path="/query">
-        <Query />
+        <QueryData />
       </Route>
       <Route path="/createAssessment">
         <AssessmentCreator />
