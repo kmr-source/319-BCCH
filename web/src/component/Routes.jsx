@@ -6,6 +6,8 @@ import { Login } from "./Login";
 import { Dashboard } from "./Dashboard";
 import { Upload } from "./upload_component/Upload";
 import { AssessmentCreator } from "./AssessmentCreator";
+import { AssessmentManager } from "./AssessmentManager";
+import { AssessmentArchiver } from "./AssessmentArchiver";
 import { SurveyCreator } from "./SurveyCreator";
 import { QueryData } from "./query/QueryData";
 
@@ -82,6 +84,12 @@ function AdminRoutes(props) {
       </Route>
       <Route path="/createAssessment">
         <AssessmentCreator />
+      </Route>
+      <Route path="/manageAssessment">
+        <AssessmentManager {...props} />
+      </Route>
+      <Route path="/archiveAssessment">
+        <AssessmentArchiver />
       </Route>
       <Route path="/createSurvey">
         <SurveyCreator />

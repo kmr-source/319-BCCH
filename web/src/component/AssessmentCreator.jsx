@@ -134,7 +134,7 @@ export function AssessmentCreator(props) {
     try {
       let res = await axios.post("/assessment/add", sendForm);
       toaster.success(`Added assessment with id ${res.data.id}`);
-      setConfDialState({ isLoading: false, isShown: false });
+      history.push("/manageAssessment");
     } catch (e) {
       toaster.danger(e.message);
     }
@@ -229,7 +229,7 @@ export function AssessmentCreator(props) {
             <div
               className="cancel-button"
               onClick={() => {
-                history.push("/dashboard");
+                history.push("/manageAssessment");
               }}
             >
               Cancel

@@ -54,7 +54,7 @@
     "css-loader": "^3.4.2",
     "evergreen-ui": "^4.23.0",
     "fiber": "^1.0.4",
-    "mocha": "^7.0.1",
+    "mocha": "^7.1.1",
     "node-sass": "^4.13.1",
     "prettier": "^1.19.1",
     "prettier-webpack-plugin": "^1.2.0",
