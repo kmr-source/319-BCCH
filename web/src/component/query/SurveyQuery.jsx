@@ -173,11 +173,17 @@ export function SurveyQuery(props) {
       <div id="query-type-container">
         <div className="qlabel">Select a Survey:</div>
         <div className="select-survey">
-          <Select onChange={event => setSurvey(event.target.value)}>
-            <option value="picture" defaultValue>
-              Picture
-            </option>
-            <option value="video">Video</option>
+          <Select
+            value={currentSurvey}
+            onChange={event => setSurvey(event.target.value)}
+          >
+            {surveys.map(s => {
+              return (
+                <option key={`${s.sTitle}-${s.sId}-opt`} value={s.sId}>
+                  {s.sTitle}
+                </option>
+              );
+            })}
           </Select>
         </div>
         <div className="filter-section">
