@@ -8,10 +8,6 @@
   margin-right: auto;
 }
 
-.loading-container {
-  height: 100%;
-}
-
 .after-loading {
   height: 100%;
 }
@@ -25,5 +21,6 @@
 @media (max-width: $breakpoint-mobile) {
   .loading-container {
     width: 100%;
+    height: 100%;
   }
 }
