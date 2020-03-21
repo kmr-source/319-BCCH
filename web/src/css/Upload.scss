@@ -55,6 +55,76 @@
       }
     }
   }
+
+  #shortcut-upload-panel {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 140px;
+    left: 65px;
+
+    .inputfile-hidden {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -10;
+    }
+
+    .shortcut-upload-btn {
+      height: 50px;
+      width: 200px;
+      margin-top: 8px;
+      background-color: $site-color-strong;
+      font-size: 16px;
+      color: white;
+      border: none;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+      .shortcut-icon {
+        color: white;
+      }
+
+      &.with-label {
+        text-align: center;
+        line-height: 50px;
+        cursor: pointer;
+      }
+
+      &.chosen {
+        background-color: white;
+        color: $site-color-strong;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &.secondary {
+        background-color: rgb(221, 14, 14);
+        box-shadow: none;
+
+        &:hover {
+          color: rgb(221, 14, 14);
+        }
+      }
+
+      &:hover {
+        background-color: white;
+        color: $site-color-strong;
+        transition-property: background-color;
+        transition-duration: 0.4s;
+        margin-top: 11px;
+        margin-bottom: 2px;
+
+        .shortcut-icon {
+          color: $site-color-strong;
+        }
+      }
+    }
+  }
 }
 
 #upload-body-section {
@@ -195,6 +265,10 @@
 }
 
 @media (max-width: $breakpoint-mobile) {
+  #shortcut-upload-panel {
+    display: none;
+  }
+
   #upload-body-section {
     width: 100%;
     padding-top: 0;

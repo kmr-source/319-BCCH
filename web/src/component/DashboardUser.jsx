@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { SideSheet, toaster, Icon } from "evergreen-ui";
+import { SideSheet, toaster, Icon, SearchInput } from "evergreen-ui";
 import axios from "axios";
 
 // import css
@@ -101,6 +101,7 @@ function DashUserMenu(props) {
 
 function SessionMenu(props) {
   let [allSessions, setAllSessions] = useState([]);
+  let [searchKey, setSearch] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -123,6 +124,14 @@ function SessionMenu(props) {
         return 0;
       }
     })
+    .filter(s => {
+      let key = searchKey.trim().toLowerCase();
+      if (key === "") {
+        return true;
+      } else {
+        return s.title.toLowerCase().startsWith(key);
+      }
+    })
     .map(s => {
       return (
         <div
@@ -141,6 +150,14 @@ function SessionMenu(props) {
   return (
     <div className="session-menu-container">
       <div className="session-menu-title">Select an assessment to upload</div>
+      <div className="filter-session-section">
+        <SearchInput
+          marginLeft="auto"
+          marginRight="auto"
+          onChange={e => setSearch(e.target.value)}
+          value={searchKey}
+        />
+      </div>
       <div className="session-item-container">{sessionLinks}</div>
       <div
         className="negative-button"
