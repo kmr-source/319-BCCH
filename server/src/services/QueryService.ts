@@ -10,6 +10,7 @@ export class QueryService {
         console.log(filter);
         let query = `SELECT * FROM ${type} INNER JOIN (${this.userAssessmentTable}) AS A ON A.assess_id = ${type}.assess_id`;
         query += this.buildFilter(filter);
+        query += this.buildGroupBy(groupBy);
         let result: any[] = await this.db.send(query);
         return this.buildResult(result, groupBy !== "none", limit, page);
     }
@@ -41,17 +42,39 @@ export class QueryService {
         return null;
     }
 
+    private buildGroupBy(groupBy: string): string {
+        let group = "none";
+        switch(groupBy) {
+            case "assessment":
+                group = "temp_id";
+                break;
+            case "age":
+                group = "age";
+                break;
+            case "gender":
+                group = "gender";
+                break;
+        }
+        return group === "none" ? "" : " ORDER BY " + group;;
+    }
+
     private buildPagination(limit: number, page: number): string {
         return ""
     }
 
     private buildResult(rawData: any[], isGrouped: boolean, limit: number, page: number): any {
         let pagedData = rawData.slice((page - 1) * limit, Math.min(page * limit, rawData.length));
-        let data = pagedData.map((d: any) => d.path);
+        let data = pagedData.map((d: any) => { return { path: d.path, date: d.time_created}; });
+        let result: any;
+        if (isGrouped) {
+            result = { none: data };
+        } else {
+            result = { none: data };
+        }
         return {
-            total: rawData.length,
+            total: Math.ceil(rawData.length / limit),
             current: page,
-            data: data
+            data: result
         };
     }
 }
