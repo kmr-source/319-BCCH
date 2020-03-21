@@ -58,6 +58,13 @@
       font-family: $site-font-family;
       padding: 20px 25px 50px 25px;
 
+      .filter-session-section {
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       .session-menu-title {
         font-size: 35px;
         font-weight: 500;
