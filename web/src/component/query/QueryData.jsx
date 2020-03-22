@@ -2,16 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Loading } from "../Loading";
 import { MediaQuery } from "./MediaQuery";
 import { SurveyQuery } from "./SurveyQuery";
+import { PlainQuery } from "./PlainQuery";
 import { toaster } from "evergreen-ui";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
 // import css
 import "../../css/QueryData.scss";
-
-function PlainQuery(props) {
-  return "Plain Query";
-}
 
 export function QueryData() {
   let [fetching, setFetching] = useState(false);

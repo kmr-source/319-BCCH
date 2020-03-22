@@ -327,6 +327,85 @@
       }
     }
   }
+
+  #plain-query-container {
+    #plain-query-body-section {
+      margin-top: 20px;
+
+      .qlabel {
+        font-size: 20px;
+        font-family: $site-font-family;
+        color: #234361;
+        border-bottom: solid 1px rgba(0, 0, 0, 0.19);
+      }
+
+      .execute-btn-group {
+        margin-top: 20px;
+
+        .execute-btn {
+          height: 50px;
+          width: 200px;
+          background-color: $site-color-strong;
+          font-size: 16px;
+          color: white;
+          margin: 10px auto;
+          display: block;
+          border: none;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+          &:focus {
+            outline: none;
+          }
+
+          &:hover {
+            background-color: white;
+            color: $site-color-strong;
+            transition-property: background-color;
+            transition-duration: 0.4s;
+          }
+        }
+      }
+
+      #plain-result-table {
+        margin-top: 20px;
+
+        .loading-container {
+          .loading {
+            width: 100%;
+          }
+        }
+
+        .plain-table-section {
+          .export-btn-group {
+            display: flex;
+            flex-direction: row-reverse;
+            margin: 10px auto 5px auto;
+
+            button.export-plain-btn {
+              margin-top: 3px;
+              margin-right: 15px;
+              background-color: white;
+              color: $site-color-strong;
+              border: solid 1px $site-color-strong;
+              display: inline-flex;
+
+              &:focus {
+                outline: none;
+              }
+
+              &:hover {
+                background-color: $site-color-strong;
+                color: white;
+                transition-property: background-color;
+                transition-duration: 0.4s;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .filter-menu-container {
@@ -361,5 +440,16 @@
         transition-duration: 0.4s;
       }
     }
+  }
+}
+
+#plain-query-warning-dialog {
+  .risk-format {
+    font-family: "SF UI Text", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 14px;
+    font-weight: 400;
+    color: #425a70;
   }
 }

@@ -68,8 +68,8 @@ export function SurveyQuery(props) {
       setExecuting(false);
     } catch (e) {
       toaster.danger(e.message);
-      setExecuting(false);
       setShowTable(false);
+      setExecuting(false);
     }
   }
 
