@@ -15,7 +15,6 @@ export class QueryController extends AdminController {
         let limit: number = body.LIMIT ?? 20;
         let page: number = body.PAGE ?? 1;
         let result = await (this.service.runMediaQuery(body.TYPE, body.FILTER, groupBy, limit, page));
-        console.log(result);
         this.response.status(200).send(result);
     }
 
