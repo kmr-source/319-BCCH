@@ -4,6 +4,8 @@ import * as Busboy from "busboy";
 
 export class UploadController extends AuthController {
 
+    private service: UploadService = new UploadService();
+
     private withID(handler: (i: number) => Promise<void>) {
         // parseInt is too flexible, restrict the format a little bit;
         let rawID = this.request.params.id;
@@ -22,30 +24,30 @@ export class UploadController extends AuthController {
 
     async startUpload() {
         this.withID(async (tempID) => {
-            let createdID = await (new UploadService()).init(this.user, tempID);
+            let createdID = await this.service.init(this.user, tempID);
             this.response.send({ id: createdID });
         });
     }
 
-    private async uploadMedia<T extends MediaFile>(
+    private uploadMedia<T extends MediaFile>(
         FileConstructor: new (f: NodeJS.ReadableStream) => T
     ) {
         return new Promise<string>((res, rej) => {
             let busboy = new Busboy({ headers: this.request.headers });
-            let storeProm: Promise<string>;
+            let filepath: string;
 
             busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-                storeProm = (new UploadService()).storeMedia(filename, new FileConstructor(file), this.user);
-            });
-
-            busboy.on('finish', () => {
-                storeProm
+                this.service.storeMedia(filename, new FileConstructor(file), this.user)
                     .then(p => {
-                        res(p);
+                        filepath = p;
                     })
                     .catch(e => {
                         rej(e);
                     });
+            });
+
+            busboy.on('finish', () => {
+                res(filepath);
             });
 
             this.request.pipe(busboy);
@@ -55,7 +57,7 @@ export class UploadController extends AuthController {
     async uploadVideo() {
         this.withID(async (id) => {
             let filepath = await this.uploadMedia(VideoFile);
-            await (new UploadService()).recordVideo(id, this.user, filepath);
+            await this.service.recordVideo(id, this.user, filepath);
             this.response.status(200).send({ status: true });
         });
     }
@@ -63,21 +65,21 @@ export class UploadController extends AuthController {
     async uploadPicture() {
         this.withID(async (id) => {
             let filepath = await this.uploadMedia(PictureFile);
-            await (new UploadService()).recordPicture(id, this.user, filepath);
+            await this.service.recordPicture(id, this.user, filepath);
             this.response.status(200).send({ status: true });
         });
     }
 
     async uploadSurvey() {
         this.withID(async (id) => {
-            await (new UploadService()).recordSurvey(id, this.user, this.request.body);
+            await this.service.recordSurvey(id, this.user, this.request.body);
             this.response.status(200).send({ status: true });
         });
     }
 
     async endUpload() {
         this.withID(async (assessID) => {
-            let res = await (new UploadService()).finalize(assessID);
+            let res = await this.service.finalize(assessID);
             this.response.send({ status: res });
         })
     }
