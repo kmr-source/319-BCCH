@@ -44,6 +44,7 @@ export class AssessmentImpl implements Assessment {
                     } else {
                         connection.query("SELECT LAST_INSERT_ID()", (err, result) => {
                             if (err) {
+                                connection.release();
                                 rej(err.code);
                             } else {
                                 connection.release();

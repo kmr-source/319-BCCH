@@ -45,6 +45,7 @@ abstract class Media {
                 this.isArchived ? 1 : 0
             ], (err) => {
                 if (err) {
+                    conn.release();
                     rej(err.code);
                 } else {
                     conn.release();

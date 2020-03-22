@@ -37,7 +37,7 @@ export class UploadService {
         return assess.store();
     }
 
-    async storeMedia(rawFileName: string, mediaFile: MediaFile, user: User): Promise<string> {
+    storeMedia(rawFileName: string, mediaFile: MediaFile, user: User): Promise<string> {
         let file = mediaFile.getFile();
         let tpe = mediaFile.toType();
         let ext = path.extname(rawFileName);
