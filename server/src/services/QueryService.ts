@@ -1,16 +1,19 @@
 import { DBConnection } from "../DBConnection";
 import { AppGlobals } from "../AppGlobals";
+import * as path from "path";
+import * as fs from "fs";
+import * as mime from "mime";
 
 export class QueryService {
     private db: DBConnection = AppGlobals.db;
-    private allFilters: {[key: string]: string[]};
+    private allFilters: { [key: string]: string[] };
     private doesFilterUser: boolean;
     private doesFilterAssessment: boolean;
 
     async runMediaQuery(type: string, filter: any[], groupBy: string, limit: number, page: number): Promise<any> {
         this.doesFilterAssessment = false;
         this.doesFilterUser = false;
-        this.allFilters = {normal: [], user: [], assessment: []};
+        this.allFilters = { normal: [], user: [], assessment: [] };
         let from = `FROM ${type} ${this.extendQuery(type, filter, groupBy)}`;
         let count: number = await this.countByQuery(from);
         let query = "SELECT * " + from + this.buildPagination(limit, page);
@@ -52,7 +55,7 @@ export class QueryService {
     }
 
     private getFilter(type: string, value: any): any {
-        switch(type) {
+        switch (type) {
             case "assessment":
                 let values = value.map((v: string) => `'${v}'`);
                 this.doesFilterAssessment = true;
@@ -93,7 +96,7 @@ export class QueryService {
 
     private buildGroupBy(groupBy: string): string {
         let group = "none";
-        switch(groupBy) {
+        switch (groupBy) {
             case "assessment":
                 group = "template";
                 this.doesFilterAssessment = true;
@@ -116,17 +119,17 @@ export class QueryService {
 
     private buildResult(rawData: any[], count: number, groupBy: string, limit: number, page: number): any {
         let groupKey = groupBy === "assessment" ? "template" : groupBy;
-        let result: {[key: string]: any} = {};
+        let result: { [key: string]: any } = {};
         if (groupKey !== "none") {
             rawData.forEach(d => {
-                let obj: {[key: string]: any} = { path: d.path, date: d.time_created};
+                let obj: { [key: string]: any } = { path: d.path, date: d.time_created };
                 if (!(d[groupKey] in result)) {
                     result[d[groupKey]] = [];
                 }
                 result[d[groupKey]].push(obj);
             });
         } else {
-            let data = rawData.map((d: any) => { return { path: d.path, date: d.time_created}; });
+            let data = rawData.map((d: any) => { return { path: d.path, date: d.time_created }; });
             result["none"] = data;
         }
         return {
@@ -140,4 +143,27 @@ export class QueryService {
         let res = await this.db.send(sql);
         return res;
     }
+
+    async downloadFile(uri: string) {
+        let filename = path.basename(uri);
+        let type = mime.getType(uri);
+        if (fs.existsSync(uri)) {
+            let stream = fs.createReadStream(uri);
+
+            return {
+                mimeType: type,
+                filename: filename,
+                file: stream
+            }
+        } else {
+            throw new Error("no such file");
+        }
+
+    }
+}
+
+export interface DownloadFileInfo {
+    mimeType: string;
+    filename: string;
+    file: NodeJS.ReadableStream;
 }

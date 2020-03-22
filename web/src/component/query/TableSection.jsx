@@ -167,7 +167,7 @@ export function TableSection(props) {
                     color="#f38020"
                     marginRight="5px"
                   />
-                  {r.path}
+                  <a href={`/file?uri=${r.path}`}>{r.path}</a>
                 </Table.TextCell>
                 <Table.TextCell>{new Date(r.date).toString()}</Table.TextCell>
               </Table.Row>
@@ -202,7 +202,7 @@ export function TableSection(props) {
                       color="#f38020"
                       marginRight="5px"
                     />
-                    {r.path}
+                    <a href={`/file?uri=${r.path}`}>{r.path}</a>
                   </Table.TextCell>
                   <Table.TextCell>{new Date(r.date).toString()}</Table.TextCell>
                 </Table.Row>
