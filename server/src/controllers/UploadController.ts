@@ -34,20 +34,17 @@ export class UploadController extends AuthController {
     ) {
         return new Promise<string>((res, rej) => {
             let busboy = new Busboy({ headers: this.request.headers });
-            let filepath: string;
+            let storeProm: Promise<string>;
 
             busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-                this.service.storeMedia(filename, new FileConstructor(file), this.user)
-                    .then(p => {
-                        filepath = p;
-                    })
-                    .catch(e => {
-                        rej(e);
-                    });
+                storeProm = this.service.storeMedia(filename, new FileConstructor(file), this.user);
+                storeProm.catch(e => {
+                    rej(e);
+                });
             });
 
             busboy.on('finish', () => {
-                res(filepath);
+                res(storeProm);
             });
 
             this.request.pipe(busboy);
