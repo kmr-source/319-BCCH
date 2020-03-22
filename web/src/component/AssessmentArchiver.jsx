@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { toaster, Icon, Dialog } from "evergreen-ui";
+import { toaster, Icon, Dialog, SearchInput } from "evergreen-ui";
 import axios from "axios";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Loading } from "./Loading";
 
 import "../css/AssessmentArchiver.scss";
@@ -9,6 +9,7 @@ import "../css/AssessmentArchiver.scss";
 function SessionMenu(props) {
   const [allSessions, setAllSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  let [searchKey, setSearch] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -30,6 +31,14 @@ function SessionMenu(props) {
         return 1;
       } else {
         return 0;
+      }
+    })
+    .filter(s => {
+      let key = searchKey.trim();
+      if (key === "") {
+        return true;
+      } else {
+        return s.title.toLowerCase().startsWith(key);
       }
     })
     .map(s => {
@@ -59,6 +68,14 @@ function SessionMenu(props) {
       <div className="session-menu-container">
         <div className="session-menu-title">
           Select an assessment to Archive
+        </div>
+        <div className="filter-session-section">
+          <SearchInput
+            marginLeft="auto"
+            marginRight="auto"
+            onChange={e => setSearch(e.target.value)}
+            value={searchKey}
+          />
         </div>
         <div className="session-item-container">{sessionLinks}</div>
         <div

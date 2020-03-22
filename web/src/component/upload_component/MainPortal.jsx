@@ -156,6 +156,23 @@ export function MainPortal(props) {
     }
   };
 
+  function shortcutUploadHelper(type) {
+    return event => {
+      let files = type === "video" ? currSession.video : currSession.picture;
+      let requiredNum =
+        type === "video"
+          ? sessionData.videos.length
+          : sessionData.pictures.length;
+      let update = type === "video" ? props.setVideo : props.setPicture;
+      for (let f of event.target.files) {
+        files.push(f);
+      }
+
+      files = files.slice(0, requiredNum);
+      update(files);
+    };
+  }
+
   return (
     <div>
       <div id="upload-body-session">
@@ -193,6 +210,58 @@ export function MainPortal(props) {
         >
           Cancel
         </div>
+      </div>
+      <div id="shortcut-upload-panel">
+        <input
+          type="file"
+          accept="video/*"
+          name="shortcut-video-upload"
+          id="shortcut-video-upload"
+          className="inputfile-hidden"
+          multiple="multiple"
+          onChange={shortcutUploadHelper("video")}
+        />
+        <label
+          className="shortcut-upload-btn with-label"
+          htmlFor="shortcut-video-upload"
+        >
+          <Icon
+            icon="video"
+            className="shortcut-icon"
+            marginRight="7px"
+            marginBottom="2px"
+          />
+          Upload Video
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          name="shortcut-picture-upload"
+          id="shortcut-picture-upload"
+          className="inputfile-hidden"
+          multiple="multiple"
+          onChange={shortcutUploadHelper("picture")}
+        />
+        <label
+          className="shortcut-upload-btn with-label"
+          htmlFor="shortcut-picture-upload"
+        >
+          <Icon
+            icon="graph"
+            className="shortcut-icon"
+            marginRight="7px"
+            marginBottom="2px"
+          />
+          Upload Picture
+        </label>
+        <button
+          className="shortcut-upload-btn secondary"
+          onClick={() => {
+            setshowGiveUp(true);
+          }}
+        >
+          Cancel
+        </button>
       </div>
 
       <Dialog
