@@ -65,8 +65,8 @@ export function MediaQuery(props) {
       setExecuting(false);
     } catch (e) {
       toaster.danger(e.message);
-      setExecuting(false);
       setShowTable(false);
+      setExecuting(false);
     }
   }
 

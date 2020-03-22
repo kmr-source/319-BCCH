@@ -135,4 +135,9 @@ export class QueryService {
             data: result
         };
     }
+
+    async plainQuery(sql: string) {
+        let res = await this.db.send(sql);
+        return res;
+    }
 }

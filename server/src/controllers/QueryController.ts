@@ -23,4 +23,15 @@ export class QueryController extends AdminController {
         this.response.status(200).send("TODO");
     }
 
+    async queryPlain() {
+        try {
+            let query = this.request.body.query;
+            let res = await this.service.plainQuery(query);
+            this.response.status(200).send(res);
+        } catch(e) {
+            console.log(e);
+            this.response.status(400).send(e.message);
+        }        
+    }
+
 }
