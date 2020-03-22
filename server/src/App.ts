@@ -100,6 +100,7 @@ server.post('/upload/end/:id', register(UploadController, c => c.endUpload()));
 server.post('/query/media', register(QueryController, c => c.queryMedia()));
 server.post('/query/survey', register(QueryController, c => c.querySurvey()));
 server.post('/query/plain', register(QueryController, c => c.queryPlain()));
+server.get('/file', register(QueryController, c => c.downloadFile()));
 
 // handle every other route with index.html, which will contain
 // a script tag to your application's JavaScript file(s).
