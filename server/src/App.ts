@@ -11,6 +11,7 @@ import { AppGlobals, AppMode } from "./AppGlobals";
 import { InMemorySessionManager } from "./services/InMemorySessionManager";
 import { UploadController } from "./controllers/UploadController";
 import { QueryController } from "./controllers/QueryController";
+import { AzureStorageManager, FileSystemStorageManager } from "./StorageManager";
 
 const port = process.env.PORT || 3000;
 let modeParam = process.argv[2]; // the first one is address of node interpretor, the second is the path to App.js
@@ -28,17 +29,20 @@ switch (modeParam) {
 
 console.log(`App running at ${AppGlobals.mode === AppMode.PROD ? "PRODUCTION" : "DEVELOPMENT"}`);
 
-// setup database
+let fileStorage;
 let dbConfigPath;
 switch (AppGlobals.mode) {
     case AppMode.PROD:
         dbConfigPath = path.resolve(__dirname, "../../db-conf-prod.json");
+        fileStorage = AzureStorageManager.getInstance();
         break;
     case AppMode.DEV:
         dbConfigPath = path.resolve(__dirname, "../../db-conf-dev.json");
+        fileStorage = FileSystemStorageManager.getInstance();
         break;
 }
 
+// setup database
 let dbConfigJson = fs.readFileSync(dbConfigPath);
 let dbConfig: DBConfig = JSON.parse(dbConfigJson.toString());
 DBConnection.updateConfig(dbConfig);
@@ -46,6 +50,7 @@ DBConnection.updateConfig(dbConfig);
 AppGlobals.port = port;
 AppGlobals.db = DBConnection.getInstance();
 AppGlobals.sessionManager = InMemorySessionManager.getInstance();
+AppGlobals.storageManager = fileStorage;
 
 let server = express();
 

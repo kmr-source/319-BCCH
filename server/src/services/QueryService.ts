@@ -1,8 +1,6 @@
 import { DBConnection } from "../DBConnection";
 import { AppGlobals } from "../AppGlobals";
-import * as path from "path";
-import * as fs from "fs";
-import * as mime from "mime";
+import { DownloadFileInfo } from "../StorageManager";
 
 export class QueryService {
     private db: DBConnection = AppGlobals.db;
@@ -195,26 +193,7 @@ export class QueryService {
         return res;
     }
 
-    async downloadFile(uri: string) {
-        let filename = path.basename(uri);
-        let type = mime.getType(uri);
-        if (fs.existsSync(uri)) {
-            let stream = fs.createReadStream(uri);
-
-            return {
-                mimeType: type,
-                filename: filename,
-                file: stream
-            }
-        } else {
-            throw new Error("no such file");
-        }
-
+    downloadFile(uri: string): Promise<DownloadFileInfo> {
+        return AppGlobals.storageManager.getFile(uri);
     }
-}
-
-export interface DownloadFileInfo {
-    mimeType: string;
-    filename: string;
-    file: NodeJS.ReadableStream;
 }
