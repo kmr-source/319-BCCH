@@ -9,10 +9,14 @@ export class QueryService {
     private allFilters: { [key: string]: string[] };
     private doesFilterUser: boolean;
     private doesFilterAssessment: boolean;
+    private doesFilterSurveys: boolean;
+    private surveyID: string;
 
     async runMediaQuery(type: string, filter: any[], groupBy: string, limit: number, page: number): Promise<any> {
+        this.surveyID = null;
         this.doesFilterAssessment = false;
         this.doesFilterUser = false;
+        this.doesFilterSurveys = false;
         this.allFilters = { normal: ["(is_archived = 0)"], user: [], assessment: [] };
         let from = `FROM ${type} ${this.extendQuery(type, filter, groupBy)}`;
         let count: number = await this.countByQuery(from);
@@ -47,6 +51,9 @@ export class QueryService {
             } else {
                 query += `(SELECT * FROM (${tableQueries.join(" INNER JOIN ")} ON userTable.uid = assessmentTable.auid)) AS joinedTable ON ${type}.assess_id = joinedTable.aid`;
             }
+        }
+        if(this.doesFilterSurveys) {
+            query += ` INNER JOIN (SELECT q_number, survey_id, answer FROM SurveyAnswer WHERE survey_id = ${this.surveyID}) AS surveyAnswerTable ON ${type}.id = surveyAnswerTable.survey_id`;
         }
         if ("normal" in this.allFilters && this.allFilters["normal"].length != 0) {
             query += " WHERE " + this.allFilters["normal"].join(" AND ");
@@ -109,6 +116,10 @@ export class QueryService {
                 group = "gender";
                 this.doesFilterUser = true;
                 break;
+            case "question_number":
+                group = "q_number";
+                this.doesFilterSurveys = true;
+                break;
         }
         return group === "none" ? "" : " ORDER BY " + group;;
     }
@@ -130,6 +141,43 @@ export class QueryService {
             });
         } else {
             let data = rawData.map((d: any) => { return { path: d.path, date: d.time_created }; });
+            result["none"] = data;
+        }
+        return {
+            total: Math.ceil(count / limit),
+            current: page,
+            data: result
+        };
+    }
+    
+    async runSurveyQuery(surveyID: string, filter: any[], groupBy: string, limit: number, page: number): Promise<any> {
+        let type: string = "survey";
+        this.surveyID = surveyID;
+        this.doesFilterAssessment = false;
+        this.doesFilterUser = false;
+        this.doesFilterSurveys = true;
+        this.allFilters = {normal: ["(is_archived = 0)"], user: [], assessment: []};
+        let from = `FROM ${type} ${this.extendQuery(type, filter, groupBy)}`;
+        let count: number = await this.countByQuery(from);
+        let query = "SELECT * " + from + this.buildPagination(limit, page);
+        let result: any[] = await this.db.send(query);
+        return this.buildResultSurvey(result, count, groupBy, limit, page);
+    }
+
+    private buildResultSurvey(rawData: any[], count: number, groupBy: string, limit: number, page: number): any {
+        let groupKey = groupBy === "assessment" ? "template" : groupBy;
+        groupKey = groupBy === "question_number" ? "q_number" : groupBy;
+        let result: {[key: string]: any} = {};
+        if (groupKey !== "none") {
+            rawData.forEach(d => {
+                let obj: {[key: string]: any} = { number: d.q_number, answer: d.answer};
+                if (!(d[groupKey] in result)) {
+                    result[d[groupKey]] = [];
+                }
+                result[d[groupKey]].push(obj);
+            });
+        } else {
+            let data = rawData.map((d: any) => { return { number: d.q_number, answer: d.answer}; });
             result["none"] = data;
         }
         return {
