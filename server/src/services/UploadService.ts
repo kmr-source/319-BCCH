@@ -1,11 +1,10 @@
-import { User } from "../models/IUser";
-import { AssessmentImpl } from "../models/Assessment";
-import { VideoImpl, PictureImpl } from "../models/Media";
-import * as fs from "fs";
-import * as path from "path";
 import { v4 as uuid } from "uuid";
+import * as path from "path";
+import { AssessmentImpl } from "../models/Assessment";
+import { User } from "../models/IUser";
+import { PictureImpl, VideoImpl } from "../models/Media";
 import { SurveyImpl } from "../models/Survey";
-
+import { AppGlobals } from "../AppGlobals";
 
 export abstract class MediaFile {
 
@@ -38,31 +37,10 @@ export class UploadService {
     }
 
     storeMedia(rawFileName: string, mediaFile: MediaFile, user: User): Promise<string> {
-        let file = mediaFile.getFile();
-        let tpe = mediaFile.toType();
-        let ext = path.extname(rawFileName);
-        let filename = `${uuid()}${ext}`;
+        const ext = path.extname(rawFileName);
+        const filename = `${uuid()}${ext}`;
 
-        let folderPath = path.resolve(__dirname, `../../../upload_test/${user.id}/${tpe}`);
-        if (!fs.existsSync(folderPath)) {
-            fs.mkdirSync(folderPath, { recursive: true });
-        }
-
-        let storedPath = `${folderPath}/${filename}`;
-
-        return new Promise((resolve, reject) => {
-            let writeStream = fs.createWriteStream(storedPath);
-            file.on('error', (e) => {
-                reject(e);
-            });
-            writeStream.on('error', (e) => {
-                reject(e);
-            });
-            writeStream.on('finish', () => {
-                resolve(storedPath);
-            });
-            file.pipe(writeStream);
-        });
+        return AppGlobals.storageManager.storeFile(filename, mediaFile, user);
     }
 
     async recordVideo(assessID: number, user: User, path: string) {

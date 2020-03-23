@@ -1,5 +1,6 @@
 import { DBConnection } from "./DBConnection";
 import { SessionManager } from "./services/ISessionManager";
+import { StorageManager } from "./StorageManager";
 
 export enum AppMode {
     PROD = 1,
@@ -9,6 +10,7 @@ export enum AppMode {
 export class AppGlobals {
     static mode: AppMode;
     static db: DBConnection;
+    static storageManager: StorageManager;
     static sessionManager: SessionManager;
     static port: string | number;
 }

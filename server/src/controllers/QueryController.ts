@@ -1,5 +1,6 @@
 import { AdminController } from "./AdminController";
-import { QueryService, DownloadFileInfo } from "../services/QueryService";
+import { QueryService } from "../services/QueryService";
+import { DownloadFileInfo } from "../StorageManager";
 
 export class QueryController extends AdminController {
 
@@ -40,7 +41,7 @@ export class QueryController extends AdminController {
             this.response.status(500).send("something went wrong");
         }
     }
-    
+
     async queryPlain() {
         try {
             let query = this.request.body.query;
@@ -56,9 +57,14 @@ export class QueryController extends AdminController {
         try {
             let uri = this.request.query.uri;
             let info: DownloadFileInfo = await this.service.downloadFile(uri);
-            this.response.setHeader('Content-disposition', 'attachment; filename=' + info.filename);
-            this.response.setHeader('Content-type', info.mimeType);
-            info.file.pipe(this.response.status(200));
+            if (info.isAzure) {
+                // if it is an Azure URI, just redirect to Azure and let them handle it.
+                this.response.redirect(302, uri);
+            } else {
+                this.response.setHeader('Content-disposition', 'attachment; filename=' + info.filename);
+                this.response.setHeader('Content-type', info.mimeType);
+                info.file.pipe(this.response.status(200));
+            }
         } catch (e) {
             console.log(e);
             this.response.status(400).send(e.message);
