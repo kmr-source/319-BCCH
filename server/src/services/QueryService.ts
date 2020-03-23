@@ -61,6 +61,7 @@ export class QueryService {
         } else if (this.doesFilterSurveys) {
             query += ` WHERE ${type}.temp_id = ${this.surveyID}`;
         }
+        return query + grouping;
     }
 
     private getFilter(type: string, value: any): any {
