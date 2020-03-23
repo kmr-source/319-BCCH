@@ -13,7 +13,7 @@ export class QueryService {
     async runMediaQuery(type: string, filter: any[], groupBy: string, limit: number, page: number): Promise<any> {
         this.doesFilterAssessment = false;
         this.doesFilterUser = false;
-        this.allFilters = { normal: [], user: [], assessment: [] };
+        this.allFilters = { normal: ["(is_archived = 0)"], user: [], assessment: [] };
         let from = `FROM ${type} ${this.extendQuery(type, filter, groupBy)}`;
         let count: number = await this.countByQuery(from);
         let query = "SELECT * " + from + this.buildPagination(limit, page);
