@@ -53,12 +53,14 @@ export class QueryService {
             }
         }
         if(this.doesFilterSurveys) {
-            query += ` INNER JOIN (SELECT q_number, survey_id, answer FROM SurveyAnswer WHERE survey_id = ${this.surveyID}) AS surveyAnswerTable ON ${type}.id = surveyAnswerTable.survey_id`;
+            query += ` INNER JOIN (SELECT q_number, survey_id, answer FROM SurveyAnswer) AS surveyAnswerTable ON ${type}.id = surveyAnswerTable.survey_id`;
         }
         if ("normal" in this.allFilters && this.allFilters["normal"].length != 0) {
             query += " WHERE " + this.allFilters["normal"].join(" AND ");
+            if (this.doesFilterSurveys) { query += ` AND ${type}.temp_id = ${this.surveyID}`;}
+        } else if (this.doesFilterSurveys) {
+            query += ` WHERE ${type}.temp_id = ${this.surveyID}`;
         }
-        return query + grouping;
     }
 
     private getFilter(type: string, value: any): any {
