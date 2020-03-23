@@ -24,10 +24,23 @@ export class QueryController extends AdminController {
     }
 
     async querySurvey() {
-        // we prepared this.request && this.response !!
-        this.response.status(200).send("TODO");
+        try {
+            let body = this.request.body;
+            if (body.SURVEY == null || body.FILTER == null) {
+                this.response.status(400).send({ error: "Missing required parameters" });
+                return;
+            }
+            let groupBy: string = body.GROUP_BY ?? "none";
+            let limit: number = body.LIMIT ?? 20;
+            let page: number = body.PAGE ?? 1;
+            let result = await (this.service.runSurveyQuery(body.SURVEY, body.FILTER, groupBy, limit, page));
+            this.response.status(200).send(result);
+        } catch (e) {
+            console.log(e);
+            this.response.status(500).send("something went wrong");
+        }
     }
-
+    
     async queryPlain() {
         try {
             let query = this.request.body.query;
