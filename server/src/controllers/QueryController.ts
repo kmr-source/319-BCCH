@@ -24,10 +24,43 @@ export class QueryController extends AdminController {
     }
 
     async querySurvey() {
-        // we prepared this.request && this.response !!
-        this.response.status(200).send("TODO");
+        try {
+            let body = this.request.body;
+            if (body.SURVEY == null || body.FILTER == null) {
+                this.response.status(400).send({ error: "Missing required parameters" });
+                return;
+            }
+            let groupBy: string = body.GROUP_BY ?? "none";
+            let limit: number = body.LIMIT ?? 20;
+            let page: number = body.PAGE ?? 1;
+            let result = await (this.service.runSurveyQuery(body.SURVEY, body.FILTER, groupBy, limit, page));
+            this.response.status(200).send(result);
+        } catch (e) {
+            console.log(e);
+            this.response.status(500).send("something went wrong");
+        }
+        /*{
+            "SURVEY": "1" // survey id, we query one survey at a time
+            "FILTER": "..."  // same as video/picture
+            "GROUP_BY": "time" // "age", "gender", "assessment", "question_number",
+            "LIMIT": 20,
+            "PAGE": 1
+        }
+        // We show question number and answer
+        {
+            "total": 50,
+            "current": 1,
+            "data": {
+            "group_by_attr_1": [{"number": 1, "answer": "..."} ....],
+            "group_by_attr_2": ["..."],
+                "group_by_attr_3": ["..."],
+                "group_by_attr_4": ["..."],
+        }
+        }
+        total  is how many pages in total, if it is hard to tell then just leave it null
+        current is the current page showing. "data" should be grouped by the group by attributes: for example if it is age, then it should be {"1": [...] , "2" : [...]}
+        */
     }
-
     async queryPlain() {
         try {
             let query = this.request.body.query;
