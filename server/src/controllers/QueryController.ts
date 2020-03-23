@@ -39,28 +39,8 @@ export class QueryController extends AdminController {
             console.log(e);
             this.response.status(500).send("something went wrong");
         }
-        /*{
-            "SURVEY": "1" // survey id, we query one survey at a time
-            "FILTER": "..."  // same as video/picture
-            "GROUP_BY": "time" // "age", "gender", "assessment", "question_number",
-            "LIMIT": 20,
-            "PAGE": 1
-        }
-        // We show question number and answer
-        {
-            "total": 50,
-            "current": 1,
-            "data": {
-            "group_by_attr_1": [{"number": 1, "answer": "..."} ....],
-            "group_by_attr_2": ["..."],
-                "group_by_attr_3": ["..."],
-                "group_by_attr_4": ["..."],
-        }
-        }
-        total  is how many pages in total, if it is hard to tell then just leave it null
-        current is the current page showing. "data" should be grouped by the group by attributes: for example if it is age, then it should be {"1": [...] , "2" : [...]}
-        */
     }
+    
     async queryPlain() {
         try {
             let query = this.request.body.query;
