@@ -43,11 +43,11 @@ MongoDB (or access to a MongoDB instance)
 3) Configure environment variables:
 
 Create a .env file in the root directory and add the following variables:
-    MONGO_URI=your_mongo_connection_string
-    JWT_SECRET=your_jwt_secret
-    AWS_ACCESS_KEY_ID=your_aws_access_key
-    AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-    AWS_BUCKET_NAME=your_s3_bucket_name
+    MONGO_URI=your_mongo_connection_string\
+    JWT_SECRET=your_jwt_secret\
+    AWS_ACCESS_KEY_ID=your_aws_access_key\
+    AWS_SECRET_ACCESS_KEY=your_aws_secret_key\
+    AWS_BUCKET_NAME=your_s3_bucket_name\
 
 4) Run application
    npm run dev
