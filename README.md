@@ -32,9 +32,9 @@ MongoDB (or access to a MongoDB instance)
 
 ### Installation
 1) Clone the repository:
-
-  git clone https://github.com/kmr-source/319-BCCH.git
+```git clone https://github.com/kmr-source/319-BCCH.git
   cd 319-BCCH
+```
   
 2) Install dependencies:
  
